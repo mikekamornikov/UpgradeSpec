@@ -1,0 +1,4 @@
+suites:
+  upgrade_spec_suite:
+    namespace: Sugarcrm\UpgradeSpec
+    psr4_prefix: Sugarcrm\UpgradeSpec
