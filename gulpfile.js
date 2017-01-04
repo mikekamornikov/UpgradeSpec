@@ -1,14 +1,13 @@
 var gulp = require('gulp');
 var phpspec = require('gulp-phpspec');
-var run = require('gulp-run');
 var notify = require('gulp-notify');
 
 gulp.task('test', function() {
+    var options = { clear: true, formatter: 'pretty', verbose: 'v', notify: true };
     gulp.src('spec/**/*.php')
-        .pipe(run('clear').exec())
-        .pipe(phpspec('', { 'verbose': 'v', notify: true }))
+        .pipe(phpspec('', options))
         .on('error', notify.onError({
-            title: "Crap",
+            title: "Error",
             message: "Your tests failed!"
         }))
         .pipe(notify({

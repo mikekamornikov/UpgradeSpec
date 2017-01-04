@@ -5,6 +5,7 @@ namespace Sugarcrm\UpgradeSpec\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateSpecCommand extends Command
@@ -17,7 +18,8 @@ class GenerateSpecCommand extends Command
         $this->setName('generate:spec')
             ->setDescription('Generate a new upgrade spec')
             ->addArgument('path', InputArgument::REQUIRED, 'Path to SugarCRM build we are going to upgrade')
-            ->addArgument('version', InputArgument::OPTIONAL, 'Desired version to upgrade to');
+            ->addArgument('version', InputArgument::OPTIONAL, 'Version to upgrade to')
+            ->addOption('dump', 'D', InputOption::VALUE_NONE, 'Save generated spec to file');
     }
 
     /**

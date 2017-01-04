@@ -29,4 +29,4 @@ install:
 - composer install --no-interaction
 
 script:
-- ./vendor/bin/phpspec run
+- ./vendor/bin/phpspec run --format=pretty
