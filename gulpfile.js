@@ -5,7 +5,7 @@ var notify = require('gulp-notify');
 
 gulp.task('test', function() {
     gulp.src('spec/**/*.php')
-        .pipe(run('clear'))
+        .pipe(run('clear').exec())
         .pipe(phpspec('', { 'verbose': 'v', notify: true }))
         .on('error', notify.onError({
             title: "Crap",
@@ -13,7 +13,7 @@ gulp.task('test', function() {
         }))
         .pipe(notify({
             title: "Success",
-            message: "All tests have returned green!"
+            message: "All tests passed!"
         }));
 });
 
