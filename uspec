@@ -3,6 +3,8 @@
 <?php
 
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
+use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
+use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
 use Symfony\Component\Console\Application;
 
 require 'vendor/autoload.php';
@@ -10,4 +12,6 @@ require 'vendor/autoload.php';
 $app = new Application('SugarCRM upgrade spec generator', '0.1');
 
 $app->add(new GenerateSpecCommand);
+$app->add(new SelfUpdateCommand);
+$app->add(new SelfRollbackCommand);
 $app->run();

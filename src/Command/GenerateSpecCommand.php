@@ -14,7 +14,7 @@ class GenerateSpecCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('generate')
+        $this->setName('generate:spec')
             ->setDescription('Generate a new upgrade spec')
             ->addArgument('path', InputArgument::REQUIRED, 'Path to SugarCRM build we are going to upgrade')
             ->addArgument('version', InputArgument::OPTIONAL, 'Desired version to upgrade to');
