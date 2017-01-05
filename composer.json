@@ -1,4 +1,13 @@
 {
+  "name": "mikekamornikov/uspec",
+  "description": "SugarCRM upgrade spec generator",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mike Kamornikov",
+      "email": "mikekamornikov@gmail.com"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "Sugarcrm\\UpgradeSpec\\": "src"
