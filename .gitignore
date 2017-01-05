@@ -1,2 +1,6 @@
-node_modules/
-vendor/
+/node_modules/
+/vendor/
+/.travis/phar-private.pem
+/box.json
+/uspec.phar
+/uspec.phar.pubkey

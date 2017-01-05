@@ -14,6 +14,10 @@
     }
   },
   "require": {
+    "symfony/console": "^3.2",
+    "padraic/phar-updater": "^1.0"
+  },
+  "require-dev": {
     "phpspec/phpspec": "^3.2"
   }
 }

@@ -2,6 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
+use Humbug\SelfUpdate\Updater;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,6 +27,17 @@ class SelfRollbackCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('<info>Done</info>');
+        $updater = new Updater();
+        $updater->setRestorePath(sys_get_temp_dir() . '/uspec-old.phar');
+
+        try {
+            if ($updater->rollback()) {
+                $output->writeln('<info>Success!</info>');
+            } else {
+                $output->writeln('<error>Before rollback you need to perform at least one update.</error>');
+            }
+        } catch (\Exception $e) {
+            $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+        }
     }
 }
