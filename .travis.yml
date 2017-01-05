@@ -30,3 +30,6 @@ install:
 
 script:
 - ./vendor/bin/phpspec run --format=pretty
+
+notifications:
+  email: false
