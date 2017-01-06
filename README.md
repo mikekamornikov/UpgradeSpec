@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/mikekamornikov/UpgradeSpec.svg?branch=master)](https://travis-ci.org/mikekamornikov/UpgradeSpec)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/74152ef7-7e2d-4668-90a5-af33e40eddec/mini.png)](https://insight.sensiolabs.com/projects/74152ef7-7e2d-4668-90a5-af33e40eddec)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/61e4bf45f6ec4b29a34fa664f0d6090c)](https://www.codacy.com/app/mikekamornikov/UpgradeSpec?utm_source=github.com&utm_medium=referral&utm_content=mikekamornikov/UpgradeSpec&utm_campaign=badger)
+[![Code Climate](https://codeclimate.com/github/mikekamornikov/UpgradeSpec/badges/gpa.svg)](https://codeclimate.com/github/mikekamornikov/UpgradeSpec)
 
 It's a CLI tool responsible for generation of simple step by step upgrade guide for SugarCRM instance.   
 
