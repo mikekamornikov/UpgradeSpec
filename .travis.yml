@@ -13,7 +13,6 @@ matrix:
     env:
     - EXECUTE_DEPLOYMENT=true
   - php: 7.1
-  # Use the newer stack for HHVM as HHVM does not support Precise anymore since a long time and so Precise has an outdated version
   - php: hhvm-3.15
     sudo: required
     dist: trusty
@@ -33,3 +32,10 @@ script:
 
 notifications:
   email: false
+  hipchat:
+    rooms:
+      secure: irpC6nHbE9y7H8u07ld0V0mxvUkOZ7p677KYA/bqS9qF2ADsTYIStK8aIi1CINF36r0/cNxgAQjZPyl/FssKq+yazUv93sEaFYRU0tfrdR19VmeaZiVVraJ8PCBrJ0WWzIU2mNLbuLuIZ2hLaMSGVsIkB0mqaHA5MzsZE9kp2iDi2dygigWpnfu5nk3eHlqqPSA5SX3E48RE94sSX2xIWqRKMniJm6AM0OFcmfcG7YdbJpU+M4qbKwuEeIywL+qZMNq5zp0GynrzoyZCniusbrFDPSiCY6UTmjMHdLMwL396ixtaBi9hAKy39XV6Db4pwyPcfoxili4A/pjCWdqh7UIZI817eYpU6HmZEs/cbyRX0NBiCW+2bLSMBxjBGstdcQVOZvNHxPnZf+ggEXA/6a4InCd3jmi9GmAOR3vnsFCwjrFshEO6QPXOGZAL65ZuXZOarPAXR8kdokyzG8DHnJDa/kFEq6NjX7u3hd6K19D2/07HjMl6fQuzJu71LTNJGR3KTM3jdFpnG6DztAu966TLP6u92UVNp1QIRSw11mQvfesLsVNxKuTE4igZNaekcWqQ41y1oZAbQAdqscp9e7C+BaSATpR7KTaL7qYe07RIueQvZP+Y5VCbh6zjAmQvHj+K4j7kxjmoJmgjqbYH4n6ekLnnlollq1qmZZa6K5o=
+    template:
+    - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message} (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
+    format: html
+    notify: true
