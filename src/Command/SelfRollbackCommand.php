@@ -27,8 +27,7 @@ class SelfRollbackCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $updater = new Updater();
-        $updater->setRestorePath(sys_get_temp_dir() . '/uspec-old.phar');
+        $updater = $this->prepareUpdater();
 
         try {
             if ($updater->rollback()) {
@@ -39,5 +38,16 @@ class SelfRollbackCommand extends Command
         } catch (\Exception $e) {
             $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
         }
+    }
+
+    /**
+     * @return Updater
+     */
+    protected function prepareUpdater()
+    {
+        $updater = new Updater();
+        $updater->setRestorePath(sys_get_temp_dir() . '/uspec-old.phar');
+        
+        return $updater;
     }
 }

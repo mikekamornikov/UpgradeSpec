@@ -34,23 +34,11 @@ class SelfUpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $stability = $input->getOption('stability');
-        if (!in_array($stability, [GithubStrategy::STABLE, GithubStrategy::UNSTABLE, GithubStrategy::ANY])) {
-            $output->writeln('<error>Invalid "stability" option value</error>');
-            exit(1);
-        }
-
-        $updater = new Updater();
-        $updater->setStrategy(Updater::STRATEGY_GITHUB);
-        $updater->getStrategy()->setPackageName('mikekamornikov/uspec');
-        $updater->getStrategy()->setPharName('uspec.phar');
-        $updater->getStrategy()->setCurrentLocalVersion($this->getApplication()->getVersion());
-        $updater->getStrategy()->setStability($stability);
-        $updater->setBackupPath(sys_get_temp_dir() . '/uspec-old.phar');
-        
         try {
-            $result = $updater->update();
-            if ($result) {
+            $this->validateInput($input);
+            $updater = $this->prepareUpdater($input->getOption('stability'));
+
+            if ($updater->update()) {
                 $output->writeln(sprintf('<info>Successfully updated from "%s" to "%s"</info>',
                     $updater->getOldVersion(),
                     $updater->getNewVersion()
@@ -60,6 +48,33 @@ class SelfUpdateCommand extends Command
             }
         } catch (\Exception $e) {
             $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+        }
+    }
+
+    /**
+     * @param $stability
+     * @return Updater
+     */
+    private function prepareUpdater($stability)
+    {
+        $version = $this->getApplication()->getVersion();
+
+        $updater = new Updater();
+        $updater->setStrategy(Updater::STRATEGY_GITHUB);
+        $updater->getStrategy()->setPackageName('mikekamornikov/uspec');
+        $updater->getStrategy()->setPharName('uspec.phar');
+        $updater->getStrategy()->setCurrentLocalVersion($version);
+        $updater->getStrategy()->setStability($stability);
+        $updater->setBackupPath(sys_get_temp_dir() . '/uspec-old.phar');
+
+        return $updater;
+    }
+
+    private function validateInput(InputInterface $input)
+    {
+        $stability = $input->getOption('stability');
+        if (!in_array($stability, [GithubStrategy::STABLE, GithubStrategy::UNSTABLE, GithubStrategy::ANY])) {
+            throw new \RuntimeException('Invalid "stability" option value');
         }
     }
 }
