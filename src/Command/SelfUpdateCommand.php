@@ -43,6 +43,8 @@ class SelfUpdateCommand extends Command
                 return;
             }
 
+            $this->performCleanup();
+            
             $output->writeln(sprintf('<info>Successfully updated from "%s" to "%s"</info>',
                 $updater->getOldVersion(),
                 $updater->getNewVersion()
@@ -53,6 +55,7 @@ class SelfUpdateCommand extends Command
     }
 
     /**
+     * Prepares PHAR updater instance for update operation
      * @param $stability
      * @return Updater
      */
@@ -71,11 +74,24 @@ class SelfUpdateCommand extends Command
         return $updater;
     }
 
+    /**
+     * Validates user's input
+     * @param InputInterface $input
+     */
     private function validateInput(InputInterface $input)
     {
         $stability = $input->getOption('stability');
         if (!in_array($stability, [GithubStrategy::STABLE, GithubStrategy::UNSTABLE, GithubStrategy::ANY])) {
             throw new \RuntimeException('Invalid "stability" option value');
         }
+    }
+
+    /**
+     * Removes PHAR update leftovers
+     */
+    private function performCleanup()
+    {
+        $tmpKeyFile = sprintf('%s/%s.phar.temp.pubkey', $this->getTempDirectory(), $this->getLocalPharFileBasename());
+        @unlink($tmpKeyFile);
     }
 }

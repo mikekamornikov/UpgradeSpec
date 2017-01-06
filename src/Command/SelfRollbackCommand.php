@@ -42,9 +42,10 @@ class SelfRollbackCommand extends Command
     }
 
     /**
+     * Prepares PHAR updater instance for rollback operation
      * @return Updater
      */
-    protected function prepareUpdater()
+    private function prepareUpdater()
     {
         $updater = new Updater();
         $updater->setRestorePath(sys_get_temp_dir() . '/uspec-old.phar');
