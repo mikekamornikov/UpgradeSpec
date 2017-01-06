@@ -18,16 +18,37 @@ matrix:
       dist: trusty
       group: edge
   allow_failures:
-  - php: hhvm
+    - php: hhvm
 
 before_install:
+  - openssl aes-256-cbc -K $encrypted_7bbf7fef4d44_key -iv $encrypted_7bbf7fef4d44_iv
+    -in .travis/phar-private.pem.enc -out .travis/phar-private.pem -d
   - stty cols 120
   - if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then phpenv config-rm xdebug.ini; fi
 
 install:
   - composer install --no-interaction
+
 script:
   - ./vendor/bin/phpspec run --format=pretty
+
+before_deploy:
+  - composer install --no-dev
+  - wget -O box.phar https://github.com/box-project/box2/releases/download/2.7.5/box-2.7.5.phar
+  - chmod 755 box.phar
+  - php -d phar.readonly=0 box.phar build -vv
+
+deploy:
+  provider: releases
+  api_key:
+    secure: QkdCFBxVN9LQrN7McWOqbTkwmKVYd0SblnGVskW5AfSp7MHxMiL8H/tsfjZZF4ouU88cJf2GywtEY8mVr6LDkC6SNaFCO0svOAzhCE16gtZMpWBahZGGnwCQjz6iHrtrQ9EESxQccLmu09zhFw2CJxYD4hYt86rLIde77zGh7abFCm+xnUUaXzI2VwDc57iCZGuKxiRI9qnKokR5sYGyIUPyGpqxVzfAv0q72E989f+HoZX7JIJs+c5ZGrfmnDscnW5CjCW08TIw7cCZoy9+wCdXeUcJIzfFX9v0+GUOkEQVMxGKKnncnOqOyv0texkcQoCUDzLmyubXyv4k4j+pCmzQMhc/aUgtaB1jRpFRGe8+e4sm5/GzySRKRR9+j+MHmFZtUW6UrcWKM2TsC7NgJ16bvQCFcQVu1uY8ecTQmFpBaaUyuLDbD23F4mtTVnRecxybkAglsjrJ943pS3S5FUsHSuzGCAW8NaDSkG1TJZmjkSIZPjTs+fw3x2FKSsgqROnwOyyiH2o3FuSf+RUUJV84C4QqxegaHNYk5dCupEyhsZ4DAur3PVjmZXnqo5bBjv/sa/TwdC+6+/29f20mGtyqT4k8bB31En0JceQSDFfuTKvl8wguy+W0ti5oE6mZZFzLlTXQ0ZjaWoiYmXRk7Bd5qyWKS4P7cjmYOndvU04=
+  file:
+    - uspec.phar
+    - uspec.phar.pubkey
+  skip_cleanup: true
+  on:
+    tags: true
+    condition: $EXECUTE_DEPLOYMENT = true
 
 notifications:
   email: false
