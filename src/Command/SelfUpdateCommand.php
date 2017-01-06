@@ -38,14 +38,15 @@ class SelfUpdateCommand extends Command
             $this->validateInput($input);
             $updater = $this->prepareUpdater($input->getOption('stability'));
 
-            if ($updater->update()) {
-                $output->writeln(sprintf('<info>Successfully updated from "%s" to "%s"</info>',
-                    $updater->getOldVersion(),
-                    $updater->getNewVersion()
-                ));
-            } else {
+            if (!$updater->update()) {
                 $output->writeln('<info>No update needed!</info>');
+                return;
             }
+
+            $output->writeln(sprintf('<info>Successfully updated from "%s" to "%s"</info>',
+                $updater->getOldVersion(),
+                $updater->getNewVersion()
+            ));
         } catch (\Exception $e) {
             $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
         }

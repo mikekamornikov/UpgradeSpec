@@ -30,11 +30,12 @@ class SelfRollbackCommand extends Command
         $updater = $this->prepareUpdater();
 
         try {
-            if ($updater->rollback()) {
-                $output->writeln('<info>Success!</info>');
-            } else {
+            if (!$updater->rollback()) {
                 $output->writeln('<error>Before rollback you need to perform at least one update.</error>');
+                return;
             }
+
+            $output->writeln('<info>Success!</info>');
         } catch (\Exception $e) {
             $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
         }

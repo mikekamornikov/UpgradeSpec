@@ -1,12 +1,12 @@
-var gulp = require('gulp');
-var phpspec = require('gulp-phpspec');
-var notify = require('gulp-notify');
+var gulp = require("gulp");
+var phpspec = require("gulp-phpspec");
+var notify = require("gulp-notify");
 
-gulp.task('test', function() {
-    var options = { clear: true, formatter: 'pretty', verbose: 'v', notify: true };
-    gulp.src('spec/**/*.php')
-        .pipe(phpspec('', options))
-        .on('error', notify.onError({
+gulp.task("test", function() {
+    var options = { clear: true, formatter: "pretty", verbose: "v", notify: true };
+    gulp.src("spec/**/*.php")
+        .pipe(phpspec("", options))
+        .on("error", notify.onError({
             title: "Error",
             message: "Your tests failed!"
         }))
@@ -16,8 +16,8 @@ gulp.task('test', function() {
         }));
 });
 
-gulp.task('watch', function() {
-    gulp.watch(['spec/**/*.php', 'src/**/*.php'], ['test']);
+gulp.task("watch", function() {
+    gulp.watch(["spec/**/*.php", "src/**/*.php"], ["test"]);
 });
 
-gulp.task('default', ['test', 'watch']);
+gulp.task("default", ["test", "watch"]);
