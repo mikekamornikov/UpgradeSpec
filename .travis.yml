@@ -19,8 +19,7 @@ matrix:
     - php: hhvm
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_7bbf7fef4d44_key -iv $encrypted_7bbf7fef4d44_iv
-    -in .travis/phar-private.pem.enc -out .travis/phar-private.pem -d
+  - openssl aes-256-cbc -K $encrypted_7bbf7fef4d44_key -iv $encrypted_7bbf7fef4d44_iv -in .travis/phar-private.pem.enc -out .travis/phar-private.pem -d
   - stty cols 120
   - if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then phpenv config-rm xdebug.ini; fi
 
