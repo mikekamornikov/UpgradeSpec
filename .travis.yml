@@ -3,39 +3,38 @@ language: php
 
 cache:
   directories:
-  - $HOME/.composer/cache
-  - vendor
+    - $HOME/.composer/cache
+    - vendor
 
 matrix:
   fast_finish: true
   include:
-  - php: 5.6
-    env:
-    - EXECUTE_DEPLOYMENT=true
-  - php: 7.1
-  - php: hhvm-3.15
-    sudo: required
-    dist: trusty
-    group: edge
+    - php: 5.6
+      env:
+      - EXECUTE_DEPLOYMENT=true
+    - php: 7.1
+    - php: hhvm-3.15
+      sudo: required
+      dist: trusty
+      group: edge
   allow_failures:
   - php: hhvm
 
 before_install:
-- stty cols 120
-- if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then phpenv config-rm xdebug.ini; fi
+  - stty cols 120
+  - if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then phpenv config-rm xdebug.ini; fi
 
 install:
-- composer install --no-interaction
-
+  - composer install --no-interaction
 script:
-- ./vendor/bin/phpspec run --format=pretty
+  - ./vendor/bin/phpspec run --format=pretty
 
 notifications:
   email: false
   hipchat:
     rooms:
-      secure: irpC6nHbE9y7H8u07ld0V0mxvUkOZ7p677KYA/bqS9qF2ADsTYIStK8aIi1CINF36r0/cNxgAQjZPyl/FssKq+yazUv93sEaFYRU0tfrdR19VmeaZiVVraJ8PCBrJ0WWzIU2mNLbuLuIZ2hLaMSGVsIkB0mqaHA5MzsZE9kp2iDi2dygigWpnfu5nk3eHlqqPSA5SX3E48RE94sSX2xIWqRKMniJm6AM0OFcmfcG7YdbJpU+M4qbKwuEeIywL+qZMNq5zp0GynrzoyZCniusbrFDPSiCY6UTmjMHdLMwL396ixtaBi9hAKy39XV6Db4pwyPcfoxili4A/pjCWdqh7UIZI817eYpU6HmZEs/cbyRX0NBiCW+2bLSMBxjBGstdcQVOZvNHxPnZf+ggEXA/6a4InCd3jmi9GmAOR3vnsFCwjrFshEO6QPXOGZAL65ZuXZOarPAXR8kdokyzG8DHnJDa/kFEq6NjX7u3hd6K19D2/07HjMl6fQuzJu71LTNJGR3KTM3jdFpnG6DztAu966TLP6u92UVNp1QIRSw11mQvfesLsVNxKuTE4igZNaekcWqQ41y1oZAbQAdqscp9e7C+BaSATpR7KTaL7qYe07RIueQvZP+Y5VCbh6zjAmQvHj+K4j7kxjmoJmgjqbYH4n6ekLnnlollq1qmZZa6K5o=
+      secure: b04ros2vb9zz9cLypIEeMTs4uTp2vdvGesIzZIq0xk/aByuptVkgB0/FWS1A9M2XbEdtKkL+E0ZnmbOxxGir6Tt9knl0Cgsrfu/dJFGpmYVjBKM7zLrSK7n0LR5Mx3MW3Knr4YdAaXz2Ke6SepE2ENiDAvUCbjEt1v+DOat+wS9TGu27nsMZbAGpuBKwEgejv6RlOhlETOzm5lfS3/owinR83ktbJZdO9QbYNFGS/51bkkwkU9y4NmywAoCNO2th9hFFgJD4GJHNGg6L/efCnwv5mU71MxmzQZBwxHx8F4M23+aRODxfJ0Wbkow2syhYdd4ptNObgrf7JIbITsZ/IW+M8c0AkCLn0gmFkJNdw1RVDOuGS0lQMWzOg7qQ644VHVQ18m5U2/uhyL5YsAANtvxOvWzVgRaxfaxxGeR0DtxaBLXKerPMMZ41oxwf9iLeUlVM5yt9htPtduWGA1E8Zyz5Ru06x+A9BfKDrPEC3WeoX9h/xziceVzhsk6rHfs9w5NNft8wtj/85jGPmyqJ3XUUBIYvwegv1GVXr04rm4cetFv0fIZbZ/ynHOqvEhh433UaxHrHhE3By0YJ7nRYeZMwtPYhAiCvezl0vI8EF1kJoufplOqX9XNS5Mkz0RM81tFs1PnZOXuuVaXWCwUcZFSsCvYY3WEsqAsxfgtXY8I=
     template:
-    - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message} (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
+      - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message} (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
     format: html
     notify: true
