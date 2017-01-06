@@ -1,4 +1,5 @@
 # SugarCRM upgrade spec generator
+[![Latest Stable Version](https://poser.pugx.org/mikekamornikov/uspec/v/stable)](https://packagist.org/packages/mikekamornikov/uspec)
 [![Build Status](https://travis-ci.org/mikekamornikov/UpgradeSpec.svg?branch=master)](https://travis-ci.org/mikekamornikov/UpgradeSpec)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/74152ef7-7e2d-4668-90a5-af33e40eddec/mini.png)](https://insight.sensiolabs.com/projects/74152ef7-7e2d-4668-90a5-af33e40eddec)
 
