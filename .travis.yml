@@ -10,8 +10,6 @@ matrix:
   fast_finish: true
   include:
     - php: 5.6
-      env:
-      - EXECUTE_DEPLOYMENT=true
     - php: 7.1
     - php: hhvm-3.15
       sudo: required
@@ -48,7 +46,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    condition: $EXECUTE_DEPLOYMENT = true
+    php: 5.6
 
 notifications:
   email: false
