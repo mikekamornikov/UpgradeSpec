@@ -44,7 +44,7 @@ class SelfUpdateCommand extends Command
             }
 
             $this->performCleanup();
-            
+
             $output->writeln(sprintf('<info>Successfully updated from "%s" to "%s"</info>',
                 $updater->getOldVersion(),
                 $updater->getNewVersion()

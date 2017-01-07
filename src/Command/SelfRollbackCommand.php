@@ -49,7 +49,7 @@ class SelfRollbackCommand extends Command
     {
         $updater = new Updater();
         $updater->setRestorePath(sys_get_temp_dir() . '/uspec-old.phar');
-        
+
         return $updater;
     }
 }
