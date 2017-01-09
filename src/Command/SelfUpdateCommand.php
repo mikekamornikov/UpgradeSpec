@@ -2,17 +2,33 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
-use Symfony\Component\Console\Command\Command;
+use Sugarcrm\UpgradeSpec\Updater\UpdaterInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Humbug\SelfUpdate\Updater;
-use Humbug\SelfUpdate\Strategy\GithubStrategy;
 
 class SelfUpdateCommand extends Command
 {
     /**
-     *  Configure the command
+     * @var Updater
+     */
+    private $updater;
+
+    /**
+     * SelfUpdateCommand constructor.
+     * @param null $name
+     * @param UpdaterInterface $updater
+     */
+    public function __construct($name = null, UpdaterInterface $updater)
+    {
+        parent::__construct($name);
+
+        $this->updater = $updater;
+    }
+
+
+    /**
+     * Configure the command
      */
     protected function configure()
     {
@@ -21,77 +37,57 @@ class SelfUpdateCommand extends Command
             ->addOption('stability', 's',
                 InputOption::VALUE_OPTIONAL,
                 'Release stability (stable, unstable, any)',
-                GithubStrategy::ANY
+                UpdaterInterface::STABILITY_ANY
             );
     }
+
 
     /**
      * Execute the command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            $this->validateInput($input);
-            $updater = $this->prepareUpdater($input->getOption('stability'));
+        if (!$this->updater->hasUpdate()) {
+            $output->writeln('<info>No update needed!</info>');
 
-            if (!$updater->update()) {
-                $output->writeln('<info>No update needed!</info>');
-                return;
-            }
-
-            $this->performCleanup();
-
-            $output->writeln(sprintf('<info>Successfully updated from "%s" to "%s"</info>',
-                $updater->getOldVersion(),
-                $updater->getNewVersion()
-            ));
-        } catch (\Exception $e) {
-            $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+            return 0;
         }
+
+        $this->updater->update($input->getOption('stability'));
+
+        $output->writeln(sprintf('<info>Successfully updated from "%s" to "%s"</info>',
+            $this->updater->getOldVersion(),
+            $this->updater->getNewVersion()
+        ));
+
+        return 0;
     }
 
     /**
-     * Prepares PHAR updater instance for update operation
-     * @param $stability
-     * @return Updater
-     */
-    private function prepareUpdater($stability)
-    {
-        $version = $this->getApplication()->getVersion();
-
-        $updater = new Updater();
-        $updater->setStrategy(Updater::STRATEGY_GITHUB);
-        $updater->getStrategy()->setPackageName('mikekamornikov/uspec');
-        $updater->getStrategy()->setPharName('uspec.phar');
-        $updater->getStrategy()->setCurrentLocalVersion($version);
-        $updater->getStrategy()->setStability($stability);
-        $updater->setBackupPath(sys_get_temp_dir() . '/uspec-old.phar');
-
-        return $updater;
-    }
-
-    /**
-     * Validates user's input
+     * Validate user input
+     *
      * @param InputInterface $input
      */
-    private function validateInput(InputInterface $input)
+    protected function validateInput(InputInterface $input)
     {
-        $stability = $input->getOption('stability');
-        if (!in_array($stability, [GithubStrategy::STABLE, GithubStrategy::UNSTABLE, GithubStrategy::ANY])) {
-            throw new \RuntimeException('Invalid "stability" option value');
-        }
+        $this->validateStability($input->getOption('stability'));
     }
 
     /**
-     * Removes PHAR update leftovers
+     * @param $stability
      */
-    private function performCleanup()
+    private function validateStability($stability)
     {
-        $tmpKeyFile = sprintf('%s/%s.phar.temp.pubkey', $this->getTempDirectory(), $this->getLocalPharFileBasename());
-        @unlink($tmpKeyFile);
+        if (!in_array($stability, [
+            UpdaterInterface::STABILITY_STABLE,
+            UpdaterInterface::STABILITY_UNSTABLE,
+            UpdaterInterface::STABILITY_ANY
+        ])) {
+            throw new \RuntimeException('Invalid "stability" option value');
+        }
     }
 }

@@ -2,15 +2,31 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
-use Humbug\SelfUpdate\Updater;
-use Symfony\Component\Console\Command\Command;
+use Sugarcrm\UpgradeSpec\Updater\UpdaterInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SelfRollbackCommand extends Command
 {
     /**
-     *  Configure the command
+     * @var Updater
+     */
+    private $updater;
+
+    /**
+     * SelfRollbackCommand constructor.
+     * @param null $name
+     * @param UpdaterInterface $updater
+     */
+    public function __construct($name = null, UpdaterInterface $updater)
+    {
+        parent::__construct($name);
+
+        $this->updater = $updater;
+    }
+    
+    /**
+     * Configure the command
      */
     protected function configure()
     {
@@ -23,33 +39,18 @@ class SelfRollbackCommand extends Command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $updater = $this->prepareUpdater();
+        if (!$this->updater->rollback()) {
+            $output->writeln('<error>Before rollback you need to perform at least one update.</error>');
 
-        try {
-            if (!$updater->rollback()) {
-                $output->writeln('<error>Before rollback you need to perform at least one update.</error>');
-                return;
-            }
-
-            $output->writeln('<info>Success!</info>');
-        } catch (\Exception $e) {
-            $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+            return 1;
         }
-    }
 
-    /**
-     * Prepares PHAR updater instance for rollback operation
-     * @return Updater
-     */
-    private function prepareUpdater()
-    {
-        $updater = new Updater();
-        $updater->setRestorePath(sys_get_temp_dir() . '/uspec-old.phar');
+        $output->writeln('<info>Success!</info>');
 
-        return $updater;
+        return 0;
     }
 }

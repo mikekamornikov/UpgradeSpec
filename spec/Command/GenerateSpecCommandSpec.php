@@ -2,6 +2,7 @@
 
 namespace spec\Sugarcrm\UpgradeSpec\Command;
 
+use Prophecy\Argument;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,6 +10,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateSpecCommandSpec extends ObjectBehavior
 {
+    function let(InputInterface $input)
+    {
+        $input->bind(Argument::cetera())->willReturn();
+        $input->hasArgument(Argument::any())->willReturn();
+        $input->isInteractive()->willReturn(false);
+        $input->validate()->willReturn();
+        $input->getArgument('path')->willReturn('/a/path/to/existing/sugarcrm/build');
+        $input->getArgument('version')->willReturn('7.8');
+    }
+    
     function it_is_initializable()
     {
         $this->shouldHaveType(GenerateSpecCommand::class);
@@ -29,7 +40,7 @@ class GenerateSpecCommandSpec extends ObjectBehavior
 //
 //    }
     
-    function it_outputs_done_on_success(InputInterface $input, OutputInterface $output)
+    function it_generates_upgrade_spec(InputInterface $input, OutputInterface $output)
     {
         $this->run($input, $output);
         $output->writeln('<info>Done</info>')->shouldHaveBeenCalled();

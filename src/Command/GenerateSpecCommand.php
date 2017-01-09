@@ -2,7 +2,6 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,7 +26,7 @@ class GenerateSpecCommand extends Command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -36,5 +35,7 @@ class GenerateSpecCommand extends Command
 
         $output->writeln(sprintf('<info>Generating upgrade spec for "%s" (to version "%s")</info>', $path, $version));
         $output->writeln('<info>Done</info>');
+
+        return 0;
     }
 }

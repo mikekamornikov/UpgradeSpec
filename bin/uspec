@@ -4,14 +4,4 @@
 
 require '../vendor/autoload.php';
 
-use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
-use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
-use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
-use Symfony\Component\Console\Application;
-
-$app = new Application('SugarCRM upgrade spec generator', '@package_version@');
-
-$app->add(new GenerateSpecCommand);
-$app->add(new SelfUpdateCommand);
-$app->add(new SelfRollbackCommand);
-$app->run();
+(new Sugarcrm\UpgradeSpec\App)->run();
