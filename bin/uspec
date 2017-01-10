@@ -2,6 +2,24 @@
 
 <?php
 
-require __DIR__.'/../vendor/autoload.php';
+if (PHP_SAPI !== 'cli') {
+    echo 'Warning: uspec should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI' . PHP_EOL;
+}
+
+$autoloaders = [
+    // phar context
+    '../vendor/autoload.php',
+    // application context
+    __DIR__ . '/../vendor/autoload.php',
+    // vendor context
+    __DIR__ . '/../../../autoload.php'
+];
+
+foreach ($autoloaders as $file) {
+    if (file_exists($file)) {
+        require_once $file;
+        break;
+    }
+}
 
 (new Sugarcrm\UpgradeSpec\App)->run();
