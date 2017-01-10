@@ -1,8 +1,12 @@
 {
-  "dependencies": {
+  "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-notify": "^2.2.0",
     "gulp-phpspec": "^0.5.4"
   },
-  "devDependencies": {}
+  "scripts": {
+    "default": "gulp",
+    "watch": "gulp watch",
+    "test": "gulp test"
+  }
 }
