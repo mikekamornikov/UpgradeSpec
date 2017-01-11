@@ -13,22 +13,53 @@ use Symfony\Component\Console\Application;
 
 class App
 {
-    const VERSION = '@package_version@';
     const PACKAGE_NAME = 'mikekamornikov/uspec';
     const NAME = 'uspec';
+    
+    /**
+     * @var Application
+     */
+    private $app;
+
+    /**
+     * App constructor.
+     * @param $name
+     * @param $version
+     */
+    public function __construct($name, $version)
+    {
+        $this->app = new Application($name, $version);
+        $this->init();
+    }
 
     /**
      * Application entry point
      */
     public function run()
     {
-        $app = new Application('SugarCRM upgrade spec generator', self::VERSION);
+        $this->app->run();
+    }
 
-        $app->add(new GenerateSpecCommand);
-        $app->add(new SelfUpdateCommand(null, $this->getUpdaterObject()));
-        $app->add(new SelfRollbackCommand(null, $this->getUpdaterObject()));
+    /**
+     * Configure commands
+     */
+    private function init()
+    {
+        $this->app->add(new GenerateSpecCommand);
 
-        $app->run();
+        if ($this->isUpdateAvailable()) {
+            $this->app->add(new SelfUpdateCommand(null, $this->getUpdaterObject()));
+            $this->app->add(new SelfRollbackCommand(null, $this->getUpdaterObject()));
+        }
+    }
+
+    /**
+     * Defines if current execution context supports self updates
+     * @return string
+     */
+    private function isUpdateAvailable()
+    {
+        return DEV_MODE || \Phar::running();
     }
 
     /**
@@ -39,7 +70,7 @@ class App
         $strategy = new GithubStrategy();
         $strategy->setPackageName(self::PACKAGE_NAME);
         $strategy->setPharName(self::NAME . '.phar');
-        $strategy->setCurrentLocalVersion(self::VERSION);
+        $strategy->setCurrentLocalVersion($this->app->getVersion());
 
         $humbugUpdater = new HumbugUpdater();
         $humbugUpdater->setStrategyObject($strategy);
