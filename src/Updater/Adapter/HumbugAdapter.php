@@ -35,7 +35,7 @@ class HumbugAdapter implements AdapterInterface
      */
     public function getOldVersion()
     {
-        return $this->updater->getStrategy()->getOldVersion();
+        return $this->updater->getOldVersion();
     }
 
     /**
@@ -43,7 +43,7 @@ class HumbugAdapter implements AdapterInterface
      */
     public function getNewVersion()
     {
-        return $this->updater->getStrategy()->getNewVersion();
+        return $this->updater->getNewVersion();
     }
 
     /**
@@ -94,10 +94,10 @@ class HumbugAdapter implements AdapterInterface
      */
     private function performCleanup()
     {
-        $tmpKeyFile = sprintf('%s/%s.phar.temp.pubkey',
-            $this->updater->getTempDirectory(),
-            $this->updater->getLocalPharFileBasename()
-        );
-        @unlink($tmpKeyFile);
+        $directory = $this->updater->getTempDirectory();
+        $fileBasename = $this->updater->getLocalPharFileBasename();
+        
+        @unlink(sprintf('%s/%s.phar.temp.pubkey', $directory, $fileBasename));
+        @unlink(sprintf('%s/%s.temp.pubkey', $directory, $fileBasename));
     }
 }
