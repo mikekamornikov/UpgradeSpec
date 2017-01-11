@@ -4,20 +4,18 @@
 
 if (PHP_SAPI !== 'cli') {
     echo 'Warning: uspec should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI' . PHP_EOL;
+    exit(1);
 }
 
-$autoloaders = [
-    // phar context
-    '../vendor/autoload.php',
-    // application context
-    __DIR__ . '/../vendor/autoload.php',
-    // vendor context
-    __DIR__ . '/../../../autoload.php'
+// application or vendor context
+$autoload = [
+    __DIR__ . '/../vendor/autoload.php', // application bin or phar
+    __DIR__ . '/../autoload.php',        // vendor bin
+    __DIR__ . '/../../../autoload.php'   // vendor
 ];
-
-foreach ($autoloaders as $file) {
+foreach ($autoload as $file) {
     if (file_exists($file)) {
-        require_once $file;
+        require $file;
         break;
     }
 }
