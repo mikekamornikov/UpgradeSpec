@@ -11,11 +11,11 @@ It's a CLI tool responsible for generation of simple step by step upgrade guide 
 
 - Download [the latest stable uspec executable](https://github.com/mikekamornikov/UpgradeSpec/releases) (you need both `phar` and `pubkey` files to be able to automatically update to the latest version later)
 - `chmod +x uspec.phar`
-- Run `uspec.phar` (`./uspec.phar`)
+- Run `uspec.phar`
 
 ### Generate upgrade spec
 ```text
-./uspec.phar generate:spec [options] [--] <path> [<version>]
+$ uspec.phar generate:spec [options] [--] <path> [<version>]
 
 Arguments:
   path                  Path to SugarCRM build we are going to upgrade
@@ -27,7 +27,7 @@ Options:
 
 ### Update to the latest version
 ```text
-./uspec.phar self:update [options]
+$ uspec.phar self:update [options]
 
 Options:
   -s, --stability[=STABILITY]  Release stability (stable, unstable, any) [default: "any"]
@@ -35,57 +35,61 @@ Options:
 
 ### Rollback to previously used version
 ```text
-./uspec.phar self:rollback
+$ uspec.phar self:rollback
 ```
 
 ## Development
 
 ### Install dev dependencies
 ```text
-composer install
-npm install yarn -g
-yarn
+$ composer install
+$ npm install yarn -g
+$ yarn
 ```
 
 ### Build PHAR
 ```text
-# leave just required dependencies
-composer install --no-dev
+$ composer install --no-dev
 
-curl -LSs https://box-project.github.io/box2/installer.php | php
-php -d phar.readonly=0 box.phar build -vv
+$ curl -LSs https://box-project.github.io/box2/installer.php | php
+$ php -d phar.readonly=0 box.phar build -vv
 ```
 
 #### Private and public keys
 **(!!!)** You'll need openssl private key (`.travis/phar-private.pem`) to build phar. Public key (`uspec.phar.pubkey`) is also created during `box build` run and is used to verify self updates. Currently Travis CI is responsible for build generation and deployment. It uses encoded version of my private key (`.travis/phar-private.pem.enc`).
 ```text
-# this one asks for password
-openssl genrsa -des3 -out phar-private.pem 4096
+$ openssl genrsa -des3 -out phar-private.pem 4096
+$ cp phar-private.pem phar-private.pem.passphrase-protected
 
-cp phar-private.pem phar-private.pem.passphrase-protected
+$ openssl rsa -in phar-private.pem -out phar-private-nopassphrase.pem
+$ cp phar-private-nopassphrase.pem phar-private.pem
 
-# get rid of password
-openssl rsa -in phar-private.pem -out phar-private-nopassphrase.pem
-cp phar-private-nopassphrase.pem phar-private.pem
+$ rm phar-private.pem.passphrase-protected phar-private-nopassphrase.pem
 
-# if you don't need copies
-rm phar-private.pem.passphrase-protected phar-private-nopassphrase.pem
-
-mv phar-private.pem .travis/
+$ mv phar-private.pem .travis/
 ```
 See [Secure PHAR Automation](https://mwop.net/blog/2015-12-14-secure-phar-automation.html) for detailed guide.
+
+### Dev mode
+Update / rollback functionality is available in phar context and dev mode only. It can be enabled via `USPEC_DEV_MODE` env variable or `DEV_MODE` internal constant.
+
+```text
+$ export USPEC_DEV_MODE=1 && bin/uspec list self --raw                                                                                                 1 ↵
+
+self:rollback   Rollback uspec update
+self:update     Update uspec to the latest version
+```
 
 ### Tests
 We use [PHPSpec](http://www.phpspec.net/en/stable/) for spec BDD and unit tests. 
 ```text
-yarn run test
+$ yarn run test
 ```
 
-## Troubleshooting
-```text
-TLS negotiation issues:
+## TLS negotiation issues
 Download http://curl.haxx.se/ca/cacert.pem and set openssl.cafile=/path/to/cacert.pem in your php.ini file.
 
 Alternatively you can run uspec like this:
-php -d openssl.cafile=/path/to/cacert.pem /path/to/uspec.phar
+```text
+$ php -d openssl.cafile=/path/to/cacert.pem uspec.phar
 ```
