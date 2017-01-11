@@ -24,5 +24,5 @@
     "phpspec/phpspec": "^3.2"
   },
 
-  "bin": ["bin/uspec"]
+  "bin": ["bin/uspec", "bin/uspec.pubkey"]
 }
