@@ -11,6 +11,10 @@ class Utils
      */
     public function getBuildVersion($path)
     {
+        if (!defined('sugarEntry')) {
+            define('sugarEntry', true);
+        }
+
         require realpath($path) . '/sugar_version.php';
 
         return $sugar_version;
