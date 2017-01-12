@@ -1,19 +1,20 @@
-var gulp = require("gulp");
-var phpspec = require("gulp-phpspec");
-var notify = require("gulp-notify");
+var gulp = require("gulp"),
+    phpspec = require("gulp-phpspec"),
+    notify = require("gulp-notify"),
+    _ = require('lodash');
 
 gulp.task("test", function() {
-    var options = { clear: true, formatter: "pretty", verbose: "v", notify: true };
-    gulp.src("spec/**/*.php")
+    var options = {
+        clear: true,
+        formatter: "pretty",
+        verbose: "v",
+        notify: true,
+        noInteraction: true
+    };
+    gulp.src("phpspec.yml")
         .pipe(phpspec("", options))
-        .on("error", notify.onError({
-            title: "Error",
-            message: "Your tests failed!"
-        }))
-        .pipe(notify({
-            title: "Success",
-            message: "All tests passed!"
-        }));
+        .on("error", notify.onError(testNotification("fail", "phpspec")))
+        .pipe(notify(testNotification('pass', 'phpspec')));;
 });
 
 gulp.task("watch", function() {
@@ -21,3 +22,11 @@ gulp.task("watch", function() {
 });
 
 gulp.task("default", ["test", "watch"]);
+
+function testNotification(status, pluginName, override) {
+    return _.merge({
+        title:   ( status == 'pass' ) ? 'Tests Passed' : 'Tests Failed',
+        message: ( status == 'pass' ) ? '\n\nAll tests have passed!\n\n' : '\n\nOne or more tests failed...\n\n',
+        icon:    __dirname + '/node_modules/gulp-' + pluginName +'/assets/test-' + status + '.png'
+    }, override);;
+}
