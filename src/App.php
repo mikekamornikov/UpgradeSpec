@@ -48,7 +48,10 @@ class App
      */
     private function init()
     {
-        $this->app->add(new GenerateSpecCommand(null, new Generator(new Configurator(), new SpecElementGenerator())));
+        $this->app->add(new GenerateSpecCommand(null,
+            new Generator(new Configurator(), new SpecElementGenerator())),
+            new Utils
+        );
 
         if ($this->isUpdateAvailable()) {
             $this->app->add(new SelfUpdateCommand(null, $this->getUpdaterObject()));

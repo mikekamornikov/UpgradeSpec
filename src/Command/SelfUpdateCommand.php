@@ -87,7 +87,7 @@ class SelfUpdateCommand extends Command
             Updater::STABILITY_UNSTABLE,
             Updater::STABILITY_ANY
         ])) {
-            throw new \RuntimeException('Invalid "stability" option value');
+            throw new \InvalidArgumentException('Invalid "stability" option value');
         }
     }
 }

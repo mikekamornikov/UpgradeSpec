@@ -3,6 +3,7 @@
 namespace Sugarcrm\UpgradeSpec\Command;
 
 use Sugarcrm\UpgradeSpec\Generator\Generator;
+use Sugarcrm\UpgradeSpec\Utils;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,15 +17,21 @@ class GenerateSpecCommand extends Command
     private $specGenerator;
 
     /**
+     * @var Utils
+     */
+    private $utils;
+
+    /**
      * GenerateSpecCommand constructor.
      * @param null $name
      * @param Generator $specGenerator
      */
-    public function __construct($name = null, Generator $specGenerator)
+    public function __construct($name = null, Generator $specGenerator, Utils $utils)
     {
         parent::__construct($name);
 
         $this->specGenerator = $specGenerator;
+        $this->utils = $utils;
     }
 
     /**
@@ -48,13 +55,22 @@ class GenerateSpecCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // TODO: change "latest" to the real latest available version
         $upgradeTo = $input->getArgument('version') ?: 'latest';
         $path = $input->getArgument('path');
-        $buildVersion = $this->getBuildVersion($path);
+        $buildVersion = $this->utils->getBuildVersion($path);
+
+        $this->validateVersion($buildVersion, $upgradeTo);
 
         $output->writeln(sprintf('<comment>Generating upgrade spec for "%s" (to version "%s") ...</comment>', $path, $upgradeTo));
 
-        $output->writeln(sprintf('<info>%s</info>', $this->specGenerator->generate($buildVersion, $upgradeTo)));
+        $spec = $this->specGenerator->generate($buildVersion, $upgradeTo);
+
+        if ($input->hasOption('dump')) {
+            $this->utils->saveToFile(sprintf('upgrade_%s_to_%s.md', $buildVersion, $upgradeTo), $spec);
+        } else {
+            $output->writeln(sprintf('<info>%s</info>', $spec));
+        }
 
         $output->writeln('<comment>Done</comment>');
 
@@ -62,12 +78,32 @@ class GenerateSpecCommand extends Command
     }
 
     /**
-     * @param $path
-     * @return string
+     * @param InputInterface $input
      */
-    private function getBuildVersion($path)
+    protected function validateInput(InputInterface $input)
     {
-        // TODO: implement the logic and move it to appropriate place
-        return '7.5';
+        $this->validatePath($input->getArgument('path'));
+    }
+
+    /**
+     * @param $path
+     */
+    private function validatePath($path)
+    {
+        if (!$this->utils->isSugarcrmBuild($path)) {
+            throw new \InvalidArgumentException('Invalid "path" argument value');
+        }
+    }
+
+    /**
+     * @param $buildVersion
+     * @param $upgradeTo
+     */
+    private function validateVersion($buildVersion, $upgradeTo)
+    {
+        // TODO: use composer/semver to validate versions
+        if ($upgradeTo !== 'latest' && version_compare($buildVersion, $upgradeTo, '>=')) {
+            throw new \InvalidArgumentException('Invalid "version" argument value');
+        }
     }
 }
