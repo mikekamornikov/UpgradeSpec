@@ -25,6 +25,7 @@ class GenerateSpecCommand extends Command
      * GenerateSpecCommand constructor.
      * @param null $name
      * @param Generator $specGenerator
+     * @param Utils $utils
      */
     public function __construct($name = null, Generator $specGenerator, Utils $utils)
     {
