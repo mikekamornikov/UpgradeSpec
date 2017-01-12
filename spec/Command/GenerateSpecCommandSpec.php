@@ -55,7 +55,8 @@ class GenerateSpecCommandSpec extends ObjectBehavior
 
         $this->run($input, $output);
 
-        $generator->generate(Argument::any(), 'latest')->shouldBeCalled();
+        $latest = '7.8';
+        $generator->generate(Argument::any(), $latest)->shouldBeCalled();
     }
 
     function it_generates_upgrade_spec(InputInterface $input, OutputInterface $output)

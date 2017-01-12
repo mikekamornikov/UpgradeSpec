@@ -55,19 +55,18 @@ class GenerateSpecCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // TODO: change "latest" to the real latest available version
-        $upgradeTo = $input->getArgument('version') ?: 'latest';
         $path = $input->getArgument('path');
-        $buildVersion = $this->utils->getBuildVersion($path);
+        $version = $this->utils->getBuildVersion($path);
 
-        $this->validateVersion($buildVersion, $upgradeTo);
+        // TODO: get real "latest" version in the runtime
+        $upgradeTo = $input->getArgument('version') ?: '7.8';
 
         $output->writeln(sprintf('<comment>Generating upgrade spec for "%s" (to version "%s") ...</comment>', $path, $upgradeTo));
 
-        $spec = $this->specGenerator->generate($buildVersion, $upgradeTo);
+        $spec = $this->specGenerator->generate($version, $upgradeTo);
 
         if ($input->hasOption('dump')) {
-            $this->utils->saveToFile(sprintf('upgrade_%s_to_%s.md', $buildVersion, $upgradeTo), $spec);
+            $this->utils->saveToFile(sprintf('upgrade_%s_to_%s.md', $version, $upgradeTo), $spec);
         } else {
             $output->writeln(sprintf('<info>%s</info>', $spec));
         }
@@ -82,7 +81,11 @@ class GenerateSpecCommand extends Command
      */
     protected function validateInput(InputInterface $input)
     {
-        $this->validatePath($input->getArgument('path'));
+        $path = $input->getArgument('path');
+        $version = $input->getArgument('version');
+
+        $this->validatePath($path);
+        $this->validateVersion($this->utils->getBuildVersion($path), $version);
     }
 
     /**
@@ -102,7 +105,7 @@ class GenerateSpecCommand extends Command
     private function validateVersion($buildVersion, $upgradeTo)
     {
         // TODO: use composer/semver to validate versions
-        if ($upgradeTo !== 'latest' && version_compare($buildVersion, $upgradeTo, '>=')) {
+        if ($upgradeTo && version_compare($buildVersion, $upgradeTo, '>=')) {
             throw new \InvalidArgumentException('Invalid "version" argument value');
         }
     }
