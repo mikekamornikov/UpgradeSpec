@@ -5,8 +5,12 @@ namespace Sugarcrm\UpgradeSpec\Updater;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\AdapterInterface;
 use Sugarcrm\UpgradeSpec\Updater\Exception\UpdaterException;
 
-class Updater implements UpdaterInterface
+class Updater
 {
+    const STABILITY_STABLE = 'stable';
+    const STABILITY_UNSTABLE = 'unstable';
+    const STABILITY_ANY = 'any';
+
     /**
      * @var AdapterInterface
      */
@@ -55,7 +59,7 @@ class Updater implements UpdaterInterface
      * @return bool
      * @throws UpdaterException
      */
-    public function update($stability = UpdaterInterface::STABILITY_ANY)
+    public function update($stability = self::STABILITY_ANY)
     {
         try {
             $this->validateStability($stability);

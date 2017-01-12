@@ -2,7 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
-use Sugarcrm\UpgradeSpec\Updater\UpdaterInterface;
+use Sugarcrm\UpgradeSpec\Updater\Updater;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,9 +16,9 @@ class SelfRollbackCommand extends Command
     /**
      * SelfRollbackCommand constructor.
      * @param null $name
-     * @param UpdaterInterface $updater
+     * @param Updater $updater
      */
-    public function __construct($name = null, UpdaterInterface $updater)
+    public function __construct($name = null, Updater $updater)
     {
         parent::__construct($name);
 

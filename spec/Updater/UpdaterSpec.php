@@ -5,7 +5,7 @@ namespace spec\Sugarcrm\UpgradeSpec\Updater;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\AdapterInterface;
 use Sugarcrm\UpgradeSpec\Updater\Exception\UpdaterException;
 use PhpSpec\ObjectBehavior;
-use Sugarcrm\UpgradeSpec\Updater\UpdaterInterface;
+use Sugarcrm\UpgradeSpec\Updater\Updater;
 
 class UpdaterSpec extends ObjectBehavior
 {
@@ -16,7 +16,7 @@ class UpdaterSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(UpdaterInterface::class);
+        $this->shouldHaveType(Updater::class);
     }
 
     function it_checks_for_available_updates(AdapterInterface $adapter)
@@ -43,7 +43,7 @@ class UpdaterSpec extends ObjectBehavior
 
     function it_updates_application_to_new_version(AdapterInterface $adapter)
     {
-        $stability = UpdaterInterface::STABILITY_ANY;
+        $stability = Updater::STABILITY_ANY;
         $adapter->update($stability)->shouldBeCalled();
         $adapter->update($stability)->willReturn(true);
         $this->update($stability)->shouldReturn(true);

@@ -3,8 +3,8 @@
 namespace Sugarcrm\UpgradeSpec\Updater\Adapter;
 
 use Humbug\SelfUpdate\Strategy\GithubStrategy;
-use Humbug\SelfUpdate\Updater;
-use Sugarcrm\UpgradeSpec\Updater\UpdaterInterface;
+use Humbug\SelfUpdate\Updater as HumbugUpdater;
+use Sugarcrm\UpgradeSpec\Updater\Updater;
 
 class HumbugAdapter implements AdapterInterface
 {
@@ -15,9 +15,9 @@ class HumbugAdapter implements AdapterInterface
 
     /**
      * HumbugAdapter constructor.
-     * @param Updater $updater
+     * @param HumbugUpdater $updater
      */
-    public function __construct(Updater $updater)
+    public function __construct(HumbugUpdater $updater)
     {
         $this->updater = $updater;
     }
@@ -50,7 +50,7 @@ class HumbugAdapter implements AdapterInterface
      * @param string $stability
      * @return bool
      */
-    public function update($stability = UpdaterInterface::STABILITY_ANY)
+    public function update($stability = Updater::STABILITY_ANY)
     {
         $strategy = $this->updater->getStrategy();
         if ($strategy instanceof GithubStrategy) {
@@ -78,11 +78,11 @@ class HumbugAdapter implements AdapterInterface
      */
     private function getGithubStability($stability)
     {
-        if ($stability == UpdaterInterface::STABILITY_STABLE) {
+        if ($stability == Updater::STABILITY_STABLE) {
             return GithubStrategy::STABLE;
         }
 
-        if ($stability == UpdaterInterface::STABILITY_UNSTABLE) {
+        if ($stability == Updater::STABILITY_UNSTABLE) {
             return GithubStrategy::UNSTABLE;
         }
 

@@ -2,7 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Updater\Adapter;
 
-use Sugarcrm\UpgradeSpec\Updater\UpdaterInterface;
+use Sugarcrm\UpgradeSpec\Updater\Updater;
 
 interface AdapterInterface
 {
@@ -12,7 +12,7 @@ interface AdapterInterface
 
     public function getNewVersion();
 
-    public function update($stability = UpdaterInterface::STABILITY_ANY);
+    public function update($stability = Updater::STABILITY_ANY);
 
     public function rollback();
 }

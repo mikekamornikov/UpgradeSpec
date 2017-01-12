@@ -2,7 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
-use Sugarcrm\UpgradeSpec\Updater\UpdaterInterface;
+use Sugarcrm\UpgradeSpec\Updater\Updater;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,9 +17,9 @@ class SelfUpdateCommand extends Command
     /**
      * SelfUpdateCommand constructor.
      * @param null $name
-     * @param UpdaterInterface $updater
+     * @param Updater $updater
      */
-    public function __construct($name = null, UpdaterInterface $updater)
+    public function __construct($name = null, Updater $updater)
     {
         parent::__construct($name);
 
@@ -37,7 +37,7 @@ class SelfUpdateCommand extends Command
             ->addOption('stability', 's',
                 InputOption::VALUE_OPTIONAL,
                 'Release stability (stable, unstable, any)',
-                UpdaterInterface::STABILITY_ANY
+                Updater::STABILITY_ANY
             );
     }
 
@@ -83,9 +83,9 @@ class SelfUpdateCommand extends Command
     private function validateStability($stability)
     {
         if (!in_array($stability, [
-            UpdaterInterface::STABILITY_STABLE,
-            UpdaterInterface::STABILITY_UNSTABLE,
-            UpdaterInterface::STABILITY_ANY
+            Updater::STABILITY_STABLE,
+            Updater::STABILITY_UNSTABLE,
+            Updater::STABILITY_ANY
         ])) {
             throw new \RuntimeException('Invalid "stability" option value');
         }

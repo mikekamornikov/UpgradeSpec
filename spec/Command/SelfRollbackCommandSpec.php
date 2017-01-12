@@ -5,13 +5,13 @@ namespace spec\Sugarcrm\UpgradeSpec\Command;
 use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Sugarcrm\UpgradeSpec\Updater\UpdaterInterface;
+use Sugarcrm\UpgradeSpec\Updater\Updater;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SelfRollbackCommandSpec extends ObjectBehavior
 {
-    function let(InputInterface $input, UpdaterInterface $updater)
+    function let(InputInterface $input, Updater $updater)
     {
         $input->bind(Argument::cetera())->willReturn();
         $input->hasArgument(Argument::any())->willReturn();
@@ -31,7 +31,7 @@ class SelfRollbackCommandSpec extends ObjectBehavior
         $this->getName()->shouldReturn('self:rollback');
     }
 
-    function it_should_be_executed_after_update(UpdaterInterface $updater, InputInterface $input, OutputInterface $output)
+    function it_should_be_executed_after_update(Updater $updater, InputInterface $input, OutputInterface $output)
     {
         $updater->rollback()->willReturn(false);
         $output->writeln('<error>Before rollback you need to perform at least one update.</error>')->shouldBeCalled();
@@ -39,7 +39,7 @@ class SelfRollbackCommandSpec extends ObjectBehavior
         $this->run($input, $output);
     }
 
-    function it_updates_application_to_previous_version(UpdaterInterface $updater, InputInterface $input, OutputInterface $output)
+    function it_updates_application_to_previous_version(Updater $updater, InputInterface $input, OutputInterface $output)
     {
         $updater->rollback()->willReturn(true);
         $output->writeln('<info>Success!</info>')->shouldBeCalled();
