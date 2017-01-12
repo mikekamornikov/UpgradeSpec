@@ -2,6 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
+use Sugarcrm\UpgradeSpec\Generator\Generator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -9,6 +10,23 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateSpecCommand extends Command
 {
+    /**
+     * @var Generator
+     */
+    private $specGenerator;
+
+    /**
+     * GenerateSpecCommand constructor.
+     * @param null $name
+     * @param Generator $specGenerator
+     */
+    public function __construct($name = null, Generator $specGenerator)
+    {
+        parent::__construct($name);
+
+        $this->specGenerator = $specGenerator;
+    }
+
     /**
      *  Configure the command
      */
@@ -30,12 +48,26 @@ class GenerateSpecCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $version = $input->getArgument('version') ?: 'latest';
+        $upgradeTo = $input->getArgument('version') ?: 'latest';
         $path = $input->getArgument('path');
+        $buildVersion = $this->getBuildVersion($path);
 
-        $output->writeln(sprintf('<info>Generating upgrade spec for "%s" (to version "%s")</info>', $path, $version));
-        $output->writeln('<info>Done</info>');
+        $output->writeln(sprintf('<comment>Generating upgrade spec for "%s" (to version "%s") ...</comment>', $path, $upgradeTo));
+
+        $output->writeln(sprintf('<info>%s</info>', $this->specGenerator->generate($buildVersion, $upgradeTo)));
+
+        $output->writeln('<comment>Done</comment>');
 
         return 0;
+    }
+
+    /**
+     * @param $path
+     * @return string
+     */
+    private function getBuildVersion($path)
+    {
+        // TODO: implement the logic and move it to appropriate place
+        return '7.5';
     }
 }

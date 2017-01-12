@@ -7,6 +7,9 @@ use Humbug\SelfUpdate\Updater as HumbugUpdater;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
+use Sugarcrm\UpgradeSpec\Generator\Configurator;
+use Sugarcrm\UpgradeSpec\Generator\Generator;
+use Sugarcrm\UpgradeSpec\Generator\SpecElementGenerator;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter;
 use Sugarcrm\UpgradeSpec\Updater\Updater;
 use Symfony\Component\Console\Application;
@@ -45,7 +48,7 @@ class App
      */
     private function init()
     {
-        $this->app->add(new GenerateSpecCommand);
+        $this->app->add(new GenerateSpecCommand(null, new Generator(new Configurator(), new SpecElementGenerator())));
 
         if ($this->isUpdateAvailable()) {
             $this->app->add(new SelfUpdateCommand(null, $this->getUpdaterObject()));

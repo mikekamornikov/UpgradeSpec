@@ -3,21 +3,26 @@
 namespace spec\Sugarcrm\UpgradeSpec\Command;
 
 use Prophecy\Argument;
-use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use PhpSpec\ObjectBehavior;
+use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
+use Sugarcrm\UpgradeSpec\Generator\Generator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateSpecCommandSpec extends ObjectBehavior
 {
-    function let(InputInterface $input)
+    function let(InputInterface $input, Generator $generator)
     {
         $input->bind(Argument::cetera())->willReturn();
         $input->hasArgument(Argument::any())->willReturn();
         $input->isInteractive()->willReturn(false);
         $input->validate()->willReturn();
-        $input->getArgument('path')->willReturn('/a/path/to/existing/sugarcrm/build');
-        $input->getArgument('version')->willReturn('7.8');
+        $input->getArgument('path')->willReturn('/path/to/sugarcrm/build');
+        $input->getArgument('version')->willReturn('new_version');
+
+        $generator->generate(Argument::cetera())->willReturn('generated_spec');
+
+        $this->beConstructedWith(null, $generator);
     }
     
     function it_is_initializable()
@@ -43,7 +48,8 @@ class GenerateSpecCommandSpec extends ObjectBehavior
     function it_generates_upgrade_spec(InputInterface $input, OutputInterface $output)
     {
         $this->run($input, $output);
-        $output->writeln('<info>Done</info>')->shouldHaveBeenCalled();
+        $output->writeln('<info>generated_spec</info>')->shouldHaveBeenCalled();
+        $output->writeln('<comment>Done</comment>')->shouldHaveBeenCalled();
     }
 
 //    function it_shows_error_for_invalid_path()
