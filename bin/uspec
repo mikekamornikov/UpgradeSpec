@@ -7,19 +7,6 @@ if (PHP_SAPI !== 'cli') {
     exit(1);
 }
 
-define('DEV_MODE', getenv('USPEC_DEV_MODE'));
-
-// application or vendor context
-$autoload = [
-    __DIR__ . '/../vendor/autoload.php', // application bin or phar
-    __DIR__ . '/../autoload.php',        // vendor bin
-    __DIR__ . '/../../../autoload.php'   // vendor
-];
-foreach ($autoload as $file) {
-    if (file_exists($file)) {
-        require $file;
-        break;
-    }
-}
+require __DIR__ . '/../src/autoload.php';
 
 (new Sugarcrm\UpgradeSpec\App('SugarCRM upgrade spec generator', '@package_version@'))->run();

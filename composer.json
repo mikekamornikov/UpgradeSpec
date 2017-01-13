@@ -17,6 +17,7 @@
 
   "require": {
     "symfony/console": "^3.2",
+    "symfony/dotenv": "3.3.x-dev",
     "padraic/phar-updater": "^1.0"
   },
 

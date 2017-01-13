@@ -71,10 +71,18 @@ $ mv phar-private.pem .travis/
 See [Secure PHAR Automation](https://mwop.net/blog/2015-12-14-secure-phar-automation.html) for detailed guide.
 
 ### Dev mode
-Update / rollback functionality is available in phar context and dev mode only. It can be enabled via `USPEC_DEV_MODE` env variable or `DEV_MODE` internal constant.
+Update / rollback functionality is available in phar context and dev mode only. It can be enabled in custom `.env` file: 
 
 ```text
-$ export USPEC_DEV_MODE=1 && bin/uspec list self --raw                                                                                                 1 ↵
+$ cat .env
+
+DEV_MODE=1
+```
+
+Alternatively env variable can be set globally: 
+
+```text
+$ export DEV_MODE=1 && bin/uspec list self --raw                                                                                                 1 ↵
 
 self:rollback   Rollback uspec update
 self:update     Update uspec to the latest version
