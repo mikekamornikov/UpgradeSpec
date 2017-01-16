@@ -7,6 +7,7 @@ use Humbug\SelfUpdate\Updater as HumbugUpdater;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
+use Sugarcrm\UpgradeSpec\Formatter\MarkdownFormatter;
 use Sugarcrm\UpgradeSpec\Generator\Configurator;
 use Sugarcrm\UpgradeSpec\Generator\Generator;
 use Sugarcrm\UpgradeSpec\Generator\SpecElementGenerator;
@@ -38,8 +39,9 @@ class App
      */
     public function run()
     {
+        $formatter = new MarkdownFormatter();
         $this->app->add(new GenerateSpecCommand(null,
-            new Generator(new Configurator(), new SpecElementGenerator()),
+            new Generator(new Configurator(), new SpecElementGenerator($formatter), $formatter),
             new Utils
         ));
 

@@ -2,6 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Generator;
 
+use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
 use Sugarcrm\UpgradeSpec\Generator\Exception\GeneratorException;
 
 class Generator
@@ -17,14 +18,22 @@ class Generator
     private $elementGenerator;
 
     /**
+     * @var FormatterInterface
+     */
+    private $formatter;
+
+    /**
      * SpecGenerator constructor.
      * @param Configurator $configurator
      * @param SpecElementGenerator $elementGenerator
      */
-    public function __construct(Configurator $configurator, SpecElementGenerator $elementGenerator)
-    {
+    public function __construct(Configurator $configurator,
+        SpecElementGenerator $elementGenerator,
+        FormatterInterface $formatter
+    ) {
         $this->configurator = $configurator;
         $this->elementGenerator = $elementGenerator;
+        $this->formatter = $formatter;
     }
 
     /**
@@ -36,10 +45,11 @@ class Generator
     public function generate($buildVersion, $upgradeTo)
     {
         try {
-            $delimiter = PHP_EOL . PHP_EOL;
             $elements = $this->configurator->getElements($buildVersion, $upgradeTo);
 
-            return implode($delimiter, array_map(
+            $title = $this->formatter->asTitle(sprintf('%s -> %s upgrade', $buildVersion, $upgradeTo));
+
+            return $title . implode($this->formatter->getDelimiter(), array_map(
                 function ($element) {
                     return $this->elementGenerator->generate($element);
                 },

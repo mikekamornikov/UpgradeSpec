@@ -3,6 +3,7 @@
 namespace spec\Sugarcrm\UpgradeSpec\Generator;
 
 use Prophecy\Argument;
+use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
 use Sugarcrm\UpgradeSpec\Generator\Configurator;
 use Sugarcrm\UpgradeSpec\Generator\SpecElement\SpecElementInterface;
 use Sugarcrm\UpgradeSpec\Generator\Generator;
@@ -12,8 +13,12 @@ use Sugarcrm\UpgradeSpec\Generator\SpecElementGenerator;
 
 class GeneratorSpec extends ObjectBehavior
 {
-    function let(Configurator $configurator, SpecElementGenerator $specElementGenerator, SpecElementInterface $step1, SpecElementInterface $step2)
-    {
+    function let(Configurator $configurator,
+        SpecElementGenerator $specElementGenerator,
+        SpecElementInterface $step1,
+        SpecElementInterface $step2,
+        FormatterInterface $formatter
+    ) {
         $step1->getTitle()->willReturn('step1 title');
         $step1->getBody()->willReturn('step1 body');
         $step1->getOrder()->willReturn(1);
@@ -29,7 +34,10 @@ class GeneratorSpec extends ObjectBehavior
         $specElementGenerator->generate($step1)->willReturn('step1');
         $specElementGenerator->generate($step2)->willReturn('step2');
 
-        $this->beConstructedWith($configurator, $specElementGenerator);
+        $formatter->asTitle(Argument::any())->willReturn('spec_title');
+        $formatter->getDelimiter()->willReturn('delimiter');
+
+        $this->beConstructedWith($configurator, $specElementGenerator, $formatter);
     }
 
     function it_is_initializable()
@@ -39,7 +47,7 @@ class GeneratorSpec extends ObjectBehavior
 
     function it_generates_uprade_spec()
     {
-        $spec = 'step1' . PHP_EOL . PHP_EOL . 'step2';
+        $spec = 'spec_title' . 'step1' . 'delimiter' . 'step2';
         $this->generate('/path/to/sugarcrm/build', 'new_version')->shouldReturn($spec);
     }
 

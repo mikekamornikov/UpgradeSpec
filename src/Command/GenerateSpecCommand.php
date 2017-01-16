@@ -62,11 +62,11 @@ class GenerateSpecCommand extends Command
         // TODO: get real "latest" version in the runtime
         $upgradeTo = $input->getArgument('version') ?: '7.8';
 
-        $output->writeln(sprintf('<comment>Generating upgrade spec for "%s" (to version "%s") ...</comment>', $path, $upgradeTo));
+        $output->writeln(sprintf('<comment>Generating upgrade spec ...</comment>', $path, $upgradeTo));
 
         $spec = $this->specGenerator->generate($version, $upgradeTo);
 
-        if ($input->hasOption('dump')) {
+        if ($input->hasParameterOption('--dump') || $input->hasParameterOption('-D')) {
             $this->utils->saveToFile(sprintf('upgrade_%s_to_%s.md', $version, $upgradeTo), $spec);
         } else {
             $output->writeln(sprintf('<info>%s</info>', $spec));

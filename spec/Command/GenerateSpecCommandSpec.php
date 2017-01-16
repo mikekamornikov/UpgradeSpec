@@ -20,7 +20,8 @@ class GenerateSpecCommandSpec extends ObjectBehavior
         $input->validate()->willReturn();
         $input->getArgument('path')->willReturn('/path/to/sugarcrm/build');
         $input->getArgument('version')->willReturn('7.8');
-        $input->hasOption('dump')->willReturn(false);
+        $input->hasParameterOption('--dump')->willReturn(false);
+        $input->hasParameterOption('-D')->willReturn(false);
 
         $generator->generate(Argument::cetera())->willReturn('generated_spec');
 
@@ -78,7 +79,13 @@ class GenerateSpecCommandSpec extends ObjectBehavior
 
     function it_has_dump_option_to_save_spec_to_file(InputInterface $input, OutputInterface $output, Utils $utils)
     {
-        $input->hasOption('dump')->willReturn(true);
+        $input->hasParameterOption('--dump')->willReturn(true);
+        $utils->getBuildVersion(Argument::cetera())->willReturn('7.0');
+        $utils->saveToFile(Argument::cetera())->shouldBeCalled();
+
+        $this->run($input, $output);
+
+        $input->hasParameterOption('-D')->willReturn(true);
         $utils->getBuildVersion(Argument::cetera())->willReturn('7.0');
         $utils->saveToFile(Argument::cetera())->shouldBeCalled();
 
