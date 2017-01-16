@@ -2,11 +2,21 @@
 
 namespace Sugarcrm\UpgradeSpec\Generator;
 
-use Sugarcrm\UpgradeSpec\Generator\SpecElement\CoreChanges;
 use Sugarcrm\UpgradeSpec\Generator\SpecElement\SpecElementInterface;
 
 class Configurator
 {
+    private $elements;
+
+    /**
+     * Configurator constructor.
+     * @param $elements
+     */
+    public function __construct($elements)
+    {
+        $this->elements = $elements;
+    }
+
     /**
      * @param $buildVersion
      * @param $upgradeTo
@@ -33,19 +43,13 @@ class Configurator
      */
     private function getSuitableElements($oldVersion, $newVersion)
     {
-        $isRelevant = function (SpecElementInterface $element) use ($newVersion) {
+        $elements = array_filter($this->elements, function (SpecElementInterface $element) use ($newVersion) {
             return $element->isRelevantTo($newVersion);
-        };
+        });
 
-        $elements = array_filter([
-            new CoreChanges()
-        ], $isRelevant);
-
-        $comparator = function (SpecElementInterface $a, SpecElementInterface $b) {
+        usort($elements, function (SpecElementInterface $a, SpecElementInterface $b) {
             return $a->getOrder() > $b->getOrder() ? 1 : ($a->getOrder() < $b->getOrder() ? -1 : 0);
-        };
-
-        usort($elements, $comparator);
+        });
 
         return $elements;
     }

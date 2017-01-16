@@ -10,7 +10,9 @@ use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
 use Sugarcrm\UpgradeSpec\Formatter\MarkdownFormatter;
 use Sugarcrm\UpgradeSpec\Generator\Configurator;
 use Sugarcrm\UpgradeSpec\Generator\Generator;
+use Sugarcrm\UpgradeSpec\Generator\SpecElement\CoreChanges;
 use Sugarcrm\UpgradeSpec\Generator\SpecElementGenerator;
+use Sugarcrm\UpgradeSpec\Locator\TemplateLocator;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter;
 use Sugarcrm\UpgradeSpec\Updater\Updater;
 use Symfony\Component\Console\Application;
@@ -39,11 +41,7 @@ class App
      */
     public function run()
     {
-        $formatter = new MarkdownFormatter();
-        $this->app->add(new GenerateSpecCommand(null,
-            new Generator(new Configurator(), new SpecElementGenerator($formatter), $formatter),
-            new Utils
-        ));
+        $this->app->add(new GenerateSpecCommand(null, $this->getGeneratorObject(), new Utils));
 
         if ($this->isUpdateAvailable()) {
             $this->app->add(new SelfUpdateCommand(null, $this->getUpdaterObject()));
@@ -98,5 +96,17 @@ class App
         $humbugUpdater->setRestorePath($path);
 
         return new Updater(new HumbugAdapter($humbugUpdater));
+    }
+
+    private function getGeneratorObject()
+    {
+        $templateLocator = new TemplateLocator(__DIR__ . '/Templates');
+        $specElements = [
+            new CoreChanges($templateLocator)
+        ];
+
+        $formatter = new MarkdownFormatter();
+
+        return new Generator(new Configurator($specElements), new SpecElementGenerator($formatter), $formatter);
     }
 }
