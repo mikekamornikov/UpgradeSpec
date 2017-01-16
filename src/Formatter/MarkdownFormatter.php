@@ -11,7 +11,7 @@ class MarkdownFormatter implements FormatterInterface
      */
     public function asTitle($text, $level = 1)
     {
-        return str_repeat('#', $level) . ' ' . ucfirst($text) . $this->getDelimiter();
+        return str_repeat('#', $level) . ' ' . ucfirst($text);
     }
 
     /**
@@ -20,7 +20,7 @@ class MarkdownFormatter implements FormatterInterface
      */
     public function asBody($text)
     {
-        return $text . $this->getDelimiter();
+        return $text;
     }
 
     /**

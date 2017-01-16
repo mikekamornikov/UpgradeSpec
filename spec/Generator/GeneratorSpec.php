@@ -47,7 +47,7 @@ class GeneratorSpec extends ObjectBehavior
 
     function it_generates_uprade_spec()
     {
-        $spec = 'spec_title' . 'step1' . 'delimiter' . 'step2';
+        $spec = 'spec_title' . 'delimiter' . 'step1' . 'delimiter' . 'step2';
         $this->generate('/path/to/sugarcrm/build', 'new_version')->shouldReturn($spec);
     }
 

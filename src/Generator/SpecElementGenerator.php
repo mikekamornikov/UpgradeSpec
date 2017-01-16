@@ -20,6 +20,8 @@ class SpecElementGenerator
 
     public function generate(SpecElementInterface $element)
     {
-        return $this->formatter->asTitle($element->getTitle(), 2) . $this->formatter->asBody($element->getBody());
+        return $this->formatter->asTitle($element->getTitle(), 2)
+            . $this->formatter->getDelimiter()
+            . $this->formatter->asBody($element->getBody());
     }
 }

@@ -45,11 +45,12 @@ class Generator
     public function generate($buildVersion, $upgradeTo)
     {
         try {
+            $delimiter = $this->formatter->getDelimiter();
             $elements = $this->configurator->getElements($buildVersion, $upgradeTo);
 
-            $title = $this->formatter->asTitle(sprintf('%s -> %s upgrade', $buildVersion, $upgradeTo));
+            $title = $this->formatter->asTitle(sprintf('%s -> %s upgrade', $buildVersion, $upgradeTo)) . $delimiter;
 
-            return $title . implode($this->formatter->getDelimiter(), array_map(
+            return $title . implode($delimiter, array_map(
                 function ($element) {
                     return $this->elementGenerator->generate($element);
                 },

@@ -15,16 +15,16 @@ class MarkdownFormatterSpec extends ObjectBehavior
 
     function it_formats_title()
     {
-        $this->asTitle('text')->shouldReturn('# Text' . PHP_EOL . PHP_EOL);
-        $this->asTitle('text', 1)->shouldReturn('# Text' . PHP_EOL . PHP_EOL);
-        $this->asTitle('text', 2)->shouldReturn('## Text' . PHP_EOL . PHP_EOL);
-        $this->asTitle('Text', 2)->shouldReturn('## Text' . PHP_EOL . PHP_EOL);
-        $this->asTitle('text', 3)->shouldReturn('### Text' . PHP_EOL . PHP_EOL);
+        $this->asTitle('text')->shouldReturn('# Text');
+        $this->asTitle('text', 1)->shouldReturn('# Text');
+        $this->asTitle('text', 2)->shouldReturn('## Text');
+        $this->asTitle('Text', 2)->shouldReturn('## Text');
+        $this->asTitle('text', 3)->shouldReturn('### Text');
     }
 
     function it_formats_body()
     {
-        $this->asBody('Text')->shouldReturn('Text' . PHP_EOL . PHP_EOL);
+        $this->asBody('Text')->shouldReturn('Text');
     }
 
     function it_uses_2_spaces_as_delimiter()
