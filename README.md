@@ -38,6 +38,12 @@ Options:
 $ uspec.phar self:rollback
 ```
 
+### As a docker container
+```text
+docker build -t uspec-app .
+docker run --rm -ti -v /path/to/sugarcrm/build:/build uspec-app generate:spec /build 7.8
+```
+
 ## Development
 
 ### Install dev dependencies

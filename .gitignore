@@ -5,3 +5,4 @@
 /uspec.phar
 /uspec.phar.pubkey
 /.env
+/.cacert.pem
