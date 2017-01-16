@@ -3,6 +3,7 @@
 namespace Sugarcrm\UpgradeSpec\Generator;
 
 use Sugarcrm\UpgradeSpec\Generator\SpecElement\CoreChanges;
+use Sugarcrm\UpgradeSpec\Generator\SpecElement\ReleaseNotes;
 use Sugarcrm\UpgradeSpec\Generator\SpecElement\SpecElementInterface;
 
 class Configurator
@@ -38,7 +39,8 @@ class Configurator
         };
 
         $elements = array_filter([
-            new CoreChanges()
+            new CoreChanges(),
+            new ReleaseNotes()
         ], $isRelevant);
 
         $comparator = function (SpecElementInterface $a, SpecElementInterface $b) {
