@@ -26,7 +26,7 @@ class ReleaseNotes implements ElementInterface
      * @param $version
      * @return bool
      */
-    public function isRelevantTo($version)
+    public function isRelevantTo($version, $newVersion)
     {
         return true;
     }

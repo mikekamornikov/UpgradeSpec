@@ -102,14 +102,17 @@ class App
 
     private function getGeneratorObject()
     {
-        $templateRenderer = new TemplateRenderer(new TemplateLocator(__DIR__ . '/Templates'));
         $specElements = [
-            new CoreChanges($templateRenderer),
-            new ReleaseNotes($templateRenderer),
+            CoreChanges::class,
+            ReleaseNotes::class
         ];
 
         $formatter = new MarkdownFormatter();
 
-        return new SpecGenerator(new ElementProvider($specElements), new ElementGenerator($formatter), $formatter);
+        return new SpecGenerator(
+            new ElementProvider($specElements, new TemplateRenderer(new TemplateLocator(__DIR__ . '/Templates'))),
+            new ElementGenerator($formatter),
+            $formatter
+        );
     }
 }

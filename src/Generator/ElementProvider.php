@@ -3,6 +3,7 @@
 namespace Sugarcrm\UpgradeSpec\Generator;
 
 use Sugarcrm\UpgradeSpec\Generator\Element\ElementInterface;
+use Sugarcrm\UpgradeSpec\Renderer\TemplateRenderer;
 
 class ElementProvider
 {
@@ -11,10 +12,13 @@ class ElementProvider
     /**
      * Configurator constructor.
      * @param $elements
+     * @param TemplateRenderer $templateRenderer
      */
-    public function __construct($elements)
+    public function __construct($elements, TemplateRenderer $templateRenderer)
     {
-        $this->elements = $elements;
+        $this->elements = array_map(function ($element) use ($templateRenderer) {
+            return new $element($templateRenderer);
+        }, $elements);
     }
 
     /**
