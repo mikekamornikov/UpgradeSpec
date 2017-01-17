@@ -3,9 +3,9 @@
 namespace Sugarcrm\UpgradeSpec\Generator;
 
 use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
-use Sugarcrm\UpgradeSpec\Generator\SpecElement\SpecElementInterface;
+use Sugarcrm\UpgradeSpec\Generator\Element\ElementInterface;
 
-class SpecElementGenerator
+class ElementGenerator
 {
     /**
      * @var FormatterInterface
@@ -17,8 +17,11 @@ class SpecElementGenerator
         $this->formatter = $formatter;
     }
 
-
-    public function generate(SpecElementInterface $element)
+    /**
+     * @param ElementInterface $element
+     * @return string
+     */
+    public function generate(ElementInterface $element)
     {
         return $this->formatter->asTitle($element->getTitle(), 2)
             . $this->formatter->getDelimiter()

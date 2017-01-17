@@ -1,8 +1,8 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Generator\SpecElement;
+namespace Sugarcrm\UpgradeSpec\Generator\Element;
 
-interface SpecElementInterface
+interface ElementInterface
 {
     public function getTitle();
 

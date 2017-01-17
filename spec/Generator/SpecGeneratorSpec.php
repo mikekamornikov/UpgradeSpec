@@ -4,19 +4,19 @@ namespace spec\Sugarcrm\UpgradeSpec\Generator;
 
 use Prophecy\Argument;
 use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
-use Sugarcrm\UpgradeSpec\Generator\Configurator;
-use Sugarcrm\UpgradeSpec\Generator\SpecElement\SpecElementInterface;
-use Sugarcrm\UpgradeSpec\Generator\Generator;
+use Sugarcrm\UpgradeSpec\Generator\Element\ElementInterface;
+use Sugarcrm\UpgradeSpec\Generator\ElementGenerator;
+use Sugarcrm\UpgradeSpec\Generator\ElementProvider;
+use Sugarcrm\UpgradeSpec\Generator\SpecGenerator;
 use Sugarcrm\UpgradeSpec\Generator\GeneratorInterface;
 use PhpSpec\ObjectBehavior;
-use Sugarcrm\UpgradeSpec\Generator\SpecElementGenerator;
 
-class GeneratorSpec extends ObjectBehavior
+class SpecGeneratorSpec extends ObjectBehavior
 {
-    function let(Configurator $configurator,
-        SpecElementGenerator $specElementGenerator,
-        SpecElementInterface $step1,
-        SpecElementInterface $step2,
+    function let(ElementProvider $elementProvider,
+        ElementGenerator $specElementGenerator,
+        ElementInterface $step1,
+        ElementInterface $step2,
         FormatterInterface $formatter
     ) {
         $step1->getTitle()->willReturn('step1 title');
@@ -29,7 +29,7 @@ class GeneratorSpec extends ObjectBehavior
         $step2->getOrder()->willReturn(2);
         $step2->isRelevantTo(Argument::cetera())->willReturn(true);
 
-        $configurator->getElements(Argument::cetera())->willReturn([$step1, $step2]);
+        $elementProvider->getElements(Argument::cetera())->willReturn([$step1, $step2]);
 
         $specElementGenerator->generate($step1)->willReturn('step1');
         $specElementGenerator->generate($step2)->willReturn('step2');
@@ -37,12 +37,12 @@ class GeneratorSpec extends ObjectBehavior
         $formatter->asTitle(Argument::any())->willReturn('spec_title');
         $formatter->getDelimiter()->willReturn('delimiter');
 
-        $this->beConstructedWith($configurator, $specElementGenerator, $formatter);
+        $this->beConstructedWith($elementProvider, $specElementGenerator, $formatter);
     }
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(Generator::class);
+        $this->shouldHaveType(SpecGenerator::class);
     }
 
     function it_generates_uprade_spec()
@@ -51,7 +51,7 @@ class GeneratorSpec extends ObjectBehavior
         $this->generate('/path/to/sugarcrm/build', 'new_version')->shouldReturn($spec);
     }
 
-    function it_executes_all_configured_steps(SpecElementGenerator $specElementGenerator, SpecElementInterface $step1, SpecElementInterface $step2)
+    function it_executes_all_configured_steps(ElementGenerator $specElementGenerator, ElementInterface $step1, ElementInterface $step2)
     {
         $specElementGenerator->generate($step1)->shouldBeCalled();
         $specElementGenerator->generate($step2)->shouldBeCalled();

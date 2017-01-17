@@ -8,11 +8,11 @@ use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
 use Sugarcrm\UpgradeSpec\Formatter\MarkdownFormatter;
-use Sugarcrm\UpgradeSpec\Generator\Configurator;
-use Sugarcrm\UpgradeSpec\Generator\Generator;
-use Sugarcrm\UpgradeSpec\Generator\SpecElement\CoreChanges;
-use Sugarcrm\UpgradeSpec\Generator\SpecElement\ReleaseNotes;
-use Sugarcrm\UpgradeSpec\Generator\SpecElementGenerator;
+use Sugarcrm\UpgradeSpec\Generator\Element\CoreChanges;
+use Sugarcrm\UpgradeSpec\Generator\Element\ReleaseNotes;
+use Sugarcrm\UpgradeSpec\Generator\ElementGenerator;
+use Sugarcrm\UpgradeSpec\Generator\ElementProvider;
+use Sugarcrm\UpgradeSpec\Generator\SpecGenerator;
 use Sugarcrm\UpgradeSpec\Locator\TemplateLocator;
 use Sugarcrm\UpgradeSpec\Renderer\TemplateRenderer;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter;
@@ -110,6 +110,6 @@ class App
 
         $formatter = new MarkdownFormatter();
 
-        return new Generator(new Configurator($specElements), new SpecElementGenerator($formatter), $formatter);
+        return new SpecGenerator(new ElementProvider($specElements), new ElementGenerator($formatter), $formatter);
     }
 }

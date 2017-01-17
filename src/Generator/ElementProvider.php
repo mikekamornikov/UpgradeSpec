@@ -2,9 +2,9 @@
 
 namespace Sugarcrm\UpgradeSpec\Generator;
 
-use Sugarcrm\UpgradeSpec\Generator\SpecElement\SpecElementInterface;
+use Sugarcrm\UpgradeSpec\Generator\Element\ElementInterface;
 
-class Configurator
+class ElementProvider
 {
     private $elements;
 
@@ -43,11 +43,11 @@ class Configurator
      */
     private function getSuitableElements($oldVersion, $newVersion)
     {
-        $elements = array_filter($this->elements, function (SpecElementInterface $element) use ($newVersion) {
-            return $element->isRelevantTo($newVersion);
+        $elements = array_filter($this->elements, function (ElementInterface $element) use ($oldVersion, $newVersion) {
+            return $element->isRelevantTo($oldVersion, $newVersion);
         });
 
-        usort($elements, function (SpecElementInterface $a, SpecElementInterface $b) {
+        usort($elements, function (ElementInterface $a, ElementInterface $b) {
             return $a->getOrder() > $b->getOrder() ? 1 : ($a->getOrder() < $b->getOrder() ? -1 : 0);
         });
 

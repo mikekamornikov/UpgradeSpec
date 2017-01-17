@@ -5,14 +5,14 @@ namespace spec\Sugarcrm\UpgradeSpec\Command;
 use Prophecy\Argument;
 use PhpSpec\ObjectBehavior;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
-use Sugarcrm\UpgradeSpec\Generator\Generator;
+use Sugarcrm\UpgradeSpec\Generator\SpecGenerator;
 use Sugarcrm\UpgradeSpec\Utils;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateSpecCommandSpec extends ObjectBehavior
 {
-    function let(InputInterface $input, Generator $generator, Utils $utils)
+    function let(InputInterface $input, SpecGenerator $generator, Utils $utils)
     {
         $input->bind(Argument::cetera())->willReturn();
         $input->hasArgument(Argument::any())->willReturn();
@@ -50,7 +50,7 @@ class GenerateSpecCommandSpec extends ObjectBehavior
         $this->run($input, $output);
     }
 
-    function it_has_optional_version_argument_defaulting_to_latest(Generator $generator, InputInterface $input, OutputInterface $output)
+    function it_has_optional_version_argument_defaulting_to_latest(SpecGenerator $generator, InputInterface $input, OutputInterface $output)
     {
         $input->getArgument('version')->willReturn();
 

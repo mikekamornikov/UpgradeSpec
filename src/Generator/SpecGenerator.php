@@ -5,15 +5,15 @@ namespace Sugarcrm\UpgradeSpec\Generator;
 use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
 use Sugarcrm\UpgradeSpec\Generator\Exception\GeneratorException;
 
-class Generator
+class SpecGenerator
 {
     /**
-     * @var Configurator
+     * @var ElementProvider
      */
-    private $configurator;
+    private $elementProvider;
 
     /**
-     * @var SpecElementGenerator
+     * @var ElementGenerator
      */
     private $elementGenerator;
 
@@ -24,16 +24,17 @@ class Generator
 
     /**
      * SpecGenerator constructor.
-     * @param Configurator $configurator
-     * @param SpecElementGenerator $elementGenerator
+     * @param ElementProvider $elementProvider
+     * @param ElementGenerator $elementGenerator
+     * @param FormatterInterface $formatter
      */
-    public function __construct(Configurator $configurator,
-        SpecElementGenerator $elementGenerator,
+    public function __construct(ElementProvider $elementProvider,
+        ElementGenerator $elementGenerator,
         FormatterInterface $formatter
     ) {
-        $this->configurator = $configurator;
         $this->elementGenerator = $elementGenerator;
         $this->formatter = $formatter;
+        $this->elementProvider = $elementProvider;
     }
 
     /**
@@ -46,7 +47,7 @@ class Generator
     {
         try {
             $delimiter = $this->formatter->getDelimiter();
-            $elements = $this->configurator->getElements($buildVersion, $upgradeTo);
+            $elements = $this->elementProvider->getElements($buildVersion, $upgradeTo);
 
             $title = $this->formatter->asTitle(sprintf('%s -> %s upgrade', $buildVersion, $upgradeTo)) . $delimiter;
 

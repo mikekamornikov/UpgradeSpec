@@ -1,8 +1,8 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Generator\SpecElement;
+namespace Sugarcrm\UpgradeSpec\Generator\Element;
 
-class ReleaseNotes implements SpecElementInterface
+class ReleaseNotes implements ElementInterface
 {
     use ElementTrait;
 

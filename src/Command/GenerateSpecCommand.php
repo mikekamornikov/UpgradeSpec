@@ -2,7 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
-use Sugarcrm\UpgradeSpec\Generator\Generator;
+use Sugarcrm\UpgradeSpec\Generator\SpecGenerator;
 use Sugarcrm\UpgradeSpec\Utils;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateSpecCommand extends Command
 {
     /**
-     * @var Generator
+     * @var SpecGenerator
      */
     private $specGenerator;
 
@@ -27,7 +27,7 @@ class GenerateSpecCommand extends Command
      * @param Generator $specGenerator
      * @param Utils $utils
      */
-    public function __construct($name = null, Generator $specGenerator, Utils $utils)
+    public function __construct($name = null, SpecGenerator $specGenerator, Utils $utils)
     {
         parent::__construct($name);
 
