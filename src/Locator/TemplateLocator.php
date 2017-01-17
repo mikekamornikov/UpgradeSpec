@@ -7,26 +7,26 @@ class TemplateLocator
     /**
      * @var string
      */
-    private $path;
+    private $templateFolder;
 
     /**
      * TemplateLocator constructor.
-     * @param string $path
+     * @param string $templateFolder
      */
-    public function __construct($path)
+    public function __construct($templateFolder)
     {
-        $this->path = $path;
+        $this->templateFolder = $templateFolder;
     }
 
     /**
-     * @param $template
+     * @param $name
      * @return string
      */
-    public function locate($template)
+    public function locate($name)
     {
-        $templatePath = $this->path . '/' . $template;
+        $templatePath = sprintf('%s/%s.tpl', $this->templateFolder, $name);
         if (!file_exists($templatePath)) {
-            throw new \InvalidArgumentException(sprintf('Template "%s" not found', $template));
+            throw new \InvalidArgumentException(sprintf('Template "%s" not found', $name));
         }
 
         return $templatePath;

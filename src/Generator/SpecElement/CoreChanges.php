@@ -2,8 +2,10 @@
 
 namespace Sugarcrm\UpgradeSpec\Generator\SpecElement;
 
-class CoreChanges extends SpecElement implements SpecElementInterface
+class CoreChanges implements SpecElementInterface
 {
+    use ElementTrait;
+
     /**
      * @return string
      */
@@ -34,6 +36,6 @@ class CoreChanges extends SpecElement implements SpecElementInterface
      */
     public function getBody()
     {
-        return $this->render();
+        return $this->renderer->render('core_changes', []);
     }
 }

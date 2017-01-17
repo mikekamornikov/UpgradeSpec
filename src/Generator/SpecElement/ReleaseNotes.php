@@ -2,8 +2,10 @@
 
 namespace Sugarcrm\UpgradeSpec\Generator\SpecElement;
 
-class ReleaseNotes extends SpecElement implements SpecElementInterface
+class ReleaseNotes implements SpecElementInterface
 {
+    use ElementTrait;
+
     /**
      * @return string
      */
@@ -34,6 +36,6 @@ class ReleaseNotes extends SpecElement implements SpecElementInterface
      */
     public function getBody()
     {
-        return $this->render();
+        return $this->renderer->render('release_notes', []);
     }
 }
