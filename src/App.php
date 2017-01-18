@@ -13,8 +13,8 @@ use Sugarcrm\UpgradeSpec\Generator\Element\ReleaseNotes;
 use Sugarcrm\UpgradeSpec\Generator\ElementGenerator;
 use Sugarcrm\UpgradeSpec\Generator\ElementProvider;
 use Sugarcrm\UpgradeSpec\Generator\SpecGenerator;
-use Sugarcrm\UpgradeSpec\Locator\TemplateLocator;
-use Sugarcrm\UpgradeSpec\Renderer\TemplateRenderer;
+use Sugarcrm\UpgradeSpec\Template\Locator;
+use Sugarcrm\UpgradeSpec\Template\Renderer;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter;
 use Sugarcrm\UpgradeSpec\Updater\Updater;
 use Symfony\Component\Console\Application;
@@ -108,9 +108,10 @@ class App
         ];
 
         $formatter = new MarkdownFormatter();
+        $templateRenderer = new Renderer(new Locator(__DIR__ . '/../' . getenv('TEMPLATE_PATH')));
 
         return new SpecGenerator(
-            new ElementProvider($specElements, new TemplateRenderer(new TemplateLocator(__DIR__ . '/Templates'))),
+            new ElementProvider($specElements, $templateRenderer),
             new ElementGenerator($formatter),
             $formatter
         );

@@ -2,7 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Generator\Element;
 
-use Sugarcrm\UpgradeSpec\Renderer\TemplateRenderer;
+use Sugarcrm\UpgradeSpec\Template\Renderer;
 
 trait ElementTrait
 {
@@ -11,7 +11,7 @@ trait ElementTrait
      */
     private $renderer;
 
-    public function __construct(TemplateRenderer $renderer)
+    public function __construct(Renderer $renderer)
     {
         $this->renderer = $renderer;
     }

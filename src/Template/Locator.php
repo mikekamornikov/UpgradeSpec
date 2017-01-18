@@ -1,8 +1,8 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Locator;
+namespace Sugarcrm\UpgradeSpec\Template;
 
-class TemplateLocator
+class Locator
 {
     /**
      * @var string

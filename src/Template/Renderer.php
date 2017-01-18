@@ -1,17 +1,15 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Renderer;
+namespace Sugarcrm\UpgradeSpec\Template;
 
-use Sugarcrm\UpgradeSpec\Locator\TemplateLocator;
-
-class TemplateRenderer
+class Renderer
 {
     /**
      * @var FileLocatorInterface
      */
     private $templateLocator;
 
-    public function __construct(TemplateLocator $templateLocator)
+    public function __construct(Locator $templateLocator)
     {
         $this->templateLocator = $templateLocator;
     }
