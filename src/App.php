@@ -2,6 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec;
 
+use GuzzleHttp\Client;
 use Humbug\SelfUpdate\Strategy\GithubStrategy;
 use Humbug\SelfUpdate\Updater as HumbugUpdater;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
@@ -21,6 +22,7 @@ use Sugarcrm\UpgradeSpec\Template\Renderer;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter;
 use Sugarcrm\UpgradeSpec\Updater\Updater;
 use Symfony\Component\Console\Application;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Dotenv\Dotenv;
 
 class App
@@ -39,6 +41,7 @@ class App
     {
         $this->app = new Application($name, $version);
         $this->initEnvironment();
+        $this->initCache();
     }
 
     /**
@@ -119,5 +122,29 @@ class App
             new ElementGenerator($formatter),
             $formatter
         );
+    }
+
+    /**
+     * Creates and populates application cache folder
+     */
+    private function initCache()
+    {
+        $cacheFolder = sys_get_temp_dir() . '/.' . getenv('PHAR_BASENAME') . '/';
+        if (!file_exists($cacheFolder)) {
+            @mkdir($cacheFolder, 0644, true);
+        }
+
+        $client = new Client(['base_uri' => 'http://support.sugarcrm.com']);
+        $response = $client->request('GET', '/Documentation/Sugar_Versions/index.html');
+
+        $crawler = new Crawler($response->getBody()->getContents());
+
+        $versions = [];
+        foreach ($crawler->filter('section.content-body > h1') as $node) {
+            $version = $node->textContent;
+            if (preg_match('/^[0-9]\.[0-9]$/', $version)) {
+                $versions[] = $version;
+            }
+        }
     }
 }

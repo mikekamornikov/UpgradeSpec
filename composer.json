@@ -18,7 +18,10 @@
   "require": {
     "symfony/console": "^3.2",
     "symfony/dotenv": "3.3.x-dev",
-    "padraic/phar-updater": "^1.0"
+    "padraic/phar-updater": "^1.0",
+    "guzzlehttp/guzzle": "~6.0",
+    "symfony/dom-crawler": "^3.2",
+    "symfony/css-selector": "^3.2"
   },
 
   "require-dev": {
