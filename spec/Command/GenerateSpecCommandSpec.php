@@ -6,13 +6,14 @@ use Prophecy\Argument;
 use PhpSpec\ObjectBehavior;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use Sugarcrm\UpgradeSpec\Generator\SpecGenerator;
-use Sugarcrm\UpgradeSpec\Utils;
+use Sugarcrm\UpgradeSpec\Helper\File;
+use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateSpecCommandSpec extends ObjectBehavior
 {
-    function let(InputInterface $input, SpecGenerator $generator, Utils $utils)
+    function let(InputInterface $input, SpecGenerator $generator, Sugarcrm $sugarcrmHelper, File $fileHelper)
     {
         $input->bind(Argument::cetera())->willReturn();
         $input->hasArgument(Argument::any())->willReturn();
@@ -25,10 +26,12 @@ class GenerateSpecCommandSpec extends ObjectBehavior
 
         $generator->generate(Argument::cetera())->willReturn('generated_spec');
 
-        $utils->isSugarcrmBuild(Argument::cetera())->willReturn(true);
-        $utils->getBuildVersion(Argument::cetera())->willReturn('7.0');
+        $sugarcrmHelper->isSugarcrmBuild(Argument::cetera())->willReturn(true);
+        $sugarcrmHelper->getBuildVersion(Argument::cetera())->willReturn('7.0');
 
-        $this->beConstructedWith(null, $generator, $utils);
+        $fileHelper->saveToFile(Argument::cetera())->willReturn();
+
+        $this->beConstructedWith(null, $generator, $sugarcrmHelper, $fileHelper);
     }
     
     function it_is_initializable()
@@ -41,9 +44,9 @@ class GenerateSpecCommandSpec extends ObjectBehavior
         $this->getName()->shouldReturn('generate:spec');
     }
 
-    function it_requires_valid_sugarcrm_build_path(InputInterface $input, OutputInterface $output, Utils $utils)
+    function it_requires_valid_sugarcrm_build_path(InputInterface $input, OutputInterface $output, Sugarcrm $sugarcrmHelper)
     {
-        $utils->isSugarcrmBuild(Argument::cetera())->willReturn(false);
+        $sugarcrmHelper->isSugarcrmBuild(Argument::cetera())->willReturn(false);
 
         $output->writeln('<error>Invalid "path" argument value</error>')->shouldBeCalled();
 
@@ -67,27 +70,27 @@ class GenerateSpecCommandSpec extends ObjectBehavior
         $output->writeln('<comment>Done</comment>')->shouldHaveBeenCalled();
     }
 
-    function it_shows_error_for_upgrades_to_version_lower_or_equal_to_given_instance_version(InputInterface $input, OutputInterface $output, Utils $utils)
+    function it_shows_error_for_upgrades_to_version_lower_or_equal_to_given_instance_version(InputInterface $input, OutputInterface $output, Sugarcrm $sugarcrmHelper)
     {
         $input->getArgument('version')->willReturn('7.8');
-        $utils->getBuildVersion(Argument::cetera())->willReturn('7.8');
+        $sugarcrmHelper->getBuildVersion(Argument::cetera())->willReturn('7.8');
 
         $output->writeln('<error>Invalid "version" argument value</error>')->shouldBeCalled();
 
         $this->run($input, $output);
     }
 
-    function it_has_dump_option_to_save_spec_to_file(InputInterface $input, OutputInterface $output, Utils $utils)
+    function it_has_dump_option_to_save_spec_to_file(InputInterface $input, OutputInterface $output, Sugarcrm $sugarcrmHelper, File $fileHelper)
     {
         $input->hasParameterOption('--dump')->willReturn(true);
-        $utils->getBuildVersion(Argument::cetera())->willReturn('7.0');
-        $utils->saveToFile(Argument::cetera())->shouldBeCalled();
+        $sugarcrmHelper->getBuildVersion(Argument::cetera())->willReturn('7.0');
+        $fileHelper->saveToFile(Argument::cetera())->shouldBeCalled();
 
         $this->run($input, $output);
 
         $input->hasParameterOption('-D')->willReturn(true);
-        $utils->getBuildVersion(Argument::cetera())->willReturn('7.0');
-        $utils->saveToFile(Argument::cetera())->shouldBeCalled();
+        $sugarcrmHelper->getBuildVersion(Argument::cetera())->willReturn('7.0');
+        $fileHelper->saveToFile(Argument::cetera())->shouldBeCalled();
 
         $this->run($input, $output);
     }

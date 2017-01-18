@@ -1,8 +1,8 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec;
+namespace Sugarcrm\UpgradeSpec\Helper;
 
-class Utils
+class Sugarcrm
 {
     /**
      * Extracts version number from sugarcrm build files
@@ -28,14 +28,5 @@ class Utils
     public function isSugarcrmBuild($path)
     {
         return $path && file_exists(realpath($path) . '/sugar_version.php');
-    }
-
-    /**
-     * @param $filename
-     * @param $spec
-     */
-    public function saveToFile($filename, $spec)
-    {
-        file_put_contents($filename, $spec);
     }
 }

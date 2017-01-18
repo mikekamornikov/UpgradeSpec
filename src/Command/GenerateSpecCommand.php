@@ -3,7 +3,8 @@
 namespace Sugarcrm\UpgradeSpec\Command;
 
 use Sugarcrm\UpgradeSpec\Generator\SpecGenerator;
-use Sugarcrm\UpgradeSpec\Utils;
+use Sugarcrm\UpgradeSpec\Helper\File;
+use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,24 +16,30 @@ class GenerateSpecCommand extends Command
      * @var SpecGenerator
      */
     private $specGenerator;
+    /**
+     * @var Sugarcrm
+     */
+    private $sugarcrmHelper;
 
     /**
-     * @var Utils
+     * @var File
      */
-    private $utils;
+    private $fileHelper;
 
     /**
      * GenerateSpecCommand constructor.
      * @param null $name
-     * @param Generator $specGenerator
-     * @param Utils $utils
+     * @param SpecGenerator $specGenerator
+     * @param Sugarcrm $sugarcrmHelper
+     * @param File $fileHelper
      */
-    public function __construct($name = null, SpecGenerator $specGenerator, Utils $utils)
+    public function __construct($name = null, SpecGenerator $specGenerator, Sugarcrm $sugarcrmHelper, File $fileHelper)
     {
         parent::__construct($name);
 
         $this->specGenerator = $specGenerator;
-        $this->utils = $utils;
+        $this->sugarcrmHelper = $sugarcrmHelper;
+        $this->fileHelper = $fileHelper;
     }
 
     /**
@@ -57,7 +64,7 @@ class GenerateSpecCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $path = $input->getArgument('path');
-        $version = $this->utils->getBuildVersion($path);
+        $version = $this->sugarcrmHelper->getBuildVersion($path);
 
         // TODO: get real "latest" version in the runtime
         $upgradeTo = $input->getArgument('version') ?: '7.8';
@@ -67,7 +74,7 @@ class GenerateSpecCommand extends Command
         $spec = $this->specGenerator->generate($version, $upgradeTo);
 
         if ($input->hasParameterOption('--dump') || $input->hasParameterOption('-D')) {
-            $this->utils->saveToFile(sprintf('upgrade_%s_to_%s.md', $version, $upgradeTo), $spec);
+            $this->fileHelper->saveToFile(sprintf('upgrade_%s_to_%s.md', $version, $upgradeTo), $spec);
         } else {
             $output->writeln(sprintf('<info>%s</info>', $spec));
         }
@@ -86,7 +93,7 @@ class GenerateSpecCommand extends Command
         $version = $input->getArgument('version');
 
         $this->validatePath($path);
-        $this->validateVersion($this->utils->getBuildVersion($path), $version);
+        $this->validateVersion($this->sugarcrmHelper->getBuildVersion($path), $version);
     }
 
     /**
@@ -94,7 +101,7 @@ class GenerateSpecCommand extends Command
      */
     private function validatePath($path)
     {
-        if (!$this->utils->isSugarcrmBuild($path)) {
+        if (!$this->sugarcrmHelper->isSugarcrmBuild($path)) {
             throw new \InvalidArgumentException('Invalid "path" argument value');
         }
     }

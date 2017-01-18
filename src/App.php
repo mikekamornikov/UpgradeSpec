@@ -13,6 +13,8 @@ use Sugarcrm\UpgradeSpec\Generator\Element\ReleaseNotes;
 use Sugarcrm\UpgradeSpec\Generator\ElementGenerator;
 use Sugarcrm\UpgradeSpec\Generator\ElementProvider;
 use Sugarcrm\UpgradeSpec\Generator\SpecGenerator;
+use Sugarcrm\UpgradeSpec\Helper\File;
+use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
 use Sugarcrm\UpgradeSpec\Template\Locator;
 use Sugarcrm\UpgradeSpec\Template\Renderer;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter;
@@ -43,7 +45,7 @@ class App
      */
     public function run()
     {
-        $this->app->add(new GenerateSpecCommand(null, $this->getGeneratorObject(), new Utils));
+        $this->app->add(new GenerateSpecCommand(null, $this->getGeneratorObject(), new Sugarcrm(), new File()));
 
         if ($this->isUpdateAvailable()) {
             $this->app->add(new SelfUpdateCommand(null, $this->getUpdaterObject()));
