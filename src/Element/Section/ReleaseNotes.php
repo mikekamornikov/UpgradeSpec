@@ -14,7 +14,7 @@ class ReleaseNotes implements ElementInterface
      */
     public function getTitle()
     {
-        return 'Get release notes for newest versions';
+        return 'Get and analyze release notes';
     }
 
     /**
@@ -22,11 +22,12 @@ class ReleaseNotes implements ElementInterface
      */
     public function getOrder()
     {
-       return 2;
+       return 1;
     }
 
     /**
      * @param $version
+     * @param $newVersion
      * @return bool
      */
     public function isRelevantTo($version, $newVersion)

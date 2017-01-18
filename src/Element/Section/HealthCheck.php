@@ -5,7 +5,7 @@ namespace Sugarcrm\UpgradeSpec\Element\Section;
 use Sugarcrm\UpgradeSpec\Element\ElementInterface;
 use Sugarcrm\UpgradeSpec\Element\ElementTrait;
 
-class CoreChanges implements ElementInterface
+class HealthCheck implements ElementInterface
 {
     use ElementTrait;
 
@@ -14,7 +14,7 @@ class CoreChanges implements ElementInterface
      */
     public function getTitle()
     {
-        return 'Backup or rewrite core changes';
+        return 'Run health checker and fix all errors';
     }
 
     /**
@@ -22,7 +22,7 @@ class CoreChanges implements ElementInterface
      */
     public function getOrder()
     {
-        return 3;
+        return 2;
     }
 
     /**
@@ -32,7 +32,7 @@ class CoreChanges implements ElementInterface
      */
     public function isRelevantTo($version, $newVersion)
     {
-        return true;
+        return version_compare($newVersion, '7.0', '>=');
     }
 
     /**
@@ -40,6 +40,6 @@ class CoreChanges implements ElementInterface
      */
     public function getBody()
     {
-        return $this->renderer->render('core_changes', []);
+        return $this->renderer->render('health_check', ['download_url' => 'url']);
     }
 }

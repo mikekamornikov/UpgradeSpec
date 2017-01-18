@@ -10,6 +10,7 @@ use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
 use Sugarcrm\UpgradeSpec\Element\Provider;
 use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
 use Sugarcrm\UpgradeSpec\Element\Section\CoreChanges;
+use Sugarcrm\UpgradeSpec\Element\Section\HealthCheck;
 use Sugarcrm\UpgradeSpec\Element\Section\ReleaseNotes;
 use Sugarcrm\UpgradeSpec\Formatter\MarkdownFormatter;
 use Sugarcrm\UpgradeSpec\Helper\File;
@@ -106,7 +107,8 @@ class App
     {
         $specElements = [
             CoreChanges::class,
-            ReleaseNotes::class
+            ReleaseNotes::class,
+            HealthCheck::class
         ];
 
         $formatter = new MarkdownFormatter();
