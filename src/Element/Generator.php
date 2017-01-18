@@ -1,11 +1,10 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Generator;
+namespace Sugarcrm\UpgradeSpec\Element;
 
 use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
-use Sugarcrm\UpgradeSpec\Generator\Element\ElementInterface;
 
-class ElementGenerator
+class Generator
 {
     /**
      * @var FormatterInterface

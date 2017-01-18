@@ -1,8 +1,11 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Generator\Element;
+namespace Sugarcrm\UpgradeSpec\Element\Section;
 
-class CoreChanges implements ElementInterface
+use Sugarcrm\UpgradeSpec\Element\ElementInterface;
+use Sugarcrm\UpgradeSpec\Element\ElementTrait;
+
+class ReleaseNotes implements ElementInterface
 {
     use ElementTrait;
 
@@ -11,7 +14,7 @@ class CoreChanges implements ElementInterface
      */
     public function getTitle()
     {
-        return 'Backup or rewrite core changes';
+        return 'Get release notes for newest versions';
     }
 
     /**
@@ -19,7 +22,7 @@ class CoreChanges implements ElementInterface
      */
     public function getOrder()
     {
-        return 1;
+       return 2;
     }
 
     /**
@@ -36,6 +39,6 @@ class CoreChanges implements ElementInterface
      */
     public function getBody()
     {
-        return $this->renderer->render('core_changes', []);
+        return $this->renderer->render('release_notes', []);
     }
 }

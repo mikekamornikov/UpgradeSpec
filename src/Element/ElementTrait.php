@@ -1,6 +1,6 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Generator\Element;
+namespace Sugarcrm\UpgradeSpec\Element;
 
 use Sugarcrm\UpgradeSpec\Template\Renderer;
 

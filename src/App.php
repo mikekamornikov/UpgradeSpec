@@ -7,14 +7,14 @@ use Humbug\SelfUpdate\Updater as HumbugUpdater;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
+use Sugarcrm\UpgradeSpec\Element\Provider;
+use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
+use Sugarcrm\UpgradeSpec\Element\Section\CoreChanges;
+use Sugarcrm\UpgradeSpec\Element\Section\ReleaseNotes;
 use Sugarcrm\UpgradeSpec\Formatter\MarkdownFormatter;
-use Sugarcrm\UpgradeSpec\Generator\Element\CoreChanges;
-use Sugarcrm\UpgradeSpec\Generator\Element\ReleaseNotes;
-use Sugarcrm\UpgradeSpec\Generator\ElementGenerator;
-use Sugarcrm\UpgradeSpec\Generator\ElementProvider;
-use Sugarcrm\UpgradeSpec\Generator\SpecGenerator;
 use Sugarcrm\UpgradeSpec\Helper\File;
 use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
+use Sugarcrm\UpgradeSpec\Spec\Generator;
 use Sugarcrm\UpgradeSpec\Template\Locator;
 use Sugarcrm\UpgradeSpec\Template\Renderer;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter;
@@ -112,8 +112,8 @@ class App
         $formatter = new MarkdownFormatter();
         $templateRenderer = new Renderer(new Locator(__DIR__ . '/../' . getenv('TEMPLATE_PATH')));
 
-        return new SpecGenerator(
-            new ElementProvider($specElements, $templateRenderer),
+        return new Generator(
+            new Provider($specElements, $templateRenderer),
             new ElementGenerator($formatter),
             $formatter
         );

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Generator\Exception;
+namespace Sugarcrm\UpgradeSpec\Spec\Exception;
 
 class GeneratorException extends \Exception
 {

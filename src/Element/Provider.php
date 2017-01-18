@@ -1,11 +1,10 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Generator;
+namespace Sugarcrm\UpgradeSpec\Element;
 
-use Sugarcrm\UpgradeSpec\Generator\Element\ElementInterface;
 use Sugarcrm\UpgradeSpec\Template\Renderer;
 
-class ElementProvider
+class Provider
 {
     private $elements;
 

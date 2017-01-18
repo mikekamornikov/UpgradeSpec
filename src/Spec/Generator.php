@@ -1,11 +1,13 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Generator;
+namespace Sugarcrm\UpgradeSpec\Spec;
 
+use Sugarcrm\UpgradeSpec\Element\Provider;
+use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
 use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
-use Sugarcrm\UpgradeSpec\Generator\Exception\GeneratorException;
+use Sugarcrm\UpgradeSpec\Spec\Exception\GeneratorException;
 
-class SpecGenerator
+class Generator
 {
     /**
      * @var ElementProvider
@@ -24,11 +26,11 @@ class SpecGenerator
 
     /**
      * SpecGenerator constructor.
-     * @param ElementProvider $elementProvider
+     * @param Provider $elementProvider
      * @param ElementGenerator $elementGenerator
      * @param FormatterInterface $formatter
      */
-    public function __construct(ElementProvider $elementProvider,
+    public function __construct(Provider $elementProvider,
         ElementGenerator $elementGenerator,
         FormatterInterface $formatter
     ) {

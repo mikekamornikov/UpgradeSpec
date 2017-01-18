@@ -3,17 +3,16 @@
 namespace spec\Sugarcrm\UpgradeSpec\Generator;
 
 use Prophecy\Argument;
+use Sugarcrm\UpgradeSpec\Element\ElementInterface;
+use Sugarcrm\UpgradeSpec\Element\Provider;
+use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
 use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
-use Sugarcrm\UpgradeSpec\Generator\Element\ElementInterface;
-use Sugarcrm\UpgradeSpec\Generator\ElementGenerator;
-use Sugarcrm\UpgradeSpec\Generator\ElementProvider;
-use Sugarcrm\UpgradeSpec\Generator\SpecGenerator;
-use Sugarcrm\UpgradeSpec\Generator\GeneratorInterface;
 use PhpSpec\ObjectBehavior;
+use Sugarcrm\UpgradeSpec\Spec\Generator;
 
 class SpecGeneratorSpec extends ObjectBehavior
 {
-    function let(ElementProvider $elementProvider,
+    function let(Provider $elementProvider,
         ElementGenerator $specElementGenerator,
         ElementInterface $step1,
         ElementInterface $step2,
@@ -42,7 +41,7 @@ class SpecGeneratorSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(SpecGenerator::class);
+        $this->shouldHaveType(Generator::class);
     }
 
     function it_generates_uprade_spec()
