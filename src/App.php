@@ -138,7 +138,6 @@ class App
         $response = $client->request('GET', '/Documentation/Sugar_Versions/index.html');
 
         $crawler = new Crawler($response->getBody()->getContents());
-
         $versions = [];
         foreach ($crawler->filter('section.content-body > h1') as $node) {
             $version = $node->textContent;
@@ -146,5 +145,33 @@ class App
                 $versions[] = $version;
             }
         }
+
+        $this->initReleaseNotesStorage('7.8', '0.0');
+    }
+
+    /*
+     * @param String $majorVersion
+     * @param String $minorVersion
+     */
+    private function initReleaseNotesStorage($majorVersion, $minorVersion)
+    {
+        $client = new Client(['base_uri' => 'http://support.sugarcrm.com']);
+        $response = $client->request('GET', '/Documentation/Sugar_Versions/' . $majorVersion . '/Pro/Sugar_' .
+        $majorVersion . '.' . $minorVersion . '_Release_Notes/index.html');
+
+        $crawler = new Crawler($response->getBody()->getContents());
+        $releaseNoteList  = $crawler->filter('.EDITION_PRO');
+        foreach($releaseNoteList as $releaseNote)
+        {
+            $this->$this->saveGrabbedContent($majorVersion. $minorVersion, $releaseNote->textContent);
+        }
+    }
+
+    /* @param String $fileName
+     * @param String $content
+     */
+    public function saveGrabbedContent($fileName, $content)
+    {
+
     }
 }
