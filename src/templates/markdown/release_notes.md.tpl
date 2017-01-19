@@ -1,5 +1,5 @@
-Feature Enhancements
-Fixed Issues
-Known Issues
-Developer
-Additional Product Information
+- Feature Enhancements
+- Fixed Issues
+- Known Issues
+- Developer
+- Additional Product Information
