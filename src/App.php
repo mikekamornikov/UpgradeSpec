@@ -161,9 +161,8 @@ class App
 
         $crawler = new Crawler($response->getBody()->getContents());
         $releaseNoteList  = $crawler->filter('.EDITION_PRO');
-        foreach($releaseNoteList as $releaseNote)
-        {
-            $this->$this->saveGrabbedContent($majorVersion. $minorVersion, $releaseNote->textContent);
+        foreach ($releaseNoteList as $releaseNote) {
+            $this->saveGrabbedContent($majorVersion. $minorVersion, $releaseNote->textContent);
         }
     }
 

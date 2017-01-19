@@ -24,7 +24,8 @@ class Locator
      */
     public function locate($name)
     {
-        $templatePath = sprintf('%s/%s.md.tpl', $this->templateFolder, $name);
+        $format = getenv('DEFAULT_FORMAT');
+        $templatePath = sprintf('%s/%s/%s.md.tpl', $this->templateFolder, $format, $name);
         if (!file_exists($templatePath)) {
             throw new \InvalidArgumentException(sprintf('Template "%s" not found', $name));
         }
