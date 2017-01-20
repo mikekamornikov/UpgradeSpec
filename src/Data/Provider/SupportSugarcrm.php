@@ -42,6 +42,10 @@ class SupportSugarcrm implements ProviderInterface
      */
     public function getVersions()
     {
+        if ($this->cache->has('versions')) {
+            return $this->cache->get('versions');
+        }
+
         $response = $this->httpClient->request('GET', '/Documentation/Sugar_Versions/index.html');
 
         $crawler = new Crawler($response->getBody()->getContents());
@@ -66,10 +70,12 @@ class SupportSugarcrm implements ProviderInterface
             }
         }
 
-        //
+        // sort versions (ASC)
         usort($versions, function ($v1, $v2) {
             return version_compare($v1, $v2, '<') ? -1 : (version_compare($v1, $v2, '>') ? 1 : 0) ;
         });
+
+        $this->cache->set('versions', $versions);
 
         return $versions;
     }
@@ -101,8 +107,16 @@ class SupportSugarcrm implements ProviderInterface
      */
     private function getReleaseNotes($versions, $domPath)
     {
+        $cacheKey = $this->getCacheKey($domPath);
+
         $releaseNotes = [];
         foreach ($versions as $version) {
+
+            $versionKey = $cacheKey . '_' . $version;
+            if ($this->cache->has($versionKey)) {
+                $releaseNotes[] = $this->cache->get($versionKey);
+            }
+
             $delimiter = '.';
             list($v1, $v2) = explode($delimiter, $version);
 
@@ -123,11 +137,25 @@ class SupportSugarcrm implements ProviderInterface
                 }
 
                 if ($releaseNote) {
-                    $releaseNotes[] = $this->htmlConverter->convert(implode('<br>', $releaseNote));
+                    $releaseNote = $this->htmlConverter->convert(implode('<br>', $releaseNote));
+
+                    $this->cache->set($versionKey, $releaseNote);
+
+                    $releaseNotes[] = $releaseNote;
                 }
             }
         }
 
         return $releaseNotes;
+    }
+
+    /**
+     * Return string which can be used as cache key
+     * @param $key
+     * @return mixed
+     */
+    private function getCacheKey($key)
+    {
+        return preg_replace('/[^a-zA-Z0-9_\.]+/', '', strtolower($key));
     }
 }
