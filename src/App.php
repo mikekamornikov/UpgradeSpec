@@ -2,12 +2,12 @@
 
 namespace Sugarcrm\UpgradeSpec;
 
-use GuzzleHttp\Client;
 use Humbug\SelfUpdate\Strategy\GithubStrategy;
 use Humbug\SelfUpdate\Updater as HumbugUpdater;
 use League\HTMLToMarkdown\HtmlConverter;
 use Sugarcrm\UpgradeSpec\Cache\Cache;
 use Sugarcrm\UpgradeSpec\Cache\Adapter\File as FileCache;
+use Sugarcrm\UpgradeSpec\Command\CacheClearCommand;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
@@ -52,7 +52,10 @@ class App
      */
     public function run()
     {
-        $this->app->add(new GenerateSpecCommand(null, $this->getGenerator(), new Sugarcrm(), new File()));
+        $cache = $this->getCache();
+
+        $this->app->add(new GenerateSpecCommand(null, $this->getGenerator($cache), new Sugarcrm(), new File()));
+        $this->app->add(new CacheClearCommand(null, $cache));
 
         if ($this->isUpdateAvailable()) {
             $updater = $this->getUpdater();
@@ -111,9 +114,10 @@ class App
 
     /**
      * Generator factory method
+     * @param Cache $cache
      * @return Generator
      */
-    private function getGenerator()
+    private function getGenerator(Cache $cache)
     {
         $specElements = [
             CoreChanges::class,
@@ -123,7 +127,7 @@ class App
 
         $formatter = new MarkdownFormatter();
         $templateRenderer = new Renderer(new Locator(__DIR__ . '/../' . getenv('TEMPLATE_PATH')));
-        $dataManager = new Manager(new SupportSugarcrm($this->getCache(), new HtmlConverter(['strip_tags' => true])));
+        $dataManager = new Manager(new SupportSugarcrm($cache, new HtmlConverter(['strip_tags' => true])));
 
         return new Generator(
             new Provider($specElements, $templateRenderer, $dataManager),
