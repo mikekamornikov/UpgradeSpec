@@ -18,12 +18,14 @@ class Generator
 
     /**
      * @param ElementInterface $element
+     * @param $buildVersion
+     * @param $upgradeTo
      * @return string
      */
-    public function generate(ElementInterface $element)
+    public function generate(ElementInterface $element, $buildVersion, $upgradeTo)
     {
         return $this->formatter->asTitle($element->getTitle(), 2)
             . $this->formatter->getDelimiter()
-            . $this->formatter->asBody($element->getBody());
+            . $this->formatter->asBody($element->getBody($buildVersion, $upgradeTo));
     }
 }

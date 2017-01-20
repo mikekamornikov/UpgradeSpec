@@ -2,6 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Element;
 
+use Sugarcrm\UpgradeSpec\Data\Manager;
 use Sugarcrm\UpgradeSpec\Template\Renderer;
 
 class Provider
@@ -12,11 +13,12 @@ class Provider
      * Configurator constructor.
      * @param $elements
      * @param Renderer $templateRenderer
+     * @param Manager $dataManager
      */
-    public function __construct($elements, Renderer $templateRenderer)
+    public function __construct($elements, Renderer $templateRenderer, Manager $dataManager)
     {
-        $this->elements = array_map(function ($element) use ($templateRenderer) {
-            return new $element($templateRenderer);
+        $this->elements = array_map(function ($element) use ($templateRenderer, $dataManager) {
+            return new $element($templateRenderer, $dataManager);
         }, $elements);
     }
 

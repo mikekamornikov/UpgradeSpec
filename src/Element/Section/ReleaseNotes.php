@@ -36,10 +36,18 @@ class ReleaseNotes implements ElementInterface
     }
 
     /**
+     * @param $version
+     * @param $newVersion
      * @return string
      */
-    public function getBody()
+    public function getBody($version, $newVersion)
     {
-        return $this->renderer->render('release_notes', []);
+        $features = $this->dataManager->getFeatureEnhancements($version, $newVersion);
+        $devChanges = $this->dataManager->getDevelopmentChanges($version, $newVersion);
+
+        return $this->renderer->render('release_notes', [
+            'features' => implode(PHP_EOL . PHP_EOL, $features),
+            'devChanges' => implode(PHP_EOL . PHP_EOL, $devChanges),
+        ]);
     }
 }

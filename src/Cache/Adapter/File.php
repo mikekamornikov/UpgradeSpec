@@ -1,6 +1,6 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Cache;
+namespace Sugarcrm\UpgradeSpec\Cache\Adapter;
 
 use Psr\SimpleCache\CacheInterface;
 use Sugarcrm\UpgradeSpec\Cache\Exception\InvalidArgumentException;
@@ -197,7 +197,7 @@ class File implements CacheInterface
             $this->cachePath,
             \FilesystemIterator::CURRENT_AS_PATHNAME | \FilesystemIterator::SKIP_DOTS
         );
-        foreach (new RecursiveIteratorIterator($iterator) as $path) {
+        foreach (new \RecursiveIteratorIterator($iterator) as $path) {
             if (is_dir($path)) {
                 continue; // ignore directories
             }

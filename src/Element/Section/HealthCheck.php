@@ -36,9 +36,11 @@ class HealthCheck implements ElementInterface
     }
 
     /**
+     * @param $version
+     * @param $newVersion
      * @return string
      */
-    public function getBody()
+    public function getBody($version, $newVersion)
     {
         return $this->renderer->render('health_check', ['download_url' => 'url']);
     }

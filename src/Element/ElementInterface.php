@@ -6,7 +6,7 @@ interface ElementInterface
 {
     public function getTitle();
 
-    public function getBody();
+    public function getBody($version, $newVersion);
 
     public function getOrder();
 

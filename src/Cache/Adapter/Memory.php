@@ -1,6 +1,6 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Cache;
+namespace Sugarcrm\UpgradeSpec\Cache\Adapter;
 
 use Psr\SimpleCache\CacheInterface;
 use Sugarcrm\UpgradeSpec\Cache\Exception\InvalidArgumentException;

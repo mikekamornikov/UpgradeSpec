@@ -54,8 +54,8 @@ class Generator
             $title = $this->formatter->asTitle(sprintf('%s -> %s upgrade', $buildVersion, $upgradeTo)) . $delimiter;
 
             return $title . implode($delimiter, array_map(
-                function ($element) {
-                    return $this->elementGenerator->generate($element);
+                function ($element) use ($buildVersion, $upgradeTo) {
+                    return $this->elementGenerator->generate($element, $buildVersion, $upgradeTo);
                 },
                 $elements
             ));

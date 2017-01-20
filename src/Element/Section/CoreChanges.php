@@ -36,9 +36,11 @@ class CoreChanges implements ElementInterface
     }
 
     /**
+     * @param $version
+     * @param $newVersion
      * @return string
      */
-    public function getBody()
+    public function getBody($version, $newVersion)
     {
         return $this->renderer->render('core_changes', []);
     }

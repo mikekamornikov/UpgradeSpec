@@ -5,9 +5,14 @@ namespace Sugarcrm\UpgradeSpec;
 use GuzzleHttp\Client;
 use Humbug\SelfUpdate\Strategy\GithubStrategy;
 use Humbug\SelfUpdate\Updater as HumbugUpdater;
+use League\HTMLToMarkdown\HtmlConverter;
+use Sugarcrm\UpgradeSpec\Cache\Cache;
+use Sugarcrm\UpgradeSpec\Cache\Adapter\File as FileCache;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
+use Sugarcrm\UpgradeSpec\Data\Manager;
+use Sugarcrm\UpgradeSpec\Data\Provider\SupportSugarcrm;
 use Sugarcrm\UpgradeSpec\Element\Provider;
 use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
 use Sugarcrm\UpgradeSpec\Element\Section\CoreChanges;
@@ -22,7 +27,6 @@ use Sugarcrm\UpgradeSpec\Template\Renderer;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter;
 use Sugarcrm\UpgradeSpec\Updater\Updater;
 use Symfony\Component\Console\Application;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Dotenv\Dotenv;
 
 class App
@@ -41,7 +45,6 @@ class App
     {
         $this->app = new Application($name, $version);
         $this->initEnvironment();
-        $this->initCache();
     }
 
     /**
@@ -49,32 +52,31 @@ class App
      */
     public function run()
     {
-        $this->app->add(new GenerateSpecCommand(null, $this->getGeneratorObject(), new Sugarcrm(), new File()));
+        $this->app->add(new GenerateSpecCommand(null, $this->getGenerator(), new Sugarcrm(), new File()));
 
         if ($this->isUpdateAvailable()) {
-            $this->app->add(new SelfUpdateCommand(null, $this->getUpdaterObject()));
-            $this->app->add(new SelfRollbackCommand(null, $this->getUpdaterObject()));
+            $updater = $this->getUpdater();
+            $this->app->add(new SelfUpdateCommand(null, $updater));
+            $this->app->add(new SelfRollbackCommand(null, $updater));
         }
 
         $this->app->run();
     }
 
-    /**
-     * Configure commands
+    /*
+     * Init application environment
      */
     private function initEnvironment()
     {
         $env = new Dotenv;
 
-        // source custom .env file
         $envPath = __DIR__ . '/../.env';
         if (file_exists($envPath)) {
-            $env->populate($env->parse(file_get_contents($envPath), $envPath));
+            $env->populate($env->parse(@file_get_contents($envPath), $envPath));
         }
 
-        // source dist .env file
         $envPath = __DIR__ . '/../.env.dist';
-        $env->populate($env->parse(file_get_contents($envPath), $envPath));
+        $env->populate($env->parse(@file_get_contents($envPath), $envPath));
     }
 
     /**
@@ -87,9 +89,10 @@ class App
     }
 
     /**
+     * Updater factory method
      * @return Updater
      */
-    private function getUpdaterObject()
+    private function getUpdater()
     {
         $strategy = new GithubStrategy();
         $strategy->setPackageName(getenv('PACKAGE_NAME'));
@@ -106,7 +109,11 @@ class App
         return new Updater(new HumbugAdapter($humbugUpdater));
     }
 
-    private function getGeneratorObject()
+    /**
+     * Generator factory method
+     * @return Generator
+     */
+    private function getGenerator()
     {
         $specElements = [
             CoreChanges::class,
@@ -116,61 +123,31 @@ class App
 
         $formatter = new MarkdownFormatter();
         $templateRenderer = new Renderer(new Locator(__DIR__ . '/../' . getenv('TEMPLATE_PATH')));
+        $dataManager = new Manager(new SupportSugarcrm($this->getCache(), new HtmlConverter(['strip_tags' => true])));
 
         return new Generator(
-            new Provider($specElements, $templateRenderer),
+            new Provider($specElements, $templateRenderer, $dataManager),
             new ElementGenerator($formatter),
             $formatter
         );
     }
 
     /**
-     * Creates and populates application cache folder
+     * Cache factory method
+     * @return Cache
      */
-    private function initCache()
+    private function getCache()
     {
-        $cacheFolder = sys_get_temp_dir() . '/.' . getenv('PHAR_BASENAME') . '/';
-        if (!file_exists($cacheFolder)) {
-            @mkdir($cacheFolder, 0644, true);
+        $cachePath = getenv('CACHE_PATH');
+        if (!$cachePath) {
+            $cachePath = sys_get_temp_dir() . '/.' . getenv('PHAR_BASENAME');
         }
 
-        $client = new Client(['base_uri' => 'http://support.sugarcrm.com']);
-        $response = $client->request('GET', '/Documentation/Sugar_Versions/index.html');
-
-        $crawler = new Crawler($response->getBody()->getContents());
-        $versions = [];
-        foreach ($crawler->filter('section.content-body > h1') as $node) {
-            $version = $node->textContent;
-            if (preg_match('/^[0-9]\.[0-9]$/', $version)) {
-                $versions[] = $version;
-            }
+        $cacheTtl = getenv('CACHE_TTL');
+        if (!$cacheTtl) {
+            $cacheTtl = 3600;
         }
 
-        $this->initReleaseNotesStorage('7.8', '0.0');
-    }
-
-    /*
-     * @param String $majorVersion
-     * @param String $minorVersion
-     */
-    private function initReleaseNotesStorage($majorVersion, $minorVersion)
-    {
-        $client = new Client(['base_uri' => 'http://support.sugarcrm.com']);
-        $response = $client->request('GET', '/Documentation/Sugar_Versions/' . $majorVersion . '/Pro/Sugar_' .
-        $majorVersion . '.' . $minorVersion . '_Release_Notes/index.html');
-
-        $crawler = new Crawler($response->getBody()->getContents());
-        $releaseNoteList  = $crawler->filter('.EDITION_PRO');
-        foreach ($releaseNoteList as $releaseNote) {
-            $this->saveGrabbedContent($majorVersion. $minorVersion, $releaseNote->textContent);
-        }
-    }
-
-    /* @param String $fileName
-     * @param String $content
-     */
-    public function saveGrabbedContent($fileName, $content)
-    {
-
+        return new Cache(new FileCache($cachePath, $cacheTtl));
     }
 }
