@@ -127,7 +127,12 @@ class App
 
         $formatter = new MarkdownFormatter();
         $templateRenderer = new Renderer(new Locator(__DIR__ . '/../' . getenv('TEMPLATE_PATH')));
-        $dataManager = new Manager(new SupportSugarcrm($cache, new HtmlConverter(['strip_tags' => true])));
+        $dataManager = new Manager(
+            new SupportSugarcrm($cache, new HtmlConverter([
+                'strip_tags' => true,
+                'header_style' => 'atx'
+            ]))
+        );
 
         return new Generator(
             new Provider($specElements, $templateRenderer, $dataManager),

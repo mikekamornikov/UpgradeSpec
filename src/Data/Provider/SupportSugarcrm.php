@@ -31,7 +31,7 @@ class SupportSugarcrm implements ProviderInterface
      */
     public function __construct(Cache $cache, HtmlConverter $htmlConverter)
     {
-        $this->httpClient = new Client(['base_uri' => 'http://support.sugarcrm.com']);
+        $this->httpClient = new Client(['base_uri' => 'http://support.sugarcrm.com/']);
         $this->cache = $cache;
         $this->htmlConverter = $htmlConverter;
     }
@@ -123,7 +123,11 @@ class SupportSugarcrm implements ProviderInterface
             $major = implode($delimiter, [$v1, $v2]);
             $url = sprintf('/Documentation/Sugar_Versions/%s/Ult/Sugar_%s_Release_Notes/index.html', $major, $version);
             $response = $this->httpClient->request('GET', $url);
-            $crawler = new Crawler($response->getBody()->getContents());
+
+            $baseUrl = dirname($this->httpClient->getConfig('base_uri') . ltrim($url, '/')) . '/';
+            $content = $this->convertLinks($response->getBody()->getContents(), $baseUrl);
+
+            $crawler = new Crawler($content);
 
             $releaseNote = [];
             $nodes = $crawler->filter($domPath);
@@ -157,5 +161,57 @@ class SupportSugarcrm implements ProviderInterface
     private function getCacheKey($key)
     {
         return preg_replace('/[^a-zA-Z0-9_\.]+/', '', strtolower($key));
+    }
+
+    /**
+     * Converts all relative links to absolute ones
+     * @param $content
+     * @param $base
+     * @return mixed
+     */
+    private function convertLinks($content, $base)
+    {
+        // href pattern
+        $pattern = '/(?<=href=("|\'))[^"\']+(?=("|\'))/';
+
+        $host = parse_url($base, PHP_URL_HOST);
+        $path = parse_url($base, PHP_URL_PATH);
+        $scheme = parse_url($base, PHP_URL_SCHEME);
+
+        return preg_replace_callback($pattern, function ($matches) use ($base, $scheme, $host, $path) {
+
+            $hrefValue = $matches[0];
+
+            if (strpos($hrefValue, '//') === 0) {
+                return $scheme . ':' . $hrefValue;
+            }
+
+            // return if already absolute URL
+            if  (parse_url($hrefValue, PHP_URL_SCHEME) != '') {
+                return $hrefValue;
+            }
+
+            // queries and anchors
+            if ($hrefValue[0] == '#' || $hrefValue[0] == '?') {
+                return $base . $hrefValue;
+            }
+
+            // remove non-directory element from path
+            $path = preg_replace('#/[^/]*$#', '', $path);
+
+            // destroy path if relative url points to root
+            if ($hrefValue[0] ==  '/') {
+                $path = '';
+            }
+
+            // dirty absolute URL
+            $abs = $host . $path . '/' .$hrefValue;
+
+            // replace '//', '/./', '/foo/../' with '/'
+            $abs = preg_replace('/\/[^\/]+\/\.\.\//', '/', str_replace(['//', '/./'], '/', $abs));
+
+            // absolute URL is ready
+            return  $scheme . '://' . $abs;
+        }, $content);
     }
 }
