@@ -126,7 +126,8 @@ class SupportSugarcrm implements ProviderInterface
 
             $baseUrl = dirname($this->httpClient->getConfig('base_uri') . ltrim($url, '/')) . '/';
             $content = $this->convertLinks($response->getBody()->getContents(), $baseUrl);
-            $content = $this->removeDuplicates($content);
+            $content = $this->removeStrongDuplicates($content);
+            $content = $this->convertCode($content);
 
             $crawler = new Crawler($content);
 
@@ -165,7 +166,7 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
-     * Converts all relative links to absolute ones
+     * Converts all relative links (@href) to absolute ones
      * @param $content
      * @param $base
      * @return mixed
@@ -217,11 +218,11 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
-     * Removes duplicated tags
+     * Removes duplicated "strong" and "b" tags
      * @param $content
      * @return mixed
      */
-    private function removeDuplicates($content)
+    private function removeStrongDuplicates($content)
     {
         // strong -> b
         $content = str_replace(['<strong>', '</strong>'], ['<b>', '</b>'], $content);
@@ -231,5 +232,48 @@ class SupportSugarcrm implements ProviderInterface
 
         // cleanup
         return preg_replace('/(<\/b>\s*<b>)+/', ' ', $content);
+    }
+
+    /**
+     * Converts "pre" to "code"
+     * @param $content
+     * @return mixed
+     */
+    private function convertCode($content)
+    {
+        // strpos with array support
+        $strposa = function ($haystack, $needles = []) {
+            $chr = [];
+            foreach ($needles as $needle) {
+                $res = strpos($haystack, $needle);
+                if ($res !== false) {
+                    $chr[$needle] = $res;
+                }
+            }
+
+            if (empty($chr)) {
+                return false;
+            }
+
+            return min($chr);
+        };
+
+        $content = str_replace(['<pre>', '<pre ', '</pre>'], ['<code>', '<code ', '</code>'], $content);
+
+        return preg_replace_callback('/<code(.*?)>(.*?)<\/code>/s', function ($matches) use ($strposa) {
+            $code = str_replace(
+                ['<br></br>', '<br>', '<br/>', '&nbsp;'],
+                [PHP_EOL, PHP_EOL, PHP_EOL, ' '],
+                $matches[0]
+            );
+
+            // if multiline or real code snippet
+            if (false !== $strposa($code, ['function', 'class', 'array'])
+                || false !== strpos($code, PHP_EOL)) {
+                return '<br/>' . $code;
+            }
+
+            return $code;
+        }, $content);
     }
 }
