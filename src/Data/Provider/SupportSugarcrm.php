@@ -126,6 +126,7 @@ class SupportSugarcrm implements ProviderInterface
 
             $baseUrl = dirname($this->httpClient->getConfig('base_uri') . ltrim($url, '/')) . '/';
             $content = $this->convertLinks($response->getBody()->getContents(), $baseUrl);
+            $content = $this->removeDuplicates($content);
 
             $crawler = new Crawler($content);
 
@@ -213,5 +214,22 @@ class SupportSugarcrm implements ProviderInterface
             // absolute URL is ready
             return  $scheme . '://' . $abs;
         }, $content);
+    }
+
+    /**
+     * Removes duplicated tags
+     * @param $content
+     * @return mixed
+     */
+    private function removeDuplicates($content)
+    {
+        // strong -> b
+        $content = str_replace(['<strong>', '</strong>'], ['<b>', '</b>'], $content);
+
+        // unite duplicates
+        $content = preg_replace('/(<\/b>\s*)+/', '</b> ', preg_replace('/(<b>\s*)+/', '<b>', $content));
+
+        // cleanup
+        return preg_replace('/(<\/b>\s*<b>)+/', ' ', $content);
     }
 }
