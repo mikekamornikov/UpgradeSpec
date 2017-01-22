@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
 use League\HTMLToMarkdown\HtmlConverter;
 use Sugarcrm\UpgradeSpec\Cache\Cache;
+use Sugarcrm\UpgradeSpec\Purifier\Html;
 use Symfony\Component\DomCrawler\Crawler;
 
 class SupportSugarcrm implements ProviderInterface
@@ -102,10 +103,9 @@ class SupportSugarcrm implements ProviderInterface
         if ($newVersions) {
             $this->processRequestPool($requests, [
                 'fulfilled' => function ($response, $version) {
+
                     $base = dirname($this->httpClient->getConfig('base_uri') . ltrim($this->getReleaseNotesUri($version), '/')) . '/';
-                    $crawler = new Crawler($this->purifyHtml($response->getBody()->getContents(), $base, [
-                        'absolute_urls', 'remove_tag_duplicates', 'pre_to_code'
-                    ]));
+                    $crawler = new Crawler($this->purifyHtml($response->getBody()->getContents(), $base));
 
                     $identifiers = [
                         'features' => '#Feature_Enhancements',
@@ -158,7 +158,7 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
-     * Returns version specific release notes uri
+     * Returns version specific release note uri
      * @param $version
      * @return string
      */
@@ -185,118 +185,7 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
-     * Converts all relative links (@href) to absolute ones
-     * @param $content
-     * @param $base
-     * @return mixed
-     */
-    private function convertLinks($content, $base)
-    {
-        // href pattern
-        $pattern = '/(?<=href=("|\'))[^"\']+(?=("|\'))/';
-
-        $host = parse_url($base, PHP_URL_HOST);
-        $path = parse_url($base, PHP_URL_PATH);
-        $scheme = parse_url($base, PHP_URL_SCHEME);
-
-        return preg_replace_callback($pattern, function ($matches) use ($base, $scheme, $host, $path) {
-
-            $hrefValue = $matches[0];
-
-            if (strpos($hrefValue, '//') === 0) {
-                return $scheme . ':' . $hrefValue;
-            }
-
-            // return if already absolute URL
-            if  (parse_url($hrefValue, PHP_URL_SCHEME) != '') {
-                return $hrefValue;
-            }
-
-            // queries and anchors
-            if ($hrefValue[0] == '#' || $hrefValue[0] == '?') {
-                return $base . $hrefValue;
-            }
-
-            // remove non-directory element from path
-            $path = preg_replace('#/[^/]*$#', '', $path);
-
-            // destroy path if relative url points to root
-            if ($hrefValue[0] ==  '/') {
-                $path = '';
-            }
-
-            // dirty absolute URL
-            $abs = $host . $path . '/' .$hrefValue;
-
-            // replace '//', '/./', '/foo/../' with '/'
-            $abs = preg_replace('/\/[^\/]+\/\.\.\//', '/', str_replace(['//', '/./'], '/', $abs));
-
-            // absolute URL is ready
-            return  $scheme . '://' . $abs;
-        }, $content);
-    }
-
-    /**
-     * Removes duplicated tags
-     * @param $content
-     * @return mixed
-     */
-    private function removeTagDuplicates($content)
-    {
-        // strong -> b
-        $content = str_replace(['<strong>', '</strong>'], ['<b>', '</b>'], $content);
-
-        // unite duplicates
-        $content = preg_replace('/(<\/b>\s*)+/', '</b> ', preg_replace('/(<b>\s*)+/', '<b>', $content));
-
-        // cleanup
-        return preg_replace('/(<\/b>\s*<b>)+/', ' ', $content);
-    }
-
-    /**
-     * Converts "pre" to "code"
-     * @param $content
-     * @return mixed
-     */
-    private function convertCode($content)
-    {
-        // strpos with array support
-        $strposa = function ($haystack, $needles = []) {
-            $chr = [];
-            foreach ($needles as $needle) {
-                $res = strpos($haystack, $needle);
-                if ($res !== false) {
-                    $chr[$needle] = $res;
-                }
-            }
-
-            if (empty($chr)) {
-                return false;
-            }
-
-            return min($chr);
-        };
-
-        $content = str_replace(['<pre>', '<pre ', '</pre>'], ['<code>', '<code ', '</code>'], $content);
-
-        return preg_replace_callback('/<code(.*?)>(.*?)<\/code>/s', function ($matches) use ($strposa) {
-            $code = str_replace(
-                ['<br></br>', '<br>', '<br/>', '&nbsp;'],
-                [PHP_EOL, PHP_EOL, PHP_EOL, ' '],
-                $matches[0]
-            );
-
-            // if multiline or real code snippet
-            if (false !== $strposa($code, ['function', 'class', 'array'])
-                || false !== strpos($code, PHP_EOL)) {
-                return '<br/>' . $code;
-            }
-
-            return $code;
-        }, $content);
-    }
-
-    /**
+     * Lightweight HTML purifier
      * @param $html
      * @param null $baseUrl
      * @param array $options
@@ -304,25 +193,20 @@ class SupportSugarcrm implements ProviderInterface
      */
     private function purifyHtml($html, $baseUrl = null, $options = [])
     {
-        if (in_array('absolute_urls', $options)) {
-            $html = $this->convertLinks($html, $baseUrl);
-        }
+        $options = array_merge([
+            'absolute_urls' => true,
+            'no_tag_duplicates' => true,
+            'pre_to_code' => true,
+        ], $options);
 
-        if (in_array('remove_tag_duplicates', $options)) {
-            $html = $this->removeTagDuplicates($html);
-        }
-
-        if (in_array('pre_to_code', $options)) {
-            $html = $this->convertCode($html);
-        }
-
-        return $html;
+        return (new Html($baseUrl, $options))->purify($html);
     }
 
     /**
      * Processes request pool
      * @param callable $requests
      * @param array $config
+     * @return mixed
      */
     private function processRequestPool(callable $requests, $config = [])
     {
@@ -331,6 +215,6 @@ class SupportSugarcrm implements ProviderInterface
          * 2. initiate the transfers and create a promise
          * 3. force the pool of requests to complete
          */
-        (new Pool($this->httpClient, $requests(), $config))->promise()->wait();
+        return (new Pool($this->httpClient, $requests(), $config))->promise()->wait();
     }
 }
