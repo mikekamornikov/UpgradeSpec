@@ -2,4 +2,4 @@
 {{features}}
 
 ### Development changes
-{{devChanges}}
+{{dev_changes}}

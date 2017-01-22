@@ -42,12 +42,21 @@ class ReleaseNotes implements ElementInterface
      */
     public function getBody($version, $newVersion)
     {
-        $features = $this->dataManager->getFeatureEnhancements($version, $newVersion);
-        $devChanges = $this->dataManager->getDevelopmentChanges($version, $newVersion);
+        $releaseNotes = $this->dataManager->getReleaseNotes($version, $newVersion);
+
+        $features = $devChanges = [];
+        foreach ($releaseNotes as $version) {
+            if (isset($version['features'])) {
+                $features[] = $version['features'];
+            }
+            if (isset($version['dev_changes'])) {
+                $devChanges[] = $version['dev_changes'];
+            }
+        }
 
         return $this->renderer->render('release_notes', [
             'features' => implode(PHP_EOL . PHP_EOL, $features),
-            'devChanges' => implode(PHP_EOL . PHP_EOL, $devChanges),
+            'dev_changes' => implode(PHP_EOL . PHP_EOL, $devChanges),
         ]);
     }
 }

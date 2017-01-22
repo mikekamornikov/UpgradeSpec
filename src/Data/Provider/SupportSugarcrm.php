@@ -3,6 +3,7 @@
 namespace Sugarcrm\UpgradeSpec\Data\Provider;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Pool;
 use League\HTMLToMarkdown\HtmlConverter;
 use Sugarcrm\UpgradeSpec\Cache\Cache;
 use Symfony\Component\DomCrawler\Crawler;
@@ -81,88 +82,106 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
-     * Get feature enhancements for all available versions from given range
      * @param array $versions
-     * @return mixed
-     */
-    public function getFeatureEnhancements(array $versions)
-    {
-        return $this->getReleaseNotes($versions, '#Feature_Enhancements');
-    }
-
-    /**
-     * Get development changes for all available versions from given range
-     * @param array $versions
-     * @return mixed
-     */
-    public function getDevelopmentChanges(array $versions)
-    {
-        return $this->getReleaseNotes($versions, '#Development_Changes');
-    }
-
-    /**
-     * @param $versions
-     * @param $domPath
      * @return array
      */
-    private function getReleaseNotes($versions, $domPath)
+    public function getReleaseNotes(array $versions)
     {
-        $cacheKey = $this->getCacheKey($domPath);
+        $newVersions = array_filter($versions, function ($version) {
+            return !$this->cache->has($this->getCacheKey(['release_notes', $version]));
+        });
+
+        $requests = function () use ($newVersions) {
+            foreach ($newVersions as $version) {
+                yield $version => function () use ($version) {
+                    return $this->httpClient->getAsync($this->getReleaseNotesUri($version));
+                };
+            }
+        };
+
+        if ($newVersions) {
+            $this->processRequestPool($requests, [
+                'fulfilled' => function ($response, $version) {
+                    $base = dirname($this->httpClient->getConfig('base_uri') . ltrim($this->getReleaseNotesUri($version), '/')) . '/';
+                    $crawler = new Crawler($this->purifyHtml($response->getBody()->getContents(), $base, [
+                        'absolute_urls', 'remove_tag_duplicates', 'pre_to_code'
+                    ]));
+
+                    $identifiers = [
+                        'features' => '#Feature_Enhancements',
+                        'dev_changes' => '#Development_Changes'
+                    ];
+
+                    $releaseNote = [];
+                    foreach ($identifiers as $key => $identifier) {
+                        $nodes = $crawler->filter($identifier);
+                        if (count($nodes)) {
+                            $nextSiblings = $nodes->nextAll();
+
+                            $content = [];
+                            if (count($p = $nextSiblings->filter('p'))) {
+                                $content[] = '<p>' . $p->first()->html() . '</p>';
+                            }
+                            if (count($ul = $nextSiblings->filter('ul'))) {
+                                $content[] = '<ul>' . $ul->first()->html() . '</ul>';
+                            }
+
+                            if ($content) {
+                                $releaseNote[$key] = $this->htmlConverter->convert(implode('<br>', $content));
+                            }
+                        }
+                    }
+
+                    $this->cache->set($this->getCacheKey(['release_notes', $version]), $releaseNote);
+                },
+                'rejected' => function ($reason, $version) {
+                    throw new \RuntimeException(
+                        sprintf('Can\'t get release notes for version: %s (reason: %s)', $version, $reason)
+                    );
+                },
+            ]);
+        }
 
         $releaseNotes = [];
         foreach ($versions as $version) {
-
-            $versionKey = $cacheKey . '_' . $version;
-            if ($this->cache->has($versionKey)) {
-                $releaseNotes[] = $this->cache->get($versionKey);
-            }
-
-            $delimiter = '.';
-            list($v1, $v2) = explode($delimiter, $version);
-
-            $major = implode($delimiter, [$v1, $v2]);
-            $url = sprintf('/Documentation/Sugar_Versions/%s/Ult/Sugar_%s_Release_Notes/index.html', $major, $version);
-            $response = $this->httpClient->request('GET', $url);
-
-            $baseUrl = dirname($this->httpClient->getConfig('base_uri') . ltrim($url, '/')) . '/';
-            $content = $this->convertLinks($response->getBody()->getContents(), $baseUrl);
-            $content = $this->removeStrongDuplicates($content);
-            $content = $this->convertCode($content);
-
-            $crawler = new Crawler($content);
-
-            $releaseNote = [];
-            $nodes = $crawler->filter($domPath);
-            if (count($nodes)) {
-                $nextSiblings = $nodes->nextAll();
-                if (count($p = $nextSiblings->filter('p'))) {
-                    $releaseNote[] = '<p>' . $p->first()->html() . '</p>';
-                }
-                if (count($ul = $nextSiblings->filter('ul'))) {
-                    $releaseNote[] = '<ul>' . $ul->first()->html() . '</ul>';
-                }
-
-                if ($releaseNote) {
-                    $releaseNote = $this->htmlConverter->convert(implode('<br>', $releaseNote));
-
-                    $this->cache->set($versionKey, $releaseNote);
-
-                    $releaseNotes[] = $releaseNote;
-                }
+            $releaseNote = $this->cache->get($this->getCacheKey(['release_notes', $version]), null);
+            if ($releaseNote) {
+                $releaseNotes[$version] = $releaseNote;
             }
         }
+
+        uksort($releaseNotes, function ($v1, $v2) {
+            return version_compare($v1, $v2, '<') ? -1 : (version_compare($v1, $v2, '>') ? 1 : 0) ;
+        });
 
         return $releaseNotes;
     }
 
     /**
-     * Return string which can be used as cache key
-     * @param $key
+     * Returns version specific release notes uri
+     * @param $version
+     * @return string
+     */
+    private function getReleaseNotesUri($version)
+    {
+        list($v1, $v2) = explode('.', $version);
+        $major = implode('.', [$v1, $v2]);
+
+        return sprintf('/Documentation/Sugar_Versions/%s/Ult/Sugar_%s_Release_Notes/index.html', $major, $version);
+    }
+
+    /**
+     * Returns cache key
+     * @param $keyParts
      * @return mixed
      */
-    private function getCacheKey($key)
+    private function getCacheKey(array $keyParts)
     {
-        return preg_replace('/[^a-zA-Z0-9_\.]+/', '', strtolower($key));
+        $delimiter = '___';
+
+        return implode($delimiter, array_map(function ($key) {
+            return preg_replace('/[^a-zA-Z0-9_\.]+/', '', strtolower($key));
+        }, $keyParts));
     }
 
     /**
@@ -218,11 +237,11 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
-     * Removes duplicated "strong" and "b" tags
+     * Removes duplicated tags
      * @param $content
      * @return mixed
      */
-    private function removeStrongDuplicates($content)
+    private function removeTagDuplicates($content)
     {
         // strong -> b
         $content = str_replace(['<strong>', '</strong>'], ['<b>', '</b>'], $content);
@@ -275,5 +294,43 @@ class SupportSugarcrm implements ProviderInterface
 
             return $code;
         }, $content);
+    }
+
+    /**
+     * @param $html
+     * @param null $baseUrl
+     * @param array $options
+     * @return mixed
+     */
+    private function purifyHtml($html, $baseUrl = null, $options = [])
+    {
+        if (in_array('absolute_urls', $options)) {
+            $html = $this->convertLinks($html, $baseUrl);
+        }
+
+        if (in_array('remove_tag_duplicates', $options)) {
+            $html = $this->removeTagDuplicates($html);
+        }
+
+        if (in_array('pre_to_code', $options)) {
+            $html = $this->convertCode($html);
+        }
+
+        return $html;
+    }
+
+    /**
+     * Processes request pool
+     * @param callable $requests
+     * @param array $config
+     */
+    private function processRequestPool(callable $requests, $config = [])
+    {
+        /**
+         * 1. create request pool
+         * 2. initiate the transfers and create a promise
+         * 3. force the pool of requests to complete
+         */
+        (new Pool($this->httpClient, $requests(), $config))->promise()->wait();
     }
 }

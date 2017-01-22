@@ -11,16 +11,9 @@ interface ProviderInterface
     public function getVersions();
 
     /**
-     * Get feature enhancements for all available versions from given range
+     * Get release notes for all available versions from given range
      * @param array $versions
      * @return mixed
      */
-    public function getFeatureEnhancements(array $versions);
-
-    /**
-     * Get development changes for all available versions from given range
-     * @param array $versions
-     * @return mixed
-     */
-    public function getDevelopmentChanges(array $versions);
+    public function getReleaseNotes(array $versions);
 }

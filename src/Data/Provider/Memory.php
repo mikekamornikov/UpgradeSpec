@@ -25,22 +25,12 @@ class Memory implements ProviderInterface
     }
 
     /**
-     * Get feature enhancements for all available versions from given range
+     * Get release notes for all available versions from given range
      * @param array $versions
      * @return mixed
      */
-    public function getFeatureEnhancements(array $versions)
+    public function getReleaseNotes(array $versions)
     {
-        return $this->data['feature_enhancements'];
-    }
-
-    /**
-     * Get development changes for all available versions from given range
-     * @param array $versions
-     * @return mixed
-     */
-    public function getDevelopmentChanges(array $versions)
-    {
-        return $this->data['development_changes'];
+        return $this->data['release_notes'];
     }
 }

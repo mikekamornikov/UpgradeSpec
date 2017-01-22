@@ -46,29 +46,16 @@ class Manager
     }
 
     /**
-     * Get feature enhancements for all versions from given range
+     * Get release notes for all versions from given range
      * @param $from
      * @param $to
      * @return mixed
      */
-    public function getFeatureEnhancements($from, $to)
+    public function getReleaseNotes($from, $to)
     {
         $versions = $this->getVersionRange($from, $to);
 
-        return $this->provider->getFeatureEnhancements($versions);
-    }
-
-    /**
-     * Get development changes for all versions from given range
-     * @param $from
-     * @param $to
-     * @return mixed
-     */
-    public function getDevelopmentChanges($from, $to)
-    {
-        $versions = $this->getVersionRange($from, $to);
-
-        return $this->provider->getDevelopmentChanges($versions);
+        return $this->provider->getReleaseNotes($versions);
     }
 
     /**
