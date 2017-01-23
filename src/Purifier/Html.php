@@ -168,16 +168,13 @@ class Html implements PurifierInterface
         $content = str_replace(['<pre>', '<pre ', '</pre>'], ['<code>', '<code ', '</code>'], $content);
 
         return preg_replace_callback('/<code(.*?)>(.*?)<\/code>/s', function ($matches) use ($strposa) {
-            $code = str_replace(
-                ['<br></br>', '<br>', '<br/>', '&nbsp;'],
-                [PHP_EOL, PHP_EOL, PHP_EOL, ' '],
-                $matches[0]
-            );
+            $noLineBreaks = str_replace(["\r\n", "\r", "\n"], '<br />', $matches[0]);
+            $code = str_replace(['<br></br>', '<br>', '<br/>', '<br />'], PHP_EOL, $noLineBreaks);
 
             // if multiline or real code snippet
             if (false !== $strposa($code, ['function', 'class', 'array'])
                 || false !== mb_strpos($code, PHP_EOL)) {
-                return '<br/>' . $code;
+                return '<br />' . $code . '<br />';
             }
 
             return $code;
