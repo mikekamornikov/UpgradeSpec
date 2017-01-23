@@ -11,12 +11,10 @@ matrix:
   include:
     - php: 5.6
     - php: 7.1
-    - php: hhvm-3.15
+    - php: hhvm
       sudo: required
       dist: trusty
       group: edge
-  allow_failures:
-    - php: hhvm
 
 before_install:
   - openssl aes-256-cbc -K $encrypted_7bbf7fef4d44_key -iv $encrypted_7bbf7fef4d44_iv -in .travis/phar-private.pem.enc -out .travis/phar-private.pem -d
@@ -28,6 +26,7 @@ install:
 
 script:
   - ./vendor/bin/phpspec run --format=pretty
+  - ./vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run --diff
 
 before_deploy:
   - composer install --no-dev

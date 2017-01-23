@@ -14,6 +14,7 @@ class Cache
 
     /**
      * Cache constructor.
+     *
      * @param CacheInterface $cacheAdapter
      */
     public function __construct(CacheInterface $cacheAdapter)
@@ -23,6 +24,7 @@ class Cache
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function has($key)
@@ -37,6 +39,7 @@ class Cache
     /**
      * @param $key
      * @param null $default
+     *
      * @return mixed
      */
     public function get($key, $default = null)
@@ -56,6 +59,7 @@ class Cache
      * @param $key
      * @param $value
      * @param null $ttl
+     *
      * @return bool
      */
     public function set($key, $value, $ttl = null)
@@ -70,6 +74,7 @@ class Cache
     /**
      * @param $values
      * @param null $ttl
+     *
      * @return bool
      */
     public function setMultiple($values, $ttl = null)
@@ -83,6 +88,7 @@ class Cache
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function delete($key)

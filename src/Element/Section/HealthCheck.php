@@ -28,6 +28,7 @@ class HealthCheck implements ElementInterface
     /**
      * @param $version
      * @param $newVersion
+     *
      * @return bool
      */
     public function isRelevantTo($version, $newVersion)
@@ -38,6 +39,7 @@ class HealthCheck implements ElementInterface
     /**
      * @param $version
      * @param $newVersion
+     *
      * @return string
      */
     public function getBody($version, $newVersion)

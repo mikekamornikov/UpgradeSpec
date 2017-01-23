@@ -18,6 +18,7 @@ class Updater
 
     /**
      * Updater constructor.
+     *
      * @param AdapterInterface $adapter
      */
     public function __construct(AdapterInterface $adapter)
@@ -27,6 +28,7 @@ class Updater
 
     /**
      * @return mixed
+     *
      * @throws UpdaterException
      */
     public function hasUpdate()
@@ -56,7 +58,9 @@ class Updater
 
     /**
      * @param string $stability
+     *
      * @return bool
+     *
      * @throws UpdaterException
      */
     public function update($stability = self::STABILITY_ANY)
@@ -72,6 +76,7 @@ class Updater
 
     /**
      * @return mixed
+     *
      * @throws UpdaterException
      */
     public function rollback()

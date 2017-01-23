@@ -19,8 +19,9 @@ trait ElementTrait
 
     /**
      * Element constructor.
+     *
      * @param RendererInterface $renderer
-     * @param Manager $dataManager
+     * @param Manager           $dataManager
      */
     public function __construct(RendererInterface $renderer, Manager $dataManager)
     {

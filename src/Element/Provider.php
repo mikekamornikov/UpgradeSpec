@@ -11,9 +11,10 @@ class Provider
 
     /**
      * Configurator constructor.
+     *
      * @param $elements
      * @param RendererInterface $templateRenderer
-     * @param Manager $dataManager
+     * @param Manager           $dataManager
      */
     public function __construct($elements, RendererInterface $templateRenderer, Manager $dataManager)
     {
@@ -25,6 +26,7 @@ class Provider
     /**
      * @param $buildVersion
      * @param $upgradeTo
+     *
      * @return array
      */
     public function getElements($buildVersion, $upgradeTo)
@@ -44,6 +46,7 @@ class Provider
     /**
      * @param $oldVersion
      * @param $newVersion
+     *
      * @return array
      */
     private function getSuitableElements($oldVersion, $newVersion)

@@ -20,6 +20,7 @@ class Generator
      * @param ElementInterface $element
      * @param $buildVersion
      * @param $upgradeTo
+     *
      * @return string
      */
     public function generate(ElementInterface $element, $buildVersion, $upgradeTo)

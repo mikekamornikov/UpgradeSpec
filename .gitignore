@@ -6,3 +6,5 @@
 /uspec.phar.pubkey
 /.env
 /.cacert.pem
+/.php_cs.cache
+/.php_cs

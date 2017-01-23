@@ -22,12 +22,13 @@ class ReleaseNotes implements ElementInterface
      */
     public function getOrder()
     {
-       return 1;
+        return 1;
     }
 
     /**
      * @param $version
      * @param $newVersion
+     *
      * @return bool
      */
     public function isRelevantTo($version, $newVersion)
@@ -38,12 +39,13 @@ class ReleaseNotes implements ElementInterface
     /**
      * @param $version
      * @param $newVersion
+     *
      * @return string
      */
     public function getBody($version, $newVersion)
     {
         return $this->renderer->render('release_notes', [
-            'release_notes' => $this->dataManager->getReleaseNotes($version, $newVersion)
+            'release_notes' => $this->dataManager->getReleaseNotes($version, $newVersion),
         ]);
     }
 }

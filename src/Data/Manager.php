@@ -13,6 +13,7 @@ class Manager
 
     /**
      * Manager constructor.
+     *
      * @param ProviderInterface $provider
      */
     public function __construct(ProviderInterface $provider)
@@ -21,7 +22,8 @@ class Manager
     }
 
     /**
-     * Get all available SugarCRM versions (sorted ASC)
+     * Get all available SugarCRM versions (sorted ASC).
+     *
      * @return mixed
      */
     public function getVersions()
@@ -35,7 +37,8 @@ class Manager
     }
 
     /**
-     * Get the latest available SugarCRM version
+     * Get the latest available SugarCRM version.
+     *
      * @return mixed
      */
     public function getLatestVersion()
@@ -46,9 +49,11 @@ class Manager
     }
 
     /**
-     * Get release notes for all versions from given range
+     * Get release notes for all versions from given range.
+     *
      * @param $from
      * @param $to
+     *
      * @return mixed
      */
     public function getReleaseNotes($from, $to)
@@ -59,9 +64,11 @@ class Manager
     }
 
     /**
-     * Get all available versions from given range ($from < version <= $to)
+     * Get all available versions from given range ($from < version <= $to).
+     *
      * @param $from
      * @param $to
+     *
      * @return array
      */
     private function getVersionRange($from, $to)

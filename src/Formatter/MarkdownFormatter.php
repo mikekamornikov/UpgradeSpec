@@ -7,6 +7,7 @@ class MarkdownFormatter implements FormatterInterface
     /**
      * @param $text
      * @param int $level
+     *
      * @return string
      */
     public function asTitle($text, $level = 1)
@@ -16,6 +17,7 @@ class MarkdownFormatter implements FormatterInterface
 
     /**
      * @param $text
+     *
      * @return string
      */
     public function asBody($text)

@@ -9,8 +9,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Command extends SymfonyCommand
 {
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return int
      */
     public function run(InputInterface $input, OutputInterface $output)
@@ -23,11 +24,11 @@ class Command extends SymfonyCommand
             return 1;
         }
     }
-    
+
     /**
-     * Initialize command and validate input
+     * Initialize command and validate input.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -36,9 +37,11 @@ class Command extends SymfonyCommand
     }
 
     /**
-     * Validate user input
+     * Validate user input.
      *
      * @param InputInterface $input
      */
-    protected function validateInput(InputInterface $input) {}
+    protected function validateInput(InputInterface $input)
+    {
+    }
 }

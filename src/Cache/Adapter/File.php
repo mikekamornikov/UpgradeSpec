@@ -6,7 +6,7 @@ use Psr\SimpleCache\CacheInterface;
 use Sugarcrm\UpgradeSpec\Cache\Exception\InvalidArgumentException;
 
 /**
- * PSR-16 compatible file based cache adapter
+ * PSR-16 compatible file based cache adapter.
  */
 class File implements CacheInterface
 {
@@ -19,6 +19,7 @@ class File implements CacheInterface
 
     /**
      * File constructor.
+     *
      * @param $path
      * @param $ttl
      */
@@ -34,7 +35,8 @@ class File implements CacheInterface
 
     /**
      * @param string $key
-     * @param null $default
+     * @param null   $default
+     *
      * @return bool|mixed|null
      */
     public function get($key, $default = null)
@@ -73,9 +75,11 @@ class File implements CacheInterface
 
     /**
      * @param string $key
-     * @param mixed $value
-     * @param null $ttl
+     * @param mixed  $value
+     * @param null   $ttl
+     *
      * @return bool
+     *
      * @throws InvalidArgumentException
      */
     public function set($key, $value, $ttl = null)
@@ -103,7 +107,6 @@ class File implements CacheInterface
 
     /**
      * @param string $key
-     * @return void
      */
     public function delete($key)
     {
@@ -113,7 +116,7 @@ class File implements CacheInterface
     }
 
     /**
-     * Remove all cache entries
+     * Remove all cache entries.
      */
     public function clear()
     {
@@ -125,7 +128,9 @@ class File implements CacheInterface
 
     /**
      * @param string $key
+     *
      * @return bool
+     *
      * @throws InvalidArgumentException
      */
     public function has($key)
@@ -136,8 +141,7 @@ class File implements CacheInterface
     }
 
     /**
-     * Clean up expired cache entries
-     * @return void
+     * Clean up expired cache entries.
      */
     private function cleanExpired()
     {
@@ -150,8 +154,10 @@ class File implements CacheInterface
     }
 
     /**
-     * Creates writable directory in given path
+     * Creates writable directory in given path.
+     *
      * @param $path
+     *
      * @throws InvalidArgumentException
      */
     private function createDirectory($path)
@@ -171,8 +177,10 @@ class File implements CacheInterface
     }
 
     /**
-     * For a given cache key, obtain the absolute file path
+     * For a given cache key, obtain the absolute file path.
+     *
      * @param string $key
+     *
      * @return string absolute path to cache file
      */
     private function getPath($key)
@@ -181,11 +189,11 @@ class File implements CacheInterface
 
         return $this->cachePath
             . DIRECTORY_SEPARATOR
-            . strtoupper($hash[0])
+            . mb_strtoupper($hash[0])
             . DIRECTORY_SEPARATOR
-            . strtoupper($hash[1])
+            . mb_strtoupper($hash[1])
             . DIRECTORY_SEPARATOR
-            . substr($hash, 2);
+            . mb_substr($hash, 2);
     }
 
     /**

@@ -2,9 +2,9 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
-use Sugarcrm\UpgradeSpec\Spec\Generator;
 use Sugarcrm\UpgradeSpec\Helper\File;
 use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
+use Sugarcrm\UpgradeSpec\Spec\Generator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,12 +28,13 @@ class GenerateSpecCommand extends Command
 
     /**
      * GenerateSpecCommand constructor.
-     * @param null $name
+     *
+     * @param null          $name
      * @param SpecGenerator $specGenerator
-     * @param Sugarcrm $sugarcrmHelper
-     * @param File $fileHelper
+     * @param Sugarcrm      $sugarcrmHelper
+     * @param File          $fileHelper
      */
-    public function __construct($name = null, Generator $specGenerator, Sugarcrm $sugarcrmHelper, File $fileHelper)
+    public function __construct($name, Generator $specGenerator, Sugarcrm $sugarcrmHelper, File $fileHelper)
     {
         parent::__construct($name);
 
@@ -43,7 +44,7 @@ class GenerateSpecCommand extends Command
     }
 
     /**
-     *  Configure the command
+     *  Configure the command.
      */
     protected function configure()
     {
@@ -55,10 +56,11 @@ class GenerateSpecCommand extends Command
     }
 
     /**
-     * Execute the command
+     * Execute the command.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)

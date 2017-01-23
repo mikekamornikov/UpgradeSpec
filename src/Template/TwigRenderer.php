@@ -14,8 +14,9 @@ class TwigRenderer implements RendererInterface
 
     /**
      * TwigRenderer constructor.
+     *
      * @param Twig_LoaderInterface $loader
-     * @param array $options
+     * @param array                $options
      */
     public function __construct(Twig_LoaderInterface $loader, array $options = [])
     {
@@ -25,6 +26,7 @@ class TwigRenderer implements RendererInterface
     /**
      * @param $name
      * @param $arguments
+     *
      * @return string
      */
     public function render($name, $arguments)

@@ -15,19 +15,19 @@ class CacheClearCommand extends Command
 
     /**
      * CacheCleanCommand constructor.
-     * @param null $name
+     *
+     * @param null  $name
      * @param Cache $cache
      */
-    public function __construct($name = null, Cache $cache)
+    public function __construct($name, Cache $cache)
     {
         parent::__construct($name);
 
         $this->cache = $cache;
     }
 
-
     /**
-     * Configure the command
+     * Configure the command.
      */
     protected function configure()
     {
@@ -35,12 +35,12 @@ class CacheClearCommand extends Command
             ->setDescription('Clears uspec cache');
     }
 
-
     /**
-     * Execute the command
+     * Execute the command.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -6,7 +6,7 @@ use Psr\SimpleCache\CacheInterface;
 use Sugarcrm\UpgradeSpec\Cache\Exception\InvalidArgumentException;
 
 /**
- * PSR-16 compatible memory based cache adapter
+ * PSR-16 compatible memory based cache adapter.
  */
 class Memory implements CacheInterface
 {
@@ -19,6 +19,7 @@ class Memory implements CacheInterface
 
     /**
      * Memory constructor.
+     *
      * @param $data
      * @param $ttl
      */
@@ -35,8 +36,7 @@ class Memory implements CacheInterface
 
     /**
      * @param string $key
-     * @param null $default
-     * @return null
+     * @param null   $default
      */
     public function get($key, $default = null)
     {
@@ -58,9 +58,11 @@ class Memory implements CacheInterface
 
     /**
      * @param string $key
-     * @param mixed $value
-     * @param null $ttl
+     * @param mixed  $value
+     * @param null   $ttl
+     *
      * @return bool
+     *
      * @throws InvalidArgumentException
      */
     public function set($key, $value, $ttl = null)
@@ -74,6 +76,7 @@ class Memory implements CacheInterface
 
     /**
      * @param string $key
+     *
      * @return bool|void
      */
     public function delete($key)
@@ -89,14 +92,16 @@ class Memory implements CacheInterface
     public function clear()
     {
         $this->cache = [];
+
         return true;
     }
 
     /**
      * @param string $key
+     *
      * @return bool
      */
-    function has($key)
+    public function has($key)
     {
         $this->validateKey($key);
 

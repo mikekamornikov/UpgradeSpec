@@ -15,6 +15,7 @@ class HumbugAdapter implements AdapterInterface
 
     /**
      * HumbugAdapter constructor.
+     *
      * @param HumbugUpdater $updater
      */
     public function __construct(HumbugUpdater $updater)
@@ -48,6 +49,7 @@ class HumbugAdapter implements AdapterInterface
 
     /**
      * @param string $stability
+     *
      * @return bool
      */
     public function update($stability = Updater::STABILITY_ANY)
@@ -74,6 +76,7 @@ class HumbugAdapter implements AdapterInterface
 
     /**
      * @param $stability
+     *
      * @return string
      */
     private function getGithubStability($stability)
@@ -90,13 +93,13 @@ class HumbugAdapter implements AdapterInterface
     }
 
     /**
-     * Removes PHAR update leftovers
+     * Removes PHAR update leftovers.
      */
     private function performCleanup()
     {
         $directory = $this->updater->getTempDirectory();
         $fileBasename = $this->updater->getLocalPharFileBasename();
-        
+
         @unlink(sprintf('%s/%s.phar.temp.pubkey', $directory, $fileBasename));
         @unlink(sprintf('%s/%s.temp.pubkey', $directory, $fileBasename));
     }

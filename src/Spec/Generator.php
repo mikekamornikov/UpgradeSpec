@@ -2,8 +2,8 @@
 
 namespace Sugarcrm\UpgradeSpec\Spec;
 
-use Sugarcrm\UpgradeSpec\Element\Provider;
 use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
+use Sugarcrm\UpgradeSpec\Element\Provider;
 use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
 use Sugarcrm\UpgradeSpec\Spec\Exception\GeneratorException;
 
@@ -26,8 +26,9 @@ class Generator
 
     /**
      * SpecGenerator constructor.
-     * @param Provider $elementProvider
-     * @param ElementGenerator $elementGenerator
+     *
+     * @param Provider           $elementProvider
+     * @param ElementGenerator   $elementGenerator
      * @param FormatterInterface $formatter
      */
     public function __construct(Provider $elementProvider,
@@ -42,7 +43,9 @@ class Generator
     /**
      * @param $buildVersion
      * @param $upgradeTo
+     *
      * @return string
+     *
      * @throws GeneratorException
      */
     public function generate($buildVersion, $upgradeTo)

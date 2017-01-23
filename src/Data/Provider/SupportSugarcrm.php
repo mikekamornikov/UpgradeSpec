@@ -28,7 +28,8 @@ class SupportSugarcrm implements ProviderInterface
 
     /**
      * SupportSugarcrm constructor.
-     * @param Cache $cache
+     *
+     * @param Cache         $cache
      * @param HtmlConverter $htmlConverter
      */
     public function __construct(Cache $cache, HtmlConverter $htmlConverter)
@@ -39,7 +40,8 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
-     * Get all available SugarCRM versions (sorted ASC)
+     * Get all available SugarCRM versions (sorted ASC).
+     *
      * @return mixed
      */
     public function getVersions()
@@ -74,7 +76,7 @@ class SupportSugarcrm implements ProviderInterface
 
         // sort versions (ASC)
         usort($versions, function ($v1, $v2) {
-            return version_compare($v1, $v2, '<') ? -1 : (version_compare($v1, $v2, '>') ? 1 : 0) ;
+            return version_compare($v1, $v2, '<') ? -1 : (version_compare($v1, $v2, '>') ? 1 : 0);
         });
 
         $this->cache->set('versions', $versions);
@@ -84,6 +86,7 @@ class SupportSugarcrm implements ProviderInterface
 
     /**
      * @param array $versions
+     *
      * @return array
      */
     public function getReleaseNotes(array $versions)
@@ -103,13 +106,12 @@ class SupportSugarcrm implements ProviderInterface
         if ($newVersions) {
             $this->processRequestPool($requests, [
                 'fulfilled' => function ($response, $version) {
-
                     $base = dirname($this->httpClient->getConfig('base_uri') . ltrim($this->getReleaseNotesUri($version), '/')) . '/';
                     $crawler = new Crawler($this->purifyHtml($response->getBody()->getContents(), $base));
 
                     $identifiers = [
                         'feature_enhancements' => '#Feature_Enhancements',
-                        'development_changes' => '#Development_Changes'
+                        'development_changes' => '#Development_Changes',
                     ];
 
                     $releaseNote = [];
@@ -151,15 +153,17 @@ class SupportSugarcrm implements ProviderInterface
         }
 
         uksort($releaseNotes, function ($v1, $v2) {
-            return version_compare($v1, $v2, '<') ? -1 : (version_compare($v1, $v2, '>') ? 1 : 0) ;
+            return version_compare($v1, $v2, '<') ? -1 : (version_compare($v1, $v2, '>') ? 1 : 0);
         });
 
         return $releaseNotes;
     }
 
     /**
-     * Returns version specific release note uri
+     * Returns version specific release note uri.
+     *
      * @param $version
+     *
      * @return string
      */
     private function getReleaseNotesUri($version)
@@ -171,8 +175,10 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
-     * Returns cache key
+     * Returns cache key.
+     *
      * @param $keyParts
+     *
      * @return mixed
      */
     private function getCacheKey(array $keyParts)
@@ -180,15 +186,17 @@ class SupportSugarcrm implements ProviderInterface
         $delimiter = '___';
 
         return implode($delimiter, array_map(function ($key) {
-            return preg_replace('/[^a-zA-Z0-9_\.]+/', '', strtolower($key));
+            return preg_replace('/[^a-zA-Z0-9_\.]+/', '', mb_strtolower($key));
         }, $keyParts));
     }
 
     /**
-     * Lightweight HTML purifier
+     * Lightweight HTML purifier.
+     *
      * @param $html
-     * @param null $baseUrl
+     * @param null  $baseUrl
      * @param array $options
+     *
      * @return mixed
      */
     private function purifyHtml($html, $baseUrl = null, $options = [])
@@ -203,14 +211,16 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
-     * Processes request pool
+     * Processes request pool.
+     *
      * @param callable $requests
-     * @param array $config
+     * @param array    $config
+     *
      * @return mixed
      */
     private function processRequestPool(callable $requests, $config = [])
     {
-        /**
+        /*
          * 1. create request pool
          * 2. initiate the transfers and create a promise
          * 3. force the pool of requests to complete

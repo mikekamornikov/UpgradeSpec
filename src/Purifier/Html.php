@@ -16,8 +16,9 @@ class Html implements PurifierInterface
 
     /**
      * Html constructor.
+     *
      * @param string $baseUrl
-     * @param array $options
+     * @param array  $options
      */
     public function __construct($baseUrl = '', array $options = [])
     {
@@ -33,8 +34,10 @@ class Html implements PurifierInterface
     }
 
     /**
-     * Purifies html
+     * Purifies html.
+     *
      * @param $data
+     *
      * @return mixed
      */
     public function purify($data)
@@ -55,7 +58,7 @@ class Html implements PurifierInterface
     }
 
     /**
-     * Validates options
+     * Validates options.
      */
     private function validateOptions()
     {
@@ -65,8 +68,10 @@ class Html implements PurifierInterface
     }
 
     /**
-     * Converts all relative links (@href) to absolute ones
+     * Converts all relative links (@href) to absolute ones.
+     *
      * @param $content
+     *
      * @return mixed
      */
     private function convertLinks($content)
@@ -80,15 +85,14 @@ class Html implements PurifierInterface
         $scheme = parse_url($base, PHP_URL_SCHEME);
 
         return preg_replace_callback($pattern, function ($matches) use ($base, $scheme, $host, $path) {
-
             $hrefValue = $matches[0];
 
-            if (strpos($hrefValue, '//') === 0) {
+            if (mb_strpos($hrefValue, '//') === 0) {
                 return $scheme . ':' . $hrefValue;
             }
 
             // return if already absolute URL
-            if  (parse_url($hrefValue, PHP_URL_SCHEME) != '') {
+            if (parse_url($hrefValue, PHP_URL_SCHEME) != '') {
                 return $hrefValue;
             }
 
@@ -101,12 +105,12 @@ class Html implements PurifierInterface
             $path = preg_replace('#/[^/]*$#', '', $path);
 
             // destroy path if relative url points to root
-            if ($hrefValue[0] ==  '/') {
+            if ($hrefValue[0] == '/') {
                 $path = '';
             }
 
             // dirty absolute URL
-            $abs = $host . $path . '/' .$hrefValue;
+            $abs = $host . $path . '/' . $hrefValue;
 
             // replace '//', '/./', '/foo/../' with '/'
             $abs = preg_replace('/\/[^\/]+\/\.\.\//', '/', str_replace(['//', '/./'], '/', $abs));
@@ -117,8 +121,10 @@ class Html implements PurifierInterface
     }
 
     /**
-     * Removes duplicated tags
+     * Removes duplicated tags.
+     *
      * @param $content
+     *
      * @return mixed
      */
     private function removeTagDuplicates($content)
@@ -134,8 +140,10 @@ class Html implements PurifierInterface
     }
 
     /**
-     * Converts "pre" to "code"
+     * Converts "pre" to "code".
+     *
      * @param $content
+     *
      * @return mixed
      */
     private function convertCode($content)
@@ -144,7 +152,7 @@ class Html implements PurifierInterface
         $strposa = function ($haystack, $needles = []) {
             $chr = [];
             foreach ($needles as $needle) {
-                $res = strpos($haystack, $needle);
+                $res = mb_strpos($haystack, $needle);
                 if ($res !== false) {
                     $chr[$needle] = $res;
                 }
@@ -168,7 +176,7 @@ class Html implements PurifierInterface
 
             // if multiline or real code snippet
             if (false !== $strposa($code, ['function', 'class', 'array'])
-                || false !== strpos($code, PHP_EOL)) {
+                || false !== mb_strpos($code, PHP_EOL)) {
                 return '<br/>' . $code;
             }
 

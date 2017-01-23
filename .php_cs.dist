@@ -1,0 +1,32 @@
+<?php
+
+return PhpCsFixer\Config::create()
+    ->setRiskyAllowed(true)
+    ->setRules(array(
+      '@PSR1' => true,
+      '@PSR2' => true,
+      '@Symfony' => true,
+      '@PHP56Migration' => true,
+      'ereg_to_preg' => true,
+      'linebreak_after_opening_tag' => true,
+      'mb_str_functions' => true,
+      'modernize_types_casting' => true,
+      'no_php4_constructor' => true,
+      'no_short_echo_tag' => true,
+      'no_useless_else' => true,
+      'no_useless_return' => true,
+      'ordered_class_elements' => true,
+      'ordered_imports' => true,
+      'phpdoc_add_missing_param_annotation' => true,
+      'protected_to_private' => true,
+      'psr4' => true,
+      'semicolon_after_instruction' => true,
+      'array_syntax' => ['syntax' => 'short'],
+      'concat_space' => ['spacing' => 'one'],
+    ))
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->exclude(['spec', 'resources'])
+            ->in('src')
+    )
+;

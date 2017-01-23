@@ -15,22 +15,37 @@ class Memory implements ProviderInterface
     }
 
     /**
-     * Get all available SugarCRM versions (sorted ASC)
+     * Get all available SugarCRM versions (sorted ASC).
+     *
      * @return mixed
      */
     public function getVersions()
     {
-//        return ['6.7', '7.7', '7.7.1', '7.8'];
-        return $this->data['versions'];
+        return $this->get('versions', []);
     }
 
     /**
-     * Get release notes for all available versions from given range
+     * Get release notes for all available versions from given range.
+     *
      * @param array $versions
+     *
      * @return mixed
      */
     public function getReleaseNotes(array $versions)
     {
-        return $this->data['release_notes'];
+        return $this->get('release_notes', []);
+    }
+
+    /**
+     * Gets data from memory by key.
+     *
+     * @param $key
+     * @param null $default
+     *
+     * @return mixed|null
+     */
+    private function get($key, $default = null)
+    {
+        return isset($this->data[$key]) ? $this->data[$key] : $default;
     }
 }

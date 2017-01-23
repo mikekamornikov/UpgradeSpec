@@ -5,16 +5,16 @@ namespace Sugarcrm\UpgradeSpec;
 use Humbug\SelfUpdate\Strategy\GithubStrategy;
 use Humbug\SelfUpdate\Updater as HumbugUpdater;
 use League\HTMLToMarkdown\HtmlConverter;
-use Sugarcrm\UpgradeSpec\Cache\Cache;
 use Sugarcrm\UpgradeSpec\Cache\Adapter\File as FileCache;
+use Sugarcrm\UpgradeSpec\Cache\Cache;
 use Sugarcrm\UpgradeSpec\Command\CacheClearCommand;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
 use Sugarcrm\UpgradeSpec\Data\Manager;
 use Sugarcrm\UpgradeSpec\Data\Provider\SupportSugarcrm;
-use Sugarcrm\UpgradeSpec\Element\Provider;
 use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
+use Sugarcrm\UpgradeSpec\Element\Provider;
 use Sugarcrm\UpgradeSpec\Element\Section\CoreChanges;
 use Sugarcrm\UpgradeSpec\Element\Section\HealthCheck;
 use Sugarcrm\UpgradeSpec\Element\Section\ReleaseNotes;
@@ -33,6 +33,7 @@ class Application extends BaseApplication
 {
     /**
      * Application constructor.
+     *
      * @param $name
      * @param $version
      */
@@ -57,7 +58,7 @@ class Application extends BaseApplication
      */
     private function initEnvironment()
     {
-        $env = new Dotenv;
+        $env = new Dotenv();
 
         $envPath = __DIR__ . '/../.env';
         if (file_exists($envPath)) {
@@ -69,7 +70,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * Init commands
+     * Init commands.
      */
     private function initCommands()
     {
@@ -86,7 +87,8 @@ class Application extends BaseApplication
     }
 
     /**
-     * Defines if current execution context supports self updates
+     * Defines if current execution context supports self updates.
+     *
      * @return string
      */
     private function isUpdateAvailable()
@@ -95,7 +97,8 @@ class Application extends BaseApplication
     }
 
     /**
-     * Updater factory method
+     * Updater factory method.
+     *
      * @return Updater
      */
     private function getUpdater()
@@ -116,8 +119,10 @@ class Application extends BaseApplication
     }
 
     /**
-     * Generator factory method
+     * Generator factory method.
+     *
      * @param Cache $cache
+     *
      * @return Generator
      */
     private function getGenerator(Cache $cache)
@@ -125,7 +130,7 @@ class Application extends BaseApplication
         $specElements = [
             CoreChanges::class,
             ReleaseNotes::class,
-            HealthCheck::class
+            HealthCheck::class,
         ];
 
         $formatter = new MarkdownFormatter();
@@ -136,7 +141,7 @@ class Application extends BaseApplication
         $dataManager = new Manager(
             new SupportSugarcrm($cache, new HtmlConverter([
                 'strip_tags' => true,
-                'header_style' => 'atx'
+                'header_style' => 'atx',
             ]))
         );
 
@@ -148,7 +153,8 @@ class Application extends BaseApplication
     }
 
     /**
-     * Cache factory method
+     * Cache factory method.
+     *
      * @return Cache
      */
     private function getCache()

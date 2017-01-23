@@ -2,11 +2,11 @@
 
 namespace Sugarcrm\UpgradeSpec\Template;
 
-
 interface RendererInterface
 {
     /**
-     * Renders template
+     * Renders template.
+     *
      * @param $name
      * @param $arguments
      */

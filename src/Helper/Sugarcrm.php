@@ -5,8 +5,10 @@ namespace Sugarcrm\UpgradeSpec\Helper;
 class Sugarcrm
 {
     /**
-     * Extracts version number from sugarcrm build files
+     * Extracts version number from sugarcrm build files.
+     *
      * @param $path
+     *
      * @return string
      */
     public function getBuildVersion($path)
@@ -21,8 +23,10 @@ class Sugarcrm
     }
 
     /**
-     * Verifies if given path represents a valid SugarCRM build
+     * Verifies if given path represents a valid SugarCRM build.
+     *
      * @param $path
+     *
      * @return bool
      */
     public function isSugarcrmBuild($path)

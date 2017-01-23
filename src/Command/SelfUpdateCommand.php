@@ -16,19 +16,19 @@ class SelfUpdateCommand extends Command
 
     /**
      * SelfUpdateCommand constructor.
-     * @param null $name
+     *
+     * @param null    $name
      * @param Updater $updater
      */
-    public function __construct($name = null, Updater $updater)
+    public function __construct($name, Updater $updater)
     {
         parent::__construct($name);
 
         $this->updater = $updater;
     }
 
-
     /**
-     * Configure the command
+     * Configure the command.
      */
     protected function configure()
     {
@@ -41,12 +41,12 @@ class SelfUpdateCommand extends Command
             );
     }
 
-
     /**
-     * Execute the command
+     * Execute the command.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -68,7 +68,7 @@ class SelfUpdateCommand extends Command
     }
 
     /**
-     * Validate user input
+     * Validate user input.
      *
      * @param InputInterface $input
      */
@@ -85,7 +85,7 @@ class SelfUpdateCommand extends Command
         if (!in_array($stability, [
             Updater::STABILITY_STABLE,
             Updater::STABILITY_UNSTABLE,
-            Updater::STABILITY_ANY
+            Updater::STABILITY_ANY,
         ])) {
             throw new \InvalidArgumentException('Invalid "stability" option value');
         }

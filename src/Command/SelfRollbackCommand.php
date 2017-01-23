@@ -15,18 +15,19 @@ class SelfRollbackCommand extends Command
 
     /**
      * SelfRollbackCommand constructor.
-     * @param null $name
+     *
+     * @param null    $name
      * @param Updater $updater
      */
-    public function __construct($name = null, Updater $updater)
+    public function __construct($name, Updater $updater)
     {
         parent::__construct($name);
 
         $this->updater = $updater;
     }
-    
+
     /**
-     * Configure the command
+     * Configure the command.
      */
     protected function configure()
     {
@@ -35,10 +36,11 @@ class SelfRollbackCommand extends Command
     }
 
     /**
-     * Execute the command
+     * Execute the command.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
