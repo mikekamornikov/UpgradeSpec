@@ -42,6 +42,6 @@ class HealthCheck implements ElementInterface
      */
     public function getBody($version, $newVersion)
     {
-        return $this->renderer->render('health_check', ['download_url' => 'url']);
+        return $this->renderer->render('health_check', []);
     }
 }

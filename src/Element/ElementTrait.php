@@ -3,14 +3,15 @@
 namespace Sugarcrm\UpgradeSpec\Element;
 
 use Sugarcrm\UpgradeSpec\Data\Manager;
-use Sugarcrm\UpgradeSpec\Template\Renderer;
+use Sugarcrm\UpgradeSpec\Template\RendererInterface;
 
 trait ElementTrait
 {
     /**
-     * @var TemplateRenderer
+     * @var RendererInterface
      */
     private $renderer;
+
     /**
      * @var Manager
      */
@@ -18,10 +19,10 @@ trait ElementTrait
 
     /**
      * Element constructor.
-     * @param Renderer $renderer
+     * @param RendererInterface $renderer
      * @param Manager $dataManager
      */
-    public function __construct(Renderer $renderer, Manager $dataManager)
+    public function __construct(RendererInterface $renderer, Manager $dataManager)
     {
         $this->renderer = $renderer;
         $this->dataManager = $dataManager;

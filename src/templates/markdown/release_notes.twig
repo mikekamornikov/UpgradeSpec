@@ -1,0 +1,10 @@
+{% for version, release_note in release_notes %}
+### Version {{ version }}
+
+{% for title, content in release_note %}
+#### {{ title|split('_')|join(' ')|title }}
+
+{{ content|raw }}
+{% endfor %}
+
+{% endfor %}

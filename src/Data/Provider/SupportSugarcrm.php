@@ -108,8 +108,8 @@ class SupportSugarcrm implements ProviderInterface
                     $crawler = new Crawler($this->purifyHtml($response->getBody()->getContents(), $base));
 
                     $identifiers = [
-                        'features' => '#Feature_Enhancements',
-                        'dev_changes' => '#Development_Changes'
+                        'feature_enhancements' => '#Feature_Enhancements',
+                        'development_changes' => '#Development_Changes'
                     ];
 
                     $releaseNote = [];

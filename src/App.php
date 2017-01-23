@@ -22,12 +22,12 @@ use Sugarcrm\UpgradeSpec\Formatter\MarkdownFormatter;
 use Sugarcrm\UpgradeSpec\Helper\File;
 use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
 use Sugarcrm\UpgradeSpec\Spec\Generator;
-use Sugarcrm\UpgradeSpec\Template\Locator;
-use Sugarcrm\UpgradeSpec\Template\Renderer;
+use Sugarcrm\UpgradeSpec\Template\TwigRenderer;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter;
 use Sugarcrm\UpgradeSpec\Updater\Updater;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Dotenv\Dotenv;
+use Twig_Loader_Filesystem;
 
 class App
 {
@@ -126,7 +126,10 @@ class App
         ];
 
         $formatter = new MarkdownFormatter();
-        $templateRenderer = new Renderer(new Locator(__DIR__ . '/../' . getenv('TEMPLATE_PATH')));
+
+        $templateRenderer = new TwigRenderer(
+            new Twig_Loader_Filesystem(__DIR__ . '/../' . getenv('TEMPLATE_PATH') . '/' . getenv('DEFAULT_FORMAT'))
+        );
         $dataManager = new Manager(
             new SupportSugarcrm($cache, new HtmlConverter([
                 'strip_tags' => true,

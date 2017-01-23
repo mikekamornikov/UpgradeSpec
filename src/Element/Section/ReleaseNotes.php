@@ -14,7 +14,7 @@ class ReleaseNotes implements ElementInterface
      */
     public function getTitle()
     {
-        return 'Get and analyze release notes';
+        return 'Analyze release notes';
     }
 
     /**
@@ -42,21 +42,8 @@ class ReleaseNotes implements ElementInterface
      */
     public function getBody($version, $newVersion)
     {
-        $releaseNotes = $this->dataManager->getReleaseNotes($version, $newVersion);
-
-        $features = $devChanges = [];
-        foreach ($releaseNotes as $version) {
-            if (isset($version['features'])) {
-                $features[] = $version['features'];
-            }
-            if (isset($version['dev_changes'])) {
-                $devChanges[] = $version['dev_changes'];
-            }
-        }
-
         return $this->renderer->render('release_notes', [
-            'features' => implode(PHP_EOL . PHP_EOL, $features),
-            'dev_changes' => implode(PHP_EOL . PHP_EOL, $devChanges),
+            'release_notes' => $this->dataManager->getReleaseNotes($version, $newVersion)
         ]);
     }
 }
