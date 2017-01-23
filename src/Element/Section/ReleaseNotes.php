@@ -2,12 +2,15 @@
 
 namespace Sugarcrm\UpgradeSpec\Element\Section;
 
+use Sugarcrm\UpgradeSpec\Element\DataAwareInterface;
+use Sugarcrm\UpgradeSpec\Element\DataAwareTrait;
 use Sugarcrm\UpgradeSpec\Element\ElementInterface;
-use Sugarcrm\UpgradeSpec\Element\ElementTrait;
+use Sugarcrm\UpgradeSpec\Element\RendererAwareInterface;
+use Sugarcrm\UpgradeSpec\Element\RendererAwareTrait;
 
-class ReleaseNotes implements ElementInterface
+class ReleaseNotes implements ElementInterface, RendererAwareInterface, DataAwareInterface
 {
-    use ElementTrait;
+    use RendererAwareTrait, DataAwareTrait;
 
     /**
      * @return string
@@ -31,7 +34,7 @@ class ReleaseNotes implements ElementInterface
      *
      * @return bool
      */
-    public function isRelevantTo($version, $newVersion)
+    public static function isRelevantTo($version, $newVersion)
     {
         return true;
     }

@@ -3,24 +3,32 @@
 namespace Sugarcrm\UpgradeSpec\Element;
 
 use Sugarcrm\UpgradeSpec\Data\Manager;
+
 use Sugarcrm\UpgradeSpec\Template\RendererInterface;
+use Symfony\Component\Finder\Finder;
 
 class Provider
 {
-    private $elements;
+    /**
+     * @var RendererInterface
+     */
+    private $templateRenderer;
+
+    /**
+     * @var Manager
+     */
+    private $dataManager;
 
     /**
      * Configurator constructor.
      *
-     * @param $elements
      * @param RendererInterface $templateRenderer
      * @param Manager           $dataManager
      */
-    public function __construct($elements, RendererInterface $templateRenderer, Manager $dataManager)
+    public function __construct(RendererInterface $templateRenderer, Manager $dataManager)
     {
-        $this->elements = array_map(function ($element) use ($templateRenderer, $dataManager) {
-            return new $element($templateRenderer, $dataManager);
-        }, $elements);
+        $this->templateRenderer = $templateRenderer;
+        $this->dataManager = $dataManager;
     }
 
     /**
@@ -51,10 +59,35 @@ class Provider
      */
     private function getSuitableElements($oldVersion, $newVersion)
     {
-        $elements = array_filter($this->elements, function (ElementInterface $element) use ($oldVersion, $newVersion) {
-            return $element->isRelevantTo($oldVersion, $newVersion);
+        // list of potential elements (FQCNs)
+        $classNames = [];
+        foreach (Finder::create()->files()->in(__DIR__ . '/Section')->name('*.php') as $file) {
+            list($className, ) = explode('.', $file->getBasename());
+            $classNames[] = '\\Sugarcrm\\UpgradeSpec\\Element\\Section\\' . $className;
+        }
+
+        // list of relevant elements (FQCNs)
+        $classNames = array_filter($classNames, function ($className) use ($oldVersion, $newVersion) {
+            return (new \ReflectionClass($className))->implementsInterface(ElementInterface::class)
+                && $className::isRelevantTo($oldVersion, $newVersion);
         });
 
+        // element factory
+        $elements = array_map(function ($className) {
+            $element = new $className();
+
+            $reflectionClass = new \ReflectionClass($className);
+            if ($reflectionClass->implementsInterface(RendererAwareInterface::class)) {
+                $element->setRenderer($this->templateRenderer);
+            }
+            if ($reflectionClass->implementsInterface(DataAwareInterface::class)) {
+                $element->setDataManager($this->dataManager);
+            }
+
+            return $element;
+        }, $classNames);
+
+        // sort elements (ASC)
         usort($elements, function (ElementInterface $a, ElementInterface $b) {
             return $a->getOrder() > $b->getOrder() ? 1 : ($a->getOrder() < $b->getOrder() ? -1 : 0);
         });

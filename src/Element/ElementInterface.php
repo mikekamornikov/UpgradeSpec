@@ -10,5 +10,5 @@ interface ElementInterface
 
     public function getOrder();
 
-    public function isRelevantTo($version, $newVersion);
+    public static function isRelevantTo($version, $newVersion);
 }

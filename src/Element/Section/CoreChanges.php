@@ -3,11 +3,12 @@
 namespace Sugarcrm\UpgradeSpec\Element\Section;
 
 use Sugarcrm\UpgradeSpec\Element\ElementInterface;
-use Sugarcrm\UpgradeSpec\Element\ElementTrait;
+use Sugarcrm\UpgradeSpec\Element\RendererAwareInterface;
+use Sugarcrm\UpgradeSpec\Element\RendererAwareTrait;
 
-class CoreChanges implements ElementInterface
+class CoreChanges implements ElementInterface, RendererAwareInterface
 {
-    use ElementTrait;
+    use RendererAwareTrait;
 
     /**
      * @return string
@@ -31,7 +32,7 @@ class CoreChanges implements ElementInterface
      *
      * @return bool
      */
-    public function isRelevantTo($version, $newVersion)
+    public static function isRelevantTo($version, $newVersion)
     {
         return true;
     }

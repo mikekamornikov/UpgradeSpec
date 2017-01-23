@@ -15,9 +15,6 @@ use Sugarcrm\UpgradeSpec\Data\Manager;
 use Sugarcrm\UpgradeSpec\Data\Provider\SupportSugarcrm;
 use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
 use Sugarcrm\UpgradeSpec\Element\Provider;
-use Sugarcrm\UpgradeSpec\Element\Section\CoreChanges;
-use Sugarcrm\UpgradeSpec\Element\Section\HealthCheck;
-use Sugarcrm\UpgradeSpec\Element\Section\ReleaseNotes;
 use Sugarcrm\UpgradeSpec\Formatter\MarkdownFormatter;
 use Sugarcrm\UpgradeSpec\Helper\File;
 use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
@@ -29,7 +26,7 @@ use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Dotenv\Dotenv;
 use Twig_Loader_Filesystem;
 
-class Application extends BaseApplication
+final class Application extends BaseApplication
 {
     /**
      * Application constructor.
@@ -127,14 +124,7 @@ class Application extends BaseApplication
      */
     private function getGenerator(Cache $cache)
     {
-        $specElements = [
-            CoreChanges::class,
-            ReleaseNotes::class,
-            HealthCheck::class,
-        ];
-
         $formatter = new MarkdownFormatter();
-
         $templateRenderer = new TwigRenderer(
             new Twig_Loader_Filesystem(__DIR__ . '/../' . getenv('TEMPLATE_PATH') . '/' . getenv('DEFAULT_FORMAT'))
         );
@@ -146,7 +136,7 @@ class Application extends BaseApplication
         );
 
         return new Generator(
-            new Provider($specElements, $templateRenderer, $dataManager),
+            new Provider($templateRenderer, $dataManager),
             new ElementGenerator($formatter),
             $formatter
         );
