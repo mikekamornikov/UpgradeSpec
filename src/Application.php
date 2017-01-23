@@ -25,45 +25,31 @@ use Sugarcrm\UpgradeSpec\Spec\Generator;
 use Sugarcrm\UpgradeSpec\Template\TwigRenderer;
 use Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter;
 use Sugarcrm\UpgradeSpec\Updater\Updater;
-use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Dotenv\Dotenv;
 use Twig_Loader_Filesystem;
 
-class App
+class Application extends BaseApplication
 {
     /**
-     * @var Application
-     */
-    private $app;
-
-    /**
-     * App constructor.
+     * Application constructor.
      * @param $name
      * @param $version
      */
     public function __construct($name, $version)
     {
-        $this->app = new Application($name, $version);
+        parent::__construct($name, $version);
+
         $this->initEnvironment();
+        $this->initCommands();
     }
 
     /**
-     * Application entry point
+     * @return string
      */
-    public function run()
+    public function getLongVersion()
     {
-        $cache = $this->getCache();
-
-        $this->app->add(new GenerateSpecCommand(null, $this->getGenerator($cache), new Sugarcrm(), new File()));
-        $this->app->add(new CacheClearCommand(null, $cache));
-
-        if ($this->isUpdateAvailable()) {
-            $updater = $this->getUpdater();
-            $this->app->add(new SelfUpdateCommand(null, $updater));
-            $this->app->add(new SelfRollbackCommand(null, $updater));
-        }
-
-        $this->app->run();
+        return parent::getLongVersion() . ' by <comment>Mike Kamornikov</comment> and <comment>Denis Stiblo</comment>';
     }
 
     /*
@@ -80,6 +66,23 @@ class App
 
         $envPath = __DIR__ . '/../.env.dist';
         $env->populate($env->parse(@file_get_contents($envPath), $envPath));
+    }
+
+    /**
+     * Init commands
+     */
+    private function initCommands()
+    {
+        $cache = $this->getCache();
+
+        $this->add(new GenerateSpecCommand(null, $this->getGenerator($cache), new Sugarcrm(), new File()));
+        $this->add(new CacheClearCommand(null, $cache));
+
+        if ($this->isUpdateAvailable()) {
+            $updater = $this->getUpdater();
+            $this->add(new SelfUpdateCommand(null, $updater));
+            $this->add(new SelfRollbackCommand(null, $updater));
+        }
     }
 
     /**
@@ -100,7 +103,7 @@ class App
         $strategy = new GithubStrategy();
         $strategy->setPackageName(getenv('PACKAGE_NAME'));
         $strategy->setPharName(getenv('PHAR_BASENAME') . '.phar');
-        $strategy->setCurrentLocalVersion($this->app->getVersion());
+        $strategy->setCurrentLocalVersion($this->getVersion());
 
         $humbugUpdater = new HumbugUpdater();
         $humbugUpdater->setStrategyObject($strategy);

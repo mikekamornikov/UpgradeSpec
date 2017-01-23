@@ -25,4 +25,4 @@ set_error_handler(function ($severity, $message, $file, $line) {
 
 require __DIR__ . '/../src/autoload.php';
 
-(new Sugarcrm\UpgradeSpec\App('SugarCRM upgrade spec generator', '@package_version@'))->run();
+(new Sugarcrm\UpgradeSpec\Application('SugarCRM upgrade spec generator', '@package_version@'))->run();

@@ -1,37 +1,40 @@
 {
-  "name": "mikekamornikov/uspec",
-  "type": "library",
-  "description": "SugarCRM upgrade spec generator",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Mike Kamornikov",
-      "email": "mikekamornikov@gmail.com"
-    }
-  ],
-
-  "autoload": {
-    "psr-4": {
-      "Sugarcrm\\UpgradeSpec\\": "src"
-    }
-  },
-
-  "require": {
-    "php": ">=5.6",
-    "symfony/console": "^3.2",
-    "symfony/dotenv": "3.3.x-dev",
-    "symfony/dom-crawler": "^3.2",
-    "symfony/css-selector": "^3.2",
-    "padraic/phar-updater": "^1.0",
-    "guzzlehttp/guzzle": "~6.0",
-    "twig/twig": "~1.0",
-    "psr/simple-cache": "^1.0",
-    "league/html-to-markdown": "^4.4"
-  },
-
-  "require-dev": {
-    "phpspec/phpspec": "^3.2"
-  },
-
-  "bin": ["bin/uspec", "bin/uspec.pubkey"]
+    "name": "mikekamornikov/uspec",
+    "type": "application",
+    "description": "SugarCRM upgrade spec generator",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mike Kamornikov",
+            "email": "mkekamornikov@sugarcrm.com"
+        },
+        {
+            "name": "Denis Stiblo",
+            "email": "dstiblo@sugarcrm.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sugarcrm\\UpgradeSpec\\": "src"
+        }
+    },
+    "require": {
+        "php": ">=5.6",
+        "symfony/console": "^3.2",
+        "symfony/dotenv": "3.3.x-dev",
+        "symfony/dom-crawler": "^3.2",
+        "symfony/css-selector": "^3.2",
+        "padraic/phar-updater": "^1.0",
+        "guzzlehttp/guzzle": "~6.0",
+        "twig/twig": "~1.0",
+        "psr/simple-cache": "^1.0",
+        "league/html-to-markdown": "^4.4"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^3.2"
+    },
+    "bin": [
+        "bin/uspec",
+        "bin/uspec.pubkey"
+    ]
 }
