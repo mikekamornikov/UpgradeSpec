@@ -3,6 +3,7 @@
 namespace Sugarcrm\UpgradeSpec\Element;
 
 use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
+use Sugarcrm\UpgradeSpec\Spec\Context;
 
 class Generator
 {
@@ -11,6 +12,11 @@ class Generator
      */
     private $formatter;
 
+    /**
+     * Generator constructor.
+     *
+     * @param FormatterInterface $formatter
+     */
     public function __construct(FormatterInterface $formatter)
     {
         $this->formatter = $formatter;
@@ -18,15 +24,14 @@ class Generator
 
     /**
      * @param ElementInterface $element
-     * @param $buildVersion
-     * @param $upgradeTo
+     * @param Context          $context
      *
      * @return string
      */
-    public function generate(ElementInterface $element, $buildVersion, $upgradeTo)
+    public function generate(ElementInterface $element, Context $context)
     {
         return $this->formatter->asTitle($element->getTitle(), 2)
             . $this->formatter->getDelimiter()
-            . $this->formatter->asBody($element->getBody($buildVersion, $upgradeTo));
+            . $this->formatter->asBody($element->getBody($context));
     }
 }

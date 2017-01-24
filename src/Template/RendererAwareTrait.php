@@ -1,8 +1,6 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Element;
-
-use Sugarcrm\UpgradeSpec\Template\RendererInterface;
+namespace Sugarcrm\UpgradeSpec\Template;
 
 trait RendererAwareTrait
 {

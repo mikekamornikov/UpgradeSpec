@@ -2,8 +2,10 @@
 
 namespace Sugarcrm\UpgradeSpec\Element;
 
+use Sugarcrm\UpgradeSpec\Data\DataAwareInterface;
 use Sugarcrm\UpgradeSpec\Data\Manager;
-
+use Sugarcrm\UpgradeSpec\Spec\Context;
+use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
 use Sugarcrm\UpgradeSpec\Template\RendererInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -32,19 +34,19 @@ class Provider
     }
 
     /**
-     * @param $buildVersion
-     * @param $upgradeTo
+     * @param Context $context
      *
      * @return array
      */
-    public function getElements($buildVersion, $upgradeTo)
+    public function getElements(Context $context)
     {
-        $elements = $this->getSuitableElements($buildVersion, $upgradeTo);
+        $elements = $this->getSuitableElements($context);
 
         if (!$elements) {
-            throw new \DomainException(sprintf('No special steps required to upgrade from "%s" to "%s")',
-                $buildVersion,
-                $upgradeTo
+            throw new \DomainException(sprintf('No special steps required to upgrade from "%s" to "%s" (%s))',
+                $context->getBuildVersion(),
+                $context->getUpgradeVersion(),
+                $context->getFlav()
             ));
         }
 
@@ -52,24 +54,23 @@ class Provider
     }
 
     /**
-     * @param $oldVersion
-     * @param $newVersion
+     * @param Context $context
      *
      * @return array
      */
-    private function getSuitableElements($oldVersion, $newVersion)
+    private function getSuitableElements(Context $context)
     {
         // list of potential elements (FQCNs)
         $classNames = [];
         foreach (Finder::create()->files()->in(__DIR__ . '/Section')->name('*.php') as $file) {
-            list($className, ) = explode('.', $file->getBasename());
+            list($className) = explode('.', $file->getBasename());
             $classNames[] = '\\Sugarcrm\\UpgradeSpec\\Element\\Section\\' . $className;
         }
 
         // list of relevant elements (FQCNs)
-        $classNames = array_filter($classNames, function ($className) use ($oldVersion, $newVersion) {
+        $classNames = array_filter($classNames, function ($className) use ($context) {
             return (new \ReflectionClass($className))->implementsInterface(ElementInterface::class)
-                && $className::isRelevantTo($oldVersion, $newVersion);
+                && $className::isRelevantTo($context);
         });
 
         // element factory

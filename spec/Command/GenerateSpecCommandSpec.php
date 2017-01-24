@@ -5,6 +5,8 @@ namespace spec\Sugarcrm\UpgradeSpec\Command;
 use Prophecy\Argument;
 use PhpSpec\ObjectBehavior;
 use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
+use Sugarcrm\UpgradeSpec\Data\Manager;
+use Sugarcrm\UpgradeSpec\Spec\Context;
 use Sugarcrm\UpgradeSpec\Spec\Generator;
 use Sugarcrm\UpgradeSpec\Helper\File;
 use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
@@ -13,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateSpecCommandSpec extends ObjectBehavior
 {
-    function let(InputInterface $input, Generator $generator, Sugarcrm $sugarcrmHelper, File $fileHelper)
+    function let(InputInterface $input, Generator $generator, Manager $dataManager, Sugarcrm $sugarcrmHelper, File $fileHelper)
     {
         $input->bind(Argument::cetera())->willReturn();
         $input->hasArgument(Argument::any())->willReturn();
@@ -26,12 +28,15 @@ class GenerateSpecCommandSpec extends ObjectBehavior
 
         $generator->generate(Argument::cetera())->willReturn('generated_spec');
 
+        $dataManager->getLatestVersion(Argument::cetera())->willReturn('7.8.0.0');
+
         $sugarcrmHelper->isSugarcrmBuild(Argument::cetera())->willReturn(true);
-        $sugarcrmHelper->getBuildVersion(Argument::cetera())->willReturn('7.0');
+        $sugarcrmHelper->getBuildVersion(Argument::cetera())->willReturn('7.6.1');
+        $sugarcrmHelper->getBuildFlav(Argument::cetera())->willReturn('ULT');
 
         $fileHelper->saveToFile(Argument::cetera())->willReturn();
 
-        $this->beConstructedWith(null, $generator, $sugarcrmHelper, $fileHelper);
+        $this->beConstructedWith(null, $generator, $dataManager, $sugarcrmHelper, $fileHelper);
     }
     
     function it_is_initializable()
@@ -59,8 +64,8 @@ class GenerateSpecCommandSpec extends ObjectBehavior
 
         $this->run($input, $output);
 
-        $latest = '7.8';
-        $generator->generate(Argument::any(), $latest)->shouldBeCalled();
+        $context = new Context('7.6.1', '7.8.0.0', 'ULT');
+        $generator->generate($context)->shouldBeCalled();
     }
 
     function it_generates_upgrade_spec(InputInterface $input, OutputInterface $output)
@@ -70,12 +75,24 @@ class GenerateSpecCommandSpec extends ObjectBehavior
         $output->writeln('<comment>Done</comment>')->shouldHaveBeenCalled();
     }
 
-    function it_shows_error_for_upgrades_to_version_lower_or_equal_to_given_instance_version(InputInterface $input, OutputInterface $output, Sugarcrm $sugarcrmHelper)
+    function it_shows_error_for_upgrades_to_version_equal_to_given_instance_version(InputInterface $input, OutputInterface $output, Manager $dataManager, Sugarcrm $sugarcrmHelper)
     {
-        $input->getArgument('version')->willReturn('7.8');
-        $sugarcrmHelper->getBuildVersion(Argument::cetera())->willReturn('7.8');
+        $input->getArgument('version')->willReturn('7.7');
+        $dataManager->getLatestVersion(Argument::cetera())->willReturn('7.7.1');
+        $sugarcrmHelper->getBuildVersion(Argument::cetera())->willReturn('7.7.1');
 
-        $output->writeln('<error>Invalid "version" argument value</error>')->shouldBeCalled();
+        $output->writeln('<error>Given version ("7.7.1") is lower or equal to the build version ("7.7.1")</error>')->shouldBeCalled();
+
+        $this->run($input, $output);
+    }
+
+    function it_shows_error_for_upgrades_to_version_lower_than_given_instance_version(InputInterface $input, OutputInterface $output, Manager $dataManager, Sugarcrm $sugarcrmHelper)
+    {
+        $input->getArgument('version')->willReturn('7.7');
+        $dataManager->getLatestVersion(Argument::cetera())->willReturn('7.7.1');
+        $sugarcrmHelper->getBuildVersion(Argument::cetera())->willReturn('7.8.0.0');
+
+        $output->writeln('<error>Given version ("7.7.1") is lower or equal to the build version ("7.8.0.0")</error>')->shouldBeCalled();
 
         $this->run($input, $output);
     }

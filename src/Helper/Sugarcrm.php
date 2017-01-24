@@ -23,6 +23,24 @@ class Sugarcrm
     }
 
     /**
+     * Extracts flav from sugarcrm build files.
+     *
+     * @param $path
+     *
+     * @return string
+     */
+    public function getBuildFlav($path)
+    {
+        if (!defined('sugarEntry')) {
+            define('sugarEntry', true);
+        }
+
+        require realpath($path) . '/sugar_version.php';
+
+        return $sugar_flavor;
+    }
+
+    /**
      * Verifies if given path represents a valid SugarCRM build.
      *
      * @param $path

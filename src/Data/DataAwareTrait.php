@@ -1,8 +1,6 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Element;
-
-use Sugarcrm\UpgradeSpec\Data\Manager;
+namespace Sugarcrm\UpgradeSpec\Data;
 
 trait DataAwareTrait
 {

@@ -7,16 +7,19 @@ interface ProviderInterface
     /**
      * Get all available SugarCRM versions (sorted ASC).
      *
+     * @param $flav
+     *
      * @return mixed
      */
-    public function getVersions();
+    public function getVersions($flav);
 
     /**
      * Get release notes for all available versions from given range.
      *
+     * @param $flav
      * @param array $versions
      *
      * @return mixed
      */
-    public function getReleaseNotes(array $versions);
+    public function getReleaseNotes($flav, array $versions);
 }

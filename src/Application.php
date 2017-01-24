@@ -43,6 +43,8 @@ final class Application extends BaseApplication
     }
 
     /**
+     * Gets full version name.
+     *
      * @return string
      */
     public function getLongVersion()
@@ -51,7 +53,7 @@ final class Application extends BaseApplication
     }
 
     /*
-     * Init application environment
+     * Init application environment.
      */
     private function initEnvironment()
     {
@@ -68,19 +70,56 @@ final class Application extends BaseApplication
 
     /**
      * Init commands.
+     *
+     * @return array
      */
     private function initCommands()
     {
-        $cache = $this->getCache();
+        $commands = [];
 
-        $this->add(new GenerateSpecCommand(null, $this->getGenerator($cache), new Sugarcrm(), new File()));
-        $this->add(new CacheClearCommand(null, $cache));
+        $cache = $this->getCache();
+        $dataManager = new Manager(
+            new SupportSugarcrm($cache, new HtmlConverter([
+                'strip_tags' => true,
+                'header_style' => 'atx',
+            ]))
+        );
+        $formatter = new MarkdownFormatter();
+        $templateRenderer = new TwigRenderer(
+            new Twig_Loader_Filesystem(__DIR__ . '/../' . getenv('TEMPLATE_PATH') . '/' . getenv('DEFAULT_FORMAT'))
+        );
+
+        $specGenerator = new Generator(
+            new Provider($templateRenderer, $dataManager),
+            new ElementGenerator($formatter),
+            $formatter
+        );
+
+        $generateSpecCommand = new GenerateSpecCommand(null, $specGenerator, $dataManager, new Sugarcrm(), new File());
+
+        $commands[] = $generateSpecCommand;
+        $commands[] = new CacheClearCommand(null, $cache);
 
         if ($this->isUpdateAvailable()) {
-            $updater = $this->getUpdater();
-            $this->add(new SelfUpdateCommand(null, $updater));
-            $this->add(new SelfRollbackCommand(null, $updater));
+            $strategy = new GithubStrategy();
+            $strategy->setPackageName(getenv('PACKAGE_NAME'));
+            $strategy->setPharName(getenv('PHAR_BASENAME') . '.phar');
+            $strategy->setCurrentLocalVersion($this->getVersion());
+
+            $humbugUpdater = new HumbugUpdater();
+            $humbugUpdater->setStrategyObject($strategy);
+
+            $path = sys_get_temp_dir() . '/' . getenv('PHAR_BASENAME') . '-old.phar';
+            $humbugUpdater->setBackupPath($path);
+            $humbugUpdater->setRestorePath($path);
+
+            $updater = new Updater(new HumbugAdapter($humbugUpdater));
+
+            $commands[] = new SelfUpdateCommand(null, $updater);
+            $commands[] = new SelfRollbackCommand(null, $updater);
         }
+
+        $this->addCommands($commands);
     }
 
     /**
@@ -91,55 +130,6 @@ final class Application extends BaseApplication
     private function isUpdateAvailable()
     {
         return getenv('DEV_MODE') || \Phar::running();
-    }
-
-    /**
-     * Updater factory method.
-     *
-     * @return Updater
-     */
-    private function getUpdater()
-    {
-        $strategy = new GithubStrategy();
-        $strategy->setPackageName(getenv('PACKAGE_NAME'));
-        $strategy->setPharName(getenv('PHAR_BASENAME') . '.phar');
-        $strategy->setCurrentLocalVersion($this->getVersion());
-
-        $humbugUpdater = new HumbugUpdater();
-        $humbugUpdater->setStrategyObject($strategy);
-
-        $path = sys_get_temp_dir() . '/' . getenv('PHAR_BASENAME') . '-old.phar';
-        $humbugUpdater->setBackupPath($path);
-        $humbugUpdater->setRestorePath($path);
-
-        return new Updater(new HumbugAdapter($humbugUpdater));
-    }
-
-    /**
-     * Generator factory method.
-     *
-     * @param Cache $cache
-     *
-     * @return Generator
-     */
-    private function getGenerator(Cache $cache)
-    {
-        $formatter = new MarkdownFormatter();
-        $templateRenderer = new TwigRenderer(
-            new Twig_Loader_Filesystem(__DIR__ . '/../' . getenv('TEMPLATE_PATH') . '/' . getenv('DEFAULT_FORMAT'))
-        );
-        $dataManager = new Manager(
-            new SupportSugarcrm($cache, new HtmlConverter([
-                'strip_tags' => true,
-                'header_style' => 'atx',
-            ]))
-        );
-
-        return new Generator(
-            new Provider($templateRenderer, $dataManager),
-            new ElementGenerator($formatter),
-            $formatter
-        );
     }
 
     /**

@@ -2,8 +2,10 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
+use Sugarcrm\UpgradeSpec\Data\Manager;
 use Sugarcrm\UpgradeSpec\Helper\File;
 use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
+use Sugarcrm\UpgradeSpec\Spec\Context;
 use Sugarcrm\UpgradeSpec\Spec\Generator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,32 +17,40 @@ class GenerateSpecCommand extends Command
     /**
      * @var SpecGenerator
      */
-    private $specGenerator;
+    private $generator;
+
     /**
      * @var Sugarcrm
      */
-    private $sugarcrmHelper;
+    private $sugarcrm;
 
     /**
      * @var File
      */
-    private $fileHelper;
+    private $file;
+
+    /**
+     * @var Manager
+     */
+    private $dataManager;
 
     /**
      * GenerateSpecCommand constructor.
      *
-     * @param null          $name
-     * @param SpecGenerator $specGenerator
-     * @param Sugarcrm      $sugarcrmHelper
-     * @param File          $fileHelper
+     * @param null      $name
+     * @param Generator $generator
+     * @param Manager   $dataManager
+     * @param Sugarcrm  $sugarcrmHelper
+     * @param File      $fileHelper
      */
-    public function __construct($name, Generator $specGenerator, Sugarcrm $sugarcrmHelper, File $fileHelper)
+    public function __construct($name, Generator $generator, Manager $dataManager, Sugarcrm $sugarcrmHelper, File $fileHelper)
     {
         parent::__construct($name);
 
-        $this->specGenerator = $specGenerator;
-        $this->sugarcrmHelper = $sugarcrmHelper;
-        $this->fileHelper = $fileHelper;
+        $this->generator = $generator;
+        $this->dataManager = $dataManager;
+        $this->sugarcrm = $sugarcrmHelper;
+        $this->file = $fileHelper;
     }
 
     /**
@@ -66,17 +76,19 @@ class GenerateSpecCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $path = $input->getArgument('path');
-        $version = $this->sugarcrmHelper->getBuildVersion($path);
+        $version = $this->sugarcrm->getBuildVersion($path);
+        $flav = $this->sugarcrm->getBuildFlav($path);
 
-        // TODO: get real "latest" version in the runtime
-        $upgradeTo = $input->getArgument('version') ?: '7.8';
+        $upgradeTo = $this->dataManager->getLatestVersion($flav, $input->getArgument('version'));
 
-        $output->writeln(sprintf('<comment>Generating upgrade spec ...</comment>', $path, $upgradeTo));
+        $upgradeContext = new Context($version, $upgradeTo, $flav);
 
-        $spec = $this->specGenerator->generate($version, $upgradeTo);
+        $output->writeln(sprintf('<comment>Generating upgrade spec: %s ...</comment>', $upgradeContext));
+
+        $spec = $this->generator->generate($upgradeContext);
 
         if ($input->hasParameterOption('--dump') || $input->hasParameterOption('-D')) {
-            $this->fileHelper->saveToFile(sprintf('upgrade_%s_to_%s.md', $version, $upgradeTo), $spec);
+            $this->file->saveToFile(sprintf('%s.md', $upgradeContext->asFilename()), $spec);
         } else {
             $output->writeln(sprintf('<info>%s</info>', $spec));
         }
@@ -95,7 +107,10 @@ class GenerateSpecCommand extends Command
         $version = $input->getArgument('version');
 
         $this->validatePath($path);
-        $this->validateVersion($this->sugarcrmHelper->getBuildVersion($path), $version);
+        $this->validateVersion(
+            $this->sugarcrm->getBuildVersion($path),
+            $this->dataManager->getLatestVersion($this->sugarcrm->getBuildFlav($path), $version)
+        );
     }
 
     /**
@@ -103,7 +118,7 @@ class GenerateSpecCommand extends Command
      */
     private function validatePath($path)
     {
-        if (!$this->sugarcrmHelper->isSugarcrmBuild($path)) {
+        if (!$this->sugarcrm->isSugarcrmBuild($path)) {
             throw new \InvalidArgumentException('Invalid "path" argument value');
         }
     }
@@ -114,9 +129,15 @@ class GenerateSpecCommand extends Command
      */
     private function validateVersion($buildVersion, $upgradeTo)
     {
-        // TODO: use composer/semver to validate versions
-        if ($upgradeTo && version_compare($buildVersion, $upgradeTo, '>=')) {
-            throw new \InvalidArgumentException('Invalid "version" argument value');
+        $buildVersionParts = explode('.', $buildVersion);
+        $fullVersion = implode('.', array_merge($buildVersionParts, array_fill(0, 4 - count($buildVersionParts), '0')));
+
+        if (!preg_match('/\d+(\.\d+){1,3}/', $upgradeTo)) {
+            throw new \InvalidArgumentException('Invalid version format');
+        }
+
+        if (version_compare($fullVersion, $upgradeTo, '>=')) {
+            throw new \InvalidArgumentException(sprintf('Given version ("%s") is lower or equal to the build version ("%s")', $upgradeTo, $buildVersion));
         }
     }
 }

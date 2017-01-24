@@ -42,9 +42,11 @@ class SupportSugarcrm implements ProviderInterface
     /**
      * Get all available SugarCRM versions (sorted ASC).
      *
+     * @param $flav
+     *
      * @return mixed
      */
-    public function getVersions()
+    public function getVersions($flav)
     {
         if ($this->cache->has('versions')) {
             return $this->cache->get('versions');
@@ -63,7 +65,7 @@ class SupportSugarcrm implements ProviderInterface
 
         $versions = [];
         foreach ($majors as $major) {
-            $url = sprintf('/Documentation/Sugar_Versions/%s/Ult/index.html', $major);
+            $url = $this->getVersionUri($flav, $major);
             $response = $this->httpClient->request('GET', $url);
 
             $crawler = new Crawler($response->getBody()->getContents());
@@ -85,28 +87,29 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
+     * @param $flav
      * @param array $versions
      *
      * @return array
      */
-    public function getReleaseNotes(array $versions)
+    public function getReleaseNotes($flav, array $versions)
     {
-        $newVersions = array_filter($versions, function ($version) {
-            return !$this->cache->has($this->getCacheKey(['release_notes', $version]));
+        $newVersions = array_filter($versions, function ($version) use ($flav) {
+            return !$this->cache->has($this->getCacheKey([$flav, 'release_notes', $version]));
         });
 
-        $requests = function () use ($newVersions) {
+        $requests = function () use ($flav, $newVersions) {
             foreach ($newVersions as $version) {
-                yield $version => function () use ($version) {
-                    return $this->httpClient->getAsync($this->getReleaseNotesUri($version));
+                yield $version => function () use ($flav, $version) {
+                    return $this->httpClient->getAsync($this->getReleaseNotesUri($flav, $version));
                 };
             }
         };
 
         if ($newVersions) {
             $this->processRequestPool($requests, [
-                'fulfilled' => function ($response, $version) {
-                    $base = dirname($this->httpClient->getConfig('base_uri') . ltrim($this->getReleaseNotesUri($version), '/')) . '/';
+                'fulfilled' => function ($response, $version) use ($flav) {
+                    $base = dirname($this->httpClient->getConfig('base_uri') . ltrim($this->getReleaseNotesUri($flav, $version), '/')) . '/';
                     $crawler = new Crawler($this->purifyHtml($response->getBody()->getContents(), $base));
 
                     $identifiers = [
@@ -134,7 +137,7 @@ class SupportSugarcrm implements ProviderInterface
                         }
                     }
 
-                    $this->cache->set($this->getCacheKey(['release_notes', $version]), $releaseNote);
+                    $this->cache->set($this->getCacheKey([$flav, 'release_notes', $version]), $releaseNote);
                 },
                 'rejected' => function ($reason, $version) {
                     throw new \RuntimeException(
@@ -146,7 +149,7 @@ class SupportSugarcrm implements ProviderInterface
 
         $releaseNotes = [];
         foreach ($versions as $version) {
-            $releaseNote = $this->cache->get($this->getCacheKey(['release_notes', $version]), null);
+            $releaseNote = $this->cache->get($this->getCacheKey([$flav, 'release_notes', $version]), null);
             if ($releaseNote) {
                 $releaseNotes[$version] = $releaseNote;
             }
@@ -162,16 +165,19 @@ class SupportSugarcrm implements ProviderInterface
     /**
      * Returns version specific release note uri.
      *
+     * @param $flav
      * @param $version
      *
      * @return string
      */
-    private function getReleaseNotesUri($version)
+    private function getReleaseNotesUri($flav, $version)
     {
         list($v1, $v2) = explode('.', $version);
         $major = implode('.', [$v1, $v2]);
 
-        return sprintf('/Documentation/Sugar_Versions/%s/Ult/Sugar_%s_Release_Notes/index.html', $major, $version);
+        $flav = ucfirst(mb_strtolower($flav));
+
+        return sprintf('/Documentation/Sugar_Versions/%s/%s/Sugar_%s_Release_Notes/index.html', $major, $flav, $version);
     }
 
     /**
@@ -226,5 +232,18 @@ class SupportSugarcrm implements ProviderInterface
          * 3. force the pool of requests to complete
          */
         return (new Pool($this->httpClient, $requests(), $config))->promise()->wait();
+    }
+
+    /**
+     * @param $flav
+     * @param $major
+     *
+     * @return string
+     */
+    private function getVersionUri($flav, $major)
+    {
+        $flav = ucfirst(mb_strtolower($flav));
+
+        return sprintf('/Documentation/Sugar_Versions/%s/%s/index.html', $major, $flav);
     }
 }

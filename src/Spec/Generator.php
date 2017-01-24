@@ -41,24 +41,23 @@ class Generator
     }
 
     /**
-     * @param $buildVersion
-     * @param $upgradeTo
+     * @param Context $context
      *
      * @return string
      *
      * @throws GeneratorException
      */
-    public function generate($buildVersion, $upgradeTo)
+    public function generate(Context $context)
     {
         try {
             $delimiter = $this->formatter->getDelimiter();
-            $elements = $this->elementProvider->getElements($buildVersion, $upgradeTo);
+            $elements = $this->elementProvider->getElements($context);
 
-            $title = $this->formatter->asTitle(sprintf('%s -> %s upgrade', $buildVersion, $upgradeTo)) . $delimiter;
+            $title = $this->formatter->asTitle(sprintf('SugarCRM upgrade: %s', $context)) . $delimiter;
 
             return $title . implode($delimiter, array_map(
-                function ($element) use ($buildVersion, $upgradeTo) {
-                    return $this->elementGenerator->generate($element, $buildVersion, $upgradeTo);
+                function ($element) use ($context) {
+                    return $this->elementGenerator->generate($element, $context);
                 },
                 $elements
             ));

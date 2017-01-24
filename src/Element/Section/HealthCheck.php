@@ -3,8 +3,9 @@
 namespace Sugarcrm\UpgradeSpec\Element\Section;
 
 use Sugarcrm\UpgradeSpec\Element\ElementInterface;
-use Sugarcrm\UpgradeSpec\Element\RendererAwareInterface;
-use Sugarcrm\UpgradeSpec\Element\RendererAwareTrait;
+use Sugarcrm\UpgradeSpec\Spec\Context;
+use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
+use Sugarcrm\UpgradeSpec\Template\RendererAwareTrait;
 
 class HealthCheck implements ElementInterface, RendererAwareInterface
 {
@@ -27,23 +28,21 @@ class HealthCheck implements ElementInterface, RendererAwareInterface
     }
 
     /**
-     * @param $version
-     * @param $newVersion
+     * @param Context $context
      *
      * @return bool
      */
-    public static function isRelevantTo($version, $newVersion)
+    public static function isRelevantTo(Context $context)
     {
-        return version_compare($newVersion, '7.0', '>=');
+        return version_compare($context->getUpgradeVersion(), '7.0', '>=');
     }
 
     /**
-     * @param $version
-     * @param $newVersion
+     * @param Context $context
      *
      * @return string
      */
-    public function getBody($version, $newVersion)
+    public function getBody(Context $context)
     {
         return $this->renderer->render('health_check', []);
     }
