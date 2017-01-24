@@ -121,4 +121,18 @@ class Manager
 
         return $versions;
     }
+
+
+    /**
+     * Get list of available customizations.(modified files, deleted files, sql changes)
+     *
+     * @param Context $context
+     *
+     * @return array
+     */
+    public function getListOfCustomizations(Context $context)
+    {
+       $customizations = array();
+       return $customizations;
+    }
 }

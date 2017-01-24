@@ -47,7 +47,7 @@ class CheckCustomizations implements ElementInterface, RendererAwareInterface, D
     public function getBody(Context $context)
     {
         return $this->renderer->render('check_customizations', [
-            'release_notes' => $this->dataManager->getReleaseNotes($context),
+            'check_customizations' => $this->dataManager->getListOfCustomizations($context),
         ]);
     }
 }
