@@ -71,7 +71,7 @@ class ExistingCoreChanges implements ElementInterface, RendererAwareInterface
         } elseif (version_compare($baseVersion, '7.7', '<')) {
             $guideUrl .= 'Sugar_Developer_Guide_7.6/Extension_Framework/index.html';
         } else {
-            $guideUrl .= sprintf('Sugar_Developer/Sugar_Developer_Guide_%s/Architecture/Extensions/index.html', $baseVersion);
+            $guideUrl .= sprintf('Sugar_Developer_Guide_%s/Architecture/index.html#Extensions', $baseVersion);
         }
 
         return $guideUrl;
