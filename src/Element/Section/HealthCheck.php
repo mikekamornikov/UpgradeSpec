@@ -2,14 +2,16 @@
 
 namespace Sugarcrm\UpgradeSpec\Element\Section;
 
+use Sugarcrm\UpgradeSpec\Data\DataAwareInterface;
+use Sugarcrm\UpgradeSpec\Data\DataAwareTrait;
 use Sugarcrm\UpgradeSpec\Element\ElementInterface;
 use Sugarcrm\UpgradeSpec\Spec\Context;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareTrait;
 
-class HealthCheck implements ElementInterface, RendererAwareInterface
+class HealthCheck implements ElementInterface, RendererAwareInterface, DataAwareInterface
 {
-    use RendererAwareTrait;
+    use RendererAwareTrait, DataAwareTrait;
 
     /**
      * @return string
@@ -44,6 +46,8 @@ class HealthCheck implements ElementInterface, RendererAwareInterface
      */
     public function getBody(Context $context)
     {
-        return $this->renderer->render('health_check', []);
+        return $this->renderer->render('health_check', [
+            'health_check_howto' => $this->dataManager->getHealthCheckInfo($context->getUpgradeVersion())]
+        );
     }
 }

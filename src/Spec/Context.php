@@ -74,6 +74,6 @@ final class Context
      */
     public function asFilename()
     {
-        return sprintf('upgrade_%s_to_%s_(%s)', $this->buildVersion, $this->upgradeVersion, $this->flav);
+        return sprintf('upgrade_%s_to_%s_%s', $this->buildVersion, $this->upgradeVersion, $this->flav);
     }
 }

@@ -9,7 +9,7 @@ use Sugarcrm\UpgradeSpec\Spec\Context;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareTrait;
 
-class CheckCustomizations implements ElementInterface, RendererAwareInterface, DataAwareInterface
+class Customizations implements ElementInterface, RendererAwareInterface, DataAwareInterface
 {
     use RendererAwareTrait, DataAwareTrait;
 
@@ -18,7 +18,7 @@ class CheckCustomizations implements ElementInterface, RendererAwareInterface, D
      */
     public function getTitle()
     {
-        return 'Analyze customizations';
+        return 'Review existing customizations';
     }
 
     /**
@@ -26,7 +26,7 @@ class CheckCustomizations implements ElementInterface, RendererAwareInterface, D
      */
     public function getOrder()
     {
-        return 4;
+        return 3;
     }
 
     /**
@@ -46,8 +46,8 @@ class CheckCustomizations implements ElementInterface, RendererAwareInterface, D
      */
     public function getBody(Context $context)
     {
-        return $this->renderer->render('check_customizations', [
-            'check_customizations' => $this->getListOfCustomizations($context),
+        return $this->renderer->render('customizations', [
+            'customizations' => $this->getListOfCustomizations($context),
         ]);
     }
 

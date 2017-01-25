@@ -40,6 +40,18 @@ class Memory implements ProviderInterface
     }
 
     /**
+     * Gets all required information to perform health check
+     *
+     * @param $version
+     *
+     * @return mixed
+     */
+    public function getHealthCheckInfo($version)
+    {
+        return $this->get($version . '_health_check', '');
+    }
+
+    /**
      * Gets data from memory by key.
      *
      * @param $key

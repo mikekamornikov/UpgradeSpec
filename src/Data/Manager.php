@@ -25,7 +25,7 @@ class Manager
     }
 
     /**
-     * Get all available SugarCRM versions (sorted ASC).
+     * Gets all available SugarCRM versions (sorted ASC).
      *
      * @param $flav
      *
@@ -42,7 +42,7 @@ class Manager
     }
 
     /**
-     * Get the latest available SugarCRM version with given flav and base version.
+     * Gets the latest available SugarCRM version with given flav and base version.
      *
      * Examples: 7.6.1 -> 7.6.1.0, 7.7 -> 7.7.1, 7.8 -> 7.8.0.0
      *
@@ -86,7 +86,7 @@ class Manager
     }
 
     /**
-     * Get release notes for all versions from given range.
+     * Gets release notes for all versions from given range.
      *
      * @param Context $context
      *
@@ -100,7 +100,19 @@ class Manager
     }
 
     /**
-     * Get all available versions from given range ($from < version <= $to).
+     * Gets all required information to perform health check
+     *
+     * @param $version
+     *
+     * @return mixed
+     */
+    public function getHealthCheckInfo($version)
+    {
+        return $this->provider->getHealthCheckInfo($version);
+    }
+
+    /**
+     * Gets all available versions from given range ($from < version <= $to).
      *
      * @param Context $context
      *

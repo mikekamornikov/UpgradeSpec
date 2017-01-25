@@ -109,8 +109,10 @@ class SupportSugarcrm implements ProviderInterface
         if ($newVersions) {
             $this->processRequestPool($requests, [
                 'fulfilled' => function ($response, $version) use ($flav) {
-                    $base = dirname($this->httpClient->getConfig('base_uri') . ltrim($this->getReleaseNotesUri($flav, $version), '/')) . '/';
-                    $crawler = new Crawler($this->purifyHtml($response->getBody()->getContents(), $base));
+                    $crawler = new Crawler($this->purifyHtml(
+                        $response->getBody()->getContents(),
+                        $this->getReleaseNotesUri($flav, $version))
+                    );
 
                     $identifiers = [
                         'feature_enhancements' => '#Feature_Enhancements',
@@ -163,6 +165,62 @@ class SupportSugarcrm implements ProviderInterface
     }
 
     /**
+     * Gets all required information to perform health check
+     *
+     * @param $version
+     *
+     * @return mixed
+     */
+    public function getHealthCheckInfo($version)
+    {
+        $version = $this->getMajorVersion($version);
+        $cacheKey = $this->getCacheKey(['health_check', $version]);
+
+        if ($this->cache->has($cacheKey)) {
+            return $this->cache->get($cacheKey);
+        }
+
+        $response = $this->httpClient->request('GET', $this->getHealthCheckInfoUri($version));
+        $crawler = new Crawler($this->purifyHtml(
+            $response->getBody()->getContents(),
+            $this->getHealthCheckInfoUri($version))
+        );
+
+        $infoNode = $crawler->filter('#Performing_the_Health_Check_2')->nextAll()->first();
+        $info = str_replace(['**<', '>**'], '**', $this->htmlConverter->convert($infoNode->html()));
+
+        $this->cache->set($cacheKey, $info);
+
+        return $info;
+    }
+
+    /**
+     * @param $version
+     *
+     * @return string
+     */
+    private function getHealthCheckInfoUri($version)
+    {
+        return sprintf(
+            'Documentation/Sugar_Versions/%s/Ult/Installation_and_Upgrade_Guide/index.html',
+            $version
+        );
+    }
+
+    /**
+     * @param $flav
+     * @param $major
+     *
+     * @return string
+     */
+    private function getVersionUri($flav, $major)
+    {
+        $flav = ucfirst(mb_strtolower($flav));
+
+        return sprintf('/Documentation/Sugar_Versions/%s/%s/index.html', $major, $flav);
+    }
+
+    /**
      * Returns version specific release note uri.
      *
      * @param $flav
@@ -172,12 +230,23 @@ class SupportSugarcrm implements ProviderInterface
      */
     private function getReleaseNotesUri($flav, $version)
     {
-        list($v1, $v2) = explode('.', $version);
-        $major = implode('.', [$v1, $v2]);
+        return sprintf(
+            '/Documentation/Sugar_Versions/%s/%s/Sugar_%s_Release_Notes/index.html',
+            $this->getMajorVersion($version),
+            ucfirst(mb_strtolower($flav)),
+            $version
+        );
+    }
 
-        $flav = ucfirst(mb_strtolower($flav));
+    /**
+     * @param $version
+     * @return string
+     */
+    private function getMajorVersion($version)
+    {
+        list ($v1, $v2) = explode('.', $version);
 
-        return sprintf('/Documentation/Sugar_Versions/%s/%s/Sugar_%s_Release_Notes/index.html', $major, $flav, $version);
+        return implode('.', [$v1, $v2]);
     }
 
     /**
@@ -200,13 +269,18 @@ class SupportSugarcrm implements ProviderInterface
      * Lightweight HTML purifier.
      *
      * @param $html
-     * @param null  $baseUrl
+     * @param string $url
      * @param array $options
      *
      * @return mixed
      */
-    private function purifyHtml($html, $baseUrl = null, $options = [])
+    private function purifyHtml($html, $url = '', $options = [])
     {
+        $baseUrl = rtrim($this->httpClient->getConfig('base_uri'), '/') . '/';
+        if ($url) {
+            $baseUrl = dirname($baseUrl . ltrim($url, '/')) . '/';
+        }
+
         $options = array_merge([
             'absolute_urls' => true,
             'no_tag_duplicates' => true,
@@ -232,18 +306,5 @@ class SupportSugarcrm implements ProviderInterface
          * 3. force the pool of requests to complete
          */
         return (new Pool($this->httpClient, $requests(), $config))->promise()->wait();
-    }
-
-    /**
-     * @param $flav
-     * @param $major
-     *
-     * @return string
-     */
-    private function getVersionUri($flav, $major)
-    {
-        $flav = ucfirst(mb_strtolower($flav));
-
-        return sprintf('/Documentation/Sugar_Versions/%s/%s/index.html', $major, $flav);
     }
 }
