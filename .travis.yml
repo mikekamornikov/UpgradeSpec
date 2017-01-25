@@ -26,7 +26,6 @@ install:
 
 script:
   - ./vendor/bin/phpspec run --format=pretty
-  - ./vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run --diff
 
 before_deploy:
   - composer install --no-dev
