@@ -2,24 +2,21 @@
 
 namespace Sugarcrm\UpgradeSpec\Data;
 
-use Sugarcrm\UpgradeSpec\Data\Exception\InvalidArgumentException;
-use Sugarcrm\UpgradeSpec\Data\Exception\RuntimeException;
-use Sugarcrm\UpgradeSpec\Data\Provider\ProviderInterface;
 use Sugarcrm\UpgradeSpec\Spec\Context;
 
 class Manager
 {
     /**
-     * @var ProviderInterface
+     * @var ProviderChain
      */
     private $provider;
 
     /**
      * Manager constructor.
      *
-     * @param ProviderInterface $provider
+     * @param ProviderChain $provider
      */
-    public function __construct(ProviderInterface $provider)
+    public function __construct(ProviderChain $provider)
     {
         $this->provider = $provider;
     }
@@ -35,7 +32,7 @@ class Manager
     {
         $versions = $this->provider->getVersions($flav);
         if (!$versions) {
-            throw new RuntimeException(sprintf('No %s versions available', $flav));
+            throw new \RuntimeException(sprintf('No %s versions available', $flav));
         }
 
         return $versions;
@@ -64,7 +61,7 @@ class Manager
         $versionParts = explode('.', $baseVersion);
         if (isset($versionParts[3])) {
             if (!in_array($baseVersion, $versions)) {
-                throw new InvalidArgumentException(sprintf('Unknown version: %s', $baseVersion));
+                throw new \InvalidArgumentException(sprintf('Unknown version: %s', $baseVersion));
             }
 
             return $baseVersion;
@@ -79,7 +76,7 @@ class Manager
         });
 
         if (!$minors) {
-            throw new InvalidArgumentException(sprintf('No minor versions available for version: %s', $baseVersion));
+            throw new \InvalidArgumentException(sprintf('No minor versions available for version: %s', $baseVersion));
         }
 
         return end($minors);

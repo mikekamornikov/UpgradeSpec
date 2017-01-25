@@ -7,7 +7,7 @@ use Sugarcrm\UpgradeSpec\Spec\Context;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareTrait;
 
-class CoreChanges implements ElementInterface, RendererAwareInterface
+class ExistingCoreChanges implements ElementInterface, RendererAwareInterface
 {
     use RendererAwareTrait;
 
@@ -16,7 +16,7 @@ class CoreChanges implements ElementInterface, RendererAwareInterface
      */
     public function getTitle()
     {
-        return 'Backup or rewrite core changes';
+        return 'Review / rewrite existing core changes';
     }
 
     /**
@@ -46,7 +46,7 @@ class CoreChanges implements ElementInterface, RendererAwareInterface
     {
         $guideUrl = $this->getExtensionsGuideUrl($context->getUpgradeVersion());
 
-        return $this->renderer->render('core_changes', ['dev_guide_url' => $guideUrl]);
+        return $this->renderer->render('existing_core_changes', ['dev_guide_url' => $guideUrl]);
     }
 
     /**

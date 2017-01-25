@@ -9,7 +9,7 @@ use Sugarcrm\UpgradeSpec\Spec\Context;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareTrait;
 
-class Customizations implements ElementInterface, RendererAwareInterface, DataAwareInterface
+class UpgradeChanges implements ElementInterface, RendererAwareInterface, DataAwareInterface
 {
     use RendererAwareTrait, DataAwareTrait;
 
@@ -18,7 +18,7 @@ class Customizations implements ElementInterface, RendererAwareInterface, DataAw
      */
     public function getTitle()
     {
-        return 'Review existing customizations';
+        return 'Review upgrade changes and fix possible customization conflicts';
     }
 
     /**
@@ -46,8 +46,8 @@ class Customizations implements ElementInterface, RendererAwareInterface, DataAw
      */
     public function getBody(Context $context)
     {
-        return $this->renderer->render('customizations', [
-            'customizations' => $this->getListOfCustomizations($context),
+        return $this->renderer->render('upgrade_changes', [
+            'changes' => $this->getListOfCustomizations($context),
         ]);
     }
 

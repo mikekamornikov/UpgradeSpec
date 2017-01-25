@@ -12,7 +12,9 @@ use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand;
 use Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand;
 use Sugarcrm\UpgradeSpec\Data\Manager;
+use Sugarcrm\UpgradeSpec\Data\Provider\LocalUpgradePackage;
 use Sugarcrm\UpgradeSpec\Data\Provider\SupportSugarcrm;
+use Sugarcrm\UpgradeSpec\Data\ProviderChain;
 use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
 use Sugarcrm\UpgradeSpec\Element\Provider;
 use Sugarcrm\UpgradeSpec\Formatter\MarkdownFormatter;
@@ -79,10 +81,13 @@ final class Application extends BaseApplication
 
         $cache = $this->getCache();
         $dataManager = new Manager(
-            new SupportSugarcrm($cache, new HtmlConverter([
-                'strip_tags' => true,
-                'header_style' => 'atx',
-            ]))
+            new ProviderChain([
+                new SupportSugarcrm($cache, new HtmlConverter([
+                    'strip_tags' => true,
+                    'header_style' => 'atx',
+                ])),
+                new LocalUpgradePackage()
+            ])
         );
         $formatter = new MarkdownFormatter();
         $templateRenderer = new TwigRenderer(

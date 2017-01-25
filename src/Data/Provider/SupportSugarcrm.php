@@ -9,7 +9,7 @@ use Sugarcrm\UpgradeSpec\Cache\Cache;
 use Sugarcrm\UpgradeSpec\Purifier\Html;
 use Symfony\Component\DomCrawler\Crawler;
 
-class SupportSugarcrm implements ProviderInterface
+class SupportSugarcrm implements DocProviderInterface
 {
     /**
      * @var Client

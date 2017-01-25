@@ -18,7 +18,7 @@ class HealthCheck implements ElementInterface, RendererAwareInterface, DataAware
      */
     public function getTitle()
     {
-        return 'Run health checker and fix all errors';
+        return 'Run Health Check and fix all errors';
     }
 
     /**

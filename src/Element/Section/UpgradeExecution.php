@@ -9,7 +9,7 @@ use Sugarcrm\UpgradeSpec\Spec\Context;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareTrait;
 
-class Upgrade implements ElementInterface, RendererAwareInterface, DataAwareInterface
+class UpgradeExecution implements ElementInterface, RendererAwareInterface, DataAwareInterface
 {
     use RendererAwareTrait, DataAwareTrait;
 
@@ -18,7 +18,7 @@ class Upgrade implements ElementInterface, RendererAwareInterface, DataAwareInte
      */
     public function getTitle()
     {
-        return 'Perform upgrade';
+        return 'Upgrade your instance';
     }
 
     /**
@@ -46,9 +46,8 @@ class Upgrade implements ElementInterface, RendererAwareInterface, DataAwareInte
      */
     public function getBody(Context $context)
     {
-        return '';
-//        return $this->renderer->render('release_notes', [
-//            'release_notes' => $this->dataManager->getReleaseNotes($context),
-//        ]);
+        return $this->renderer->render('upgrade_execution', [
+            'upgrade_execution_howto' => ''//$this->dataManager->getReleaseNotes($context),
+        ]);
     }
 }

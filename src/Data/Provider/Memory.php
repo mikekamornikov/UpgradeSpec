@@ -2,7 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Data\Provider;
 
-class Memory implements ProviderInterface
+class Memory implements DocProviderInterface
 {
     /**
      * @var array
