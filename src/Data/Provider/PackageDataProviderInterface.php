@@ -2,6 +2,6 @@
 
 namespace Sugarcrm\UpgradeSpec\Data\Provider;
 
-interface PackageDataProviderInterface
+interface PackageDataProviderInterface extends ProviderInterface
 {
 }

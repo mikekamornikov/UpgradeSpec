@@ -24,7 +24,7 @@ interface DocProviderInterface extends ProviderInterface
     public function getReleaseNotes($flav, array $versions);
 
     /**
-     * Gets all required information to perform health check
+     * Gets all required information to perform health check.
      *
      * @param $version
      *

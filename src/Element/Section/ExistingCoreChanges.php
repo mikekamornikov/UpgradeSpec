@@ -59,7 +59,7 @@ class ExistingCoreChanges implements ElementInterface, RendererAwareInterface
     private function getExtensionsGuideUrl($version)
     {
         $guideUrl = 'http://support.sugarcrm.com/Documentation/Sugar_Developer/';
-        list ($v1, $v2) = explode('.', $version);
+        list($v1, $v2) = explode('.', $version);
         $baseVersion = $v1 . '.' . $v2;
 
         if (version_compare($baseVersion, '6.5', '<') || version_compare($baseVersion, '7.8', '>')) {

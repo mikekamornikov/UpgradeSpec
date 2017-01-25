@@ -38,7 +38,7 @@ class Memory implements CacheInterface
      * @param string $key
      * @param null   $default
      *
-     * @return mixed|null
+     * @return mixed
      */
     public function get($key, $default = null)
     {
@@ -79,13 +79,15 @@ class Memory implements CacheInterface
     /**
      * @param string $key
      *
-     * @return bool|void
+     * @return bool
      */
     public function delete($key)
     {
         $this->validateKey($key);
 
         unset($this->cache[$key]);
+
+        return true;
     }
 
     /**

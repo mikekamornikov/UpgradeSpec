@@ -86,7 +86,7 @@ final class Application extends BaseApplication
                     'strip_tags' => true,
                     'header_style' => 'atx',
                 ])),
-                new LocalUpgradePackage()
+                new LocalUpgradePackage(),
             ])
         );
         $formatter = new MarkdownFormatter();

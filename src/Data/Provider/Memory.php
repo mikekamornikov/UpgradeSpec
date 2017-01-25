@@ -40,7 +40,7 @@ class Memory implements DocProviderInterface
     }
 
     /**
-     * Gets all required information to perform health check
+     * Gets all required information to perform health check.
      *
      * @param $version
      *

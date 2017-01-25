@@ -11,6 +11,7 @@ class ProviderChain
 
     /**
      * ProviderChain constructor.
+     *
      * @param array $providers
      */
     public function __construct($providers = [])
@@ -25,6 +26,7 @@ class ProviderChain
     /**
      * @param $name
      * @param $arguments
+     *
      * @return mixed
      */
     public function __call($name, $arguments)

@@ -97,7 +97,7 @@ class Manager
     }
 
     /**
-     * Gets all required information to perform health check
+     * Gets all required information to perform health check.
      *
      * @param $version
      *
@@ -106,6 +106,20 @@ class Manager
     public function getHealthCheckInfo($version)
     {
         return $this->provider->getHealthCheckInfo($version);
+    }
+
+    /**
+     * Get list of available customizations.(modified files, deleted files, sql changes).
+     *
+     * @param Context $context
+     *
+     * @return array
+     */
+    public function getListOfCustomizations(Context $context)
+    {
+        $customizations = [];
+
+        return $customizations;
     }
 
     /**
@@ -129,19 +143,5 @@ class Manager
         }
 
         return $versions;
-    }
-
-
-    /**
-     * Get list of available customizations.(modified files, deleted files, sql changes)
-     *
-     * @param Context $context
-     *
-     * @return array
-     */
-    public function getListOfCustomizations(Context $context)
-    {
-       $customizations = array();
-       return $customizations;
     }
 }

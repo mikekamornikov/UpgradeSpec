@@ -51,29 +51,29 @@ class UpgradeChanges implements ElementInterface, RendererAwareInterface, DataAw
         ]);
     }
 
-
     /**
      * Get all available SugarCRM versions (sorted ASC).
      *
      * @param mixed $flav
+     * @param mixed $pathToUpgradePackage
      *
      * @return mixed
      */
     public function getListOfCustomizations($pathToUpgradePackage)
     {
-        $customizations = array();
-        $customizations['deleted_files'] =  $this->getListOfDeletedFiles($pathToUpgradePackage);
-        $customizations['modified_files'] =  $this->getListOfModifiedFiles($pathToUpgradePackage);
-        $customizations['post_scripts'] =  $this->getListOfScripts($pathToUpgradePackage);
-        $customizations['sql_scripts'] =  $this->getListOfSQLScripts($pathToUpgradePackage);
+        $customizations = [];
+        $customizations['deleted_files'] = $this->getListOfDeletedFiles($pathToUpgradePackage);
+        $customizations['modified_files'] = $this->getListOfModifiedFiles($pathToUpgradePackage);
+        $customizations['post_scripts'] = $this->getListOfScripts($pathToUpgradePackage);
+        $customizations['sql_scripts'] = $this->getListOfSQLScripts($pathToUpgradePackage);
 
         return $customizations;
     }
 
     /**
-     * Get list of files needs to be deleted
+     * Get list of files needs to be deleted.
      *
-     * @param String $pathToUpgradePackage
+     * @param string $pathToUpgradePackage
      *
      * @return mixed
      */
@@ -83,9 +83,9 @@ class UpgradeChanges implements ElementInterface, RendererAwareInterface, DataAw
     }
 
     /**
-     * Get list of files needs to be Modified
+     * Get list of files needs to be Modified.
      *
-     * @param String $pathToUpgradePackage
+     * @param string $pathToUpgradePackage
      *
      * @return mixed
      */
@@ -94,11 +94,10 @@ class UpgradeChanges implements ElementInterface, RendererAwareInterface, DataAw
         return '';
     }
 
-
     /**
-     * Get list of scripts needs to be run for upgrade
+     * Get list of scripts needs to be run for upgrade.
      *
-     * @param String $pathToUpgradePackage
+     * @param string $pathToUpgradePackage
      *
      * @return mixed
      */
@@ -108,9 +107,9 @@ class UpgradeChanges implements ElementInterface, RendererAwareInterface, DataAw
     }
 
     /**
-     * Get list of sql migration scripts needs to be run for upgrade
+     * Get list of sql migration scripts needs to be run for upgrade.
      *
-     * @param String $pathToUpgradePackage
+     * @param string $pathToUpgradePackage
      *
      * @return mixed
      */

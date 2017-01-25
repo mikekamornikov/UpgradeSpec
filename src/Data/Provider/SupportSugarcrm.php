@@ -165,7 +165,7 @@ class SupportSugarcrm implements DocProviderInterface
     }
 
     /**
-     * Gets all required information to perform health check
+     * Gets all required information to perform health check.
      *
      * @param $version
      *
@@ -240,11 +240,12 @@ class SupportSugarcrm implements DocProviderInterface
 
     /**
      * @param $version
+     *
      * @return string
      */
     private function getMajorVersion($version)
     {
-        list ($v1, $v2) = explode('.', $version);
+        list($v1, $v2) = explode('.', $version);
 
         return implode('.', [$v1, $v2]);
     }
@@ -270,7 +271,7 @@ class SupportSugarcrm implements DocProviderInterface
      *
      * @param $html
      * @param string $url
-     * @param array $options
+     * @param array  $options
      *
      * @return mixed
      */

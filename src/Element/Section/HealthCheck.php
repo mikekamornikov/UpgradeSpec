@@ -47,7 +47,7 @@ class HealthCheck implements ElementInterface, RendererAwareInterface, DataAware
     public function getBody(Context $context)
     {
         return $this->renderer->render('health_check', [
-            'health_check_howto' => $this->dataManager->getHealthCheckInfo($context->getUpgradeVersion())]
-        );
+            'health_check_howto' => $this->dataManager->getHealthCheckInfo($context->getUpgradeVersion()),
+        ]);
     }
 }
