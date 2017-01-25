@@ -109,6 +109,18 @@ class Manager
     }
 
     /**
+     * Gets all required information to perform upgrade.
+     *
+     * @param $version
+     *
+     * @return mixed
+     */
+    public function getUpgraderInfo($version)
+    {
+        return $this->provider->getUpgraderInfo($version);
+    }
+
+    /**
      * Get list of available customizations.(modified files, deleted files, sql changes).
      *
      * @param Context $context

@@ -31,4 +31,13 @@ interface DocProviderInterface extends ProviderInterface
      * @return mixed
      */
     public function getHealthCheckInfo($version);
+
+    /**
+     * Gets all required information to perform upgrade.
+     *
+     * @param $version
+     *
+     * @return mixed
+     */
+    public function getUpgraderInfo($version);
 }

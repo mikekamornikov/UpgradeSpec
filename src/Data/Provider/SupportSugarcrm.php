@@ -126,11 +126,10 @@ class SupportSugarcrm implements DocProviderInterface
                             $nextSiblings = $nodes->nextAll();
 
                             $content = [];
-                            if (count($p = $nextSiblings->filter('p'))) {
-                                $content[] = '<p>' . $p->first()->html() . '</p>';
-                            }
-                            if (count($ul = $nextSiblings->filter('ul'))) {
-                                $content[] = '<ul>' . $ul->first()->html() . '</ul>';
+                            foreach (['p', 'ul'] as $tag) {
+                                if (count($filtered = $nextSiblings->filter($tag))) {
+                                    $content[] = sprintf('<%1$s>%2$s</%1$s>', $tag, $filtered->first()->html());
+                                }
                             }
 
                             if ($content) {
@@ -195,11 +194,73 @@ class SupportSugarcrm implements DocProviderInterface
     }
 
     /**
+     * Gets all required information to perform upgrade.
+     *
+     * @param $version
+     *
+     * @return mixed
+     */
+    public function getUpgraderInfo($version)
+    {
+        $version = $this->getMajorVersion($version);
+        $cacheKey = $this->getCacheKey(['upgrader', $version]);
+
+        if ($this->cache->has($cacheKey)) {
+            return $this->cache->get($cacheKey);
+        }
+
+        $response = $this->httpClient->request('GET', $this->getUpgraderInfoUri($version));
+        $crawler = new Crawler($this->purifyHtml(
+            $response->getBody()->getContents(),
+            $this->getUpgraderInfoUri($version))
+        );
+
+        $id = $version == '6.5' ? '#Upgrading_Via_Silent_Upgrader' : '#Performing_the_Upgrade_2';
+        $nodes = $crawler->filter($id)->nextAll();
+
+        $content = [];
+        foreach (['ol', 'p'] as $tag) {
+            if (count($filtered = $nodes->filter($tag))) {
+                $content[] = sprintf('<%1$s>%2$s</%1$s>', $tag, $filtered->first()->html());
+            }
+        }
+
+        $info = '';
+        if ($content) {
+            $info = str_replace(['**<', '>**'], '**', $this->htmlConverter->convert(implode('<br>', $content)));
+        }
+
+        $this->cache->set($cacheKey, $info);
+
+        return $info;
+    }
+
+    /**
      * @param $version
      *
      * @return string
      */
     private function getHealthCheckInfoUri($version)
+    {
+        return $this->getUpgradeGuideUri($version);
+    }
+
+    /**
+     * @param $version
+     *
+     * @return string
+     */
+    private function getUpgraderInfoUri($version)
+    {
+        return $this->getUpgradeGuideUri($version);
+    }
+
+    /**
+     * @param $version
+     *
+     * @return string
+     */
+    private function getUpgradeGuideUri($version)
     {
         return sprintf(
             'Documentation/Sugar_Versions/%s/Ult/Installation_and_Upgrade_Guide/index.html',

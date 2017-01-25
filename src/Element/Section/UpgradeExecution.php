@@ -47,7 +47,7 @@ class UpgradeExecution implements ElementInterface, RendererAwareInterface, Data
     public function getBody(Context $context)
     {
         return $this->renderer->render('upgrade_execution', [
-            'upgrade_execution_howto' => '',
+            'upgrade_execution_howto' => $this->dataManager->getUpgraderInfo($context->getUpgradeVersion()),
         ]);
     }
 }
