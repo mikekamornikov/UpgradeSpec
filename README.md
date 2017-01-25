@@ -16,5 +16,5 @@ It's a CLI tool responsible for generation of simple step by step upgrade guide 
 
 ## Misc
 
-- [Example](./resources/examples/7.6.1_to_7.8.0.0.md)
-- [Benchmark](./resources/benchmarks/7.6.1_to_7.8.0.0.md)
+- [Examples](./resources/examples)
+- [Benchmarks](./resources/benchmarks)
