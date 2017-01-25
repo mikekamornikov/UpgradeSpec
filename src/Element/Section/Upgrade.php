@@ -9,7 +9,7 @@ use Sugarcrm\UpgradeSpec\Spec\Context;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareTrait;
 
-class ReleaseNotes implements ElementInterface, RendererAwareInterface, DataAwareInterface
+class Upgrade implements ElementInterface, RendererAwareInterface, DataAwareInterface
 {
     use RendererAwareTrait, DataAwareTrait;
 
@@ -18,7 +18,7 @@ class ReleaseNotes implements ElementInterface, RendererAwareInterface, DataAwar
      */
     public function getTitle()
     {
-        return 'Review release notes';
+        return 'Perform upgrade';
     }
 
     /**
@@ -26,7 +26,7 @@ class ReleaseNotes implements ElementInterface, RendererAwareInterface, DataAwar
      */
     public function getOrder()
     {
-        return 1;
+        return 5;
     }
 
     /**
@@ -46,8 +46,9 @@ class ReleaseNotes implements ElementInterface, RendererAwareInterface, DataAwar
      */
     public function getBody(Context $context)
     {
-        return $this->renderer->render('release_notes', [
-            'release_notes' => $this->dataManager->getReleaseNotes($context),
-        ]);
+        return '';
+//        return $this->renderer->render('release_notes', [
+//            'release_notes' => $this->dataManager->getReleaseNotes($context),
+//        ]);
     }
 }

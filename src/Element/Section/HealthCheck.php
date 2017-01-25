@@ -24,7 +24,7 @@ class HealthCheck implements ElementInterface, RendererAwareInterface
      */
     public function getOrder()
     {
-        return 2;
+        return 4;
     }
 
     /**
