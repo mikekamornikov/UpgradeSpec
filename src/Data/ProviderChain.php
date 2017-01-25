@@ -2,6 +2,8 @@
 
 namespace Sugarcrm\UpgradeSpec\Data;
 
+use Sugarcrm\UpgradeSpec\Data\Provider\Memory;
+
 class ProviderChain
 {
     /**

@@ -13,6 +13,9 @@ engines:
       standard: "PSR1,PSR2"
   phpmd:
     enabled: true
+    checks:
+      Naming/ShortVariable:
+        enabled: false
 ratings:
   paths:
   - "**.php"

@@ -63,11 +63,11 @@ final class Application extends BaseApplication
 
         $envPath = __DIR__ . '/../.env';
         if (file_exists($envPath)) {
-            $env->populate($env->parse(@file_get_contents($envPath), $envPath));
+            $env->populate($env->parse(file_get_contents($envPath), $envPath));
         }
 
         $envPath = __DIR__ . '/../.env.dist';
-        $env->populate($env->parse(@file_get_contents($envPath), $envPath));
+        $env->populate($env->parse(file_get_contents($envPath), $envPath));
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Sugarcrm\UpgradeSpec\Data\Provider;
 use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
 use League\HTMLToMarkdown\HtmlConverter;
+use Psr\Http\Message\ResponseInterface;
 use Sugarcrm\UpgradeSpec\Cache\Cache;
 use Sugarcrm\UpgradeSpec\Purifier\Html;
 use Symfony\Component\DomCrawler\Crawler;
@@ -108,11 +109,9 @@ class SupportSugarcrm implements DocProviderInterface
 
         if ($newVersions) {
             $this->processRequestPool($requests, [
-                'fulfilled' => function ($response, $version) use ($flav) {
-                    $crawler = new Crawler($this->purifyHtml(
-                        $response->getBody()->getContents(),
-                        $this->getReleaseNotesUri($flav, $version))
-                    );
+                'fulfilled' => function (ResponseInterface $response, $version) use ($flav) {
+                    $html = $response->getBody()->getContents();
+                    $crawler = new Crawler($this->purifyHtml($html, $this->getReleaseNotesUri($flav, $version)));
 
                     $identifiers = [
                         'feature_enhancements' => '#Feature_Enhancements',
@@ -180,10 +179,8 @@ class SupportSugarcrm implements DocProviderInterface
         }
 
         $response = $this->httpClient->request('GET', $this->getHealthCheckInfoUri($version));
-        $crawler = new Crawler($this->purifyHtml(
-            $response->getBody()->getContents(),
-            $this->getHealthCheckInfoUri($version))
-        );
+        $html = $response->getBody()->getContents();
+        $crawler = new Crawler($this->purifyHtml($html, $this->getHealthCheckInfoUri($version)));
 
         $infoNode = $crawler->filter('#Performing_the_Health_Check_2')->nextAll()->first();
         $info = str_replace(['**<', '>**'], '**', $this->htmlConverter->convert($infoNode->html()));
