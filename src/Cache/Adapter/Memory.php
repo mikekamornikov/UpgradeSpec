@@ -85,6 +85,10 @@ class Memory implements CacheInterface
     {
         $this->validateKey($key);
 
+        if (!$this->has($key)) {
+            return false;
+        }
+
         unset($this->cache[$key]);
 
         return true;
