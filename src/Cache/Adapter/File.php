@@ -107,12 +107,20 @@ class File implements CacheInterface
 
     /**
      * @param string $key
+     *
+     * @return bool
      */
     public function delete($key)
     {
         $this->validateKey($key);
 
+        if (!$this->has($key)) {
+            return false;
+        }
+
         @unlink($this->getPath($key));
+
+        return true;
     }
 
     /**
@@ -120,10 +128,17 @@ class File implements CacheInterface
      */
     public function clear()
     {
-        $paths = $this->listPaths();
-        foreach ($paths as $path) {
-            @unlink($path);
+        foreach ($this->getCacheFolderIterator() as $fileInfo) {
+            if ($fileInfo->isDir()) {
+                @rmdir($fileInfo->getRealPath());
+            }
+
+            @unlink($fileInfo->getRealPath());
         }
+
+        @rmdir($this->cachePath);
+
+        return true;
     }
 
     /**
@@ -146,9 +161,9 @@ class File implements CacheInterface
     private function cleanExpired()
     {
         $now = time();
-        foreach ($this->listPaths() as $path) {
-            if ($now > filemtime($path)) {
-                @unlink($path);
+        foreach ($this->getCacheFolderIterator() as $fileInfo) {
+            if (!$fileInfo->isDir() && $now > filemtime($fileInfo->getRealPath())) {
+                @unlink($fileInfo->getRealPath());
             }
         }
     }
@@ -199,18 +214,11 @@ class File implements CacheInterface
     /**
      * @return Generator
      */
-    private function listPaths()
+    private function getCacheFolderIterator()
     {
-        $iterator = new \RecursiveDirectoryIterator(
-            $this->cachePath,
-            \FilesystemIterator::CURRENT_AS_PATHNAME | \FilesystemIterator::SKIP_DOTS
+        return new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->cachePath, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
         );
-        foreach (new \RecursiveIteratorIterator($iterator) as $path) {
-            if (is_dir($path)) {
-                continue; // ignore directories
-            }
-
-            yield $path;
-        }
     }
 }

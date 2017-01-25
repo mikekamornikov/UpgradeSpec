@@ -189,5 +189,17 @@ class CacheSpec extends ObjectBehavior
         $this->shouldNotThrow(\Exception::class)->during('set', ['a', 'value', '111']);
 
         $this->shouldNotThrow(\Exception::class)->during('set', ['a', 'value', \DateInterval::createFromDateString('1 day')]);
+
+        $this->shouldThrow(\RuntimeException::class)->during('setMultiple', [['a' => 'value'], 'abc']);
+        $this->shouldThrow(\RuntimeException::class)->during('setMultiple', [['a' => 'value'], true]);
+        $this->shouldThrow(\RuntimeException::class)->during('setMultiple', [['a' => 'value'], 11.1]);
+        $this->shouldThrow(\RuntimeException::class)->during('setMultiple', [['a' => 'value'], [111]]);
+
+        $this->shouldThrow(\RuntimeException::class)->during('setMultiple', [['a' => 'value'], '-111']);
+
+        $this->shouldNotThrow(\Exception::class)->during('setMultiple', [['a' => 'value'], -111]);
+        $this->shouldNotThrow(\Exception::class)->during('setMultiple', [['a' => 'value'], '111']);
+
+        $this->shouldNotThrow(\Exception::class)->during('setMultiple', [['a' => 'value'], \DateInterval::createFromDateString('1 day')]);
     }
 }
