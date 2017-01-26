@@ -18,7 +18,7 @@ RUN mkdir -p /usr/local/uspec \
 # configure php
 RUN echo "phar.readonly=Off" >> /usr/local/etc/php/conf.d/phar.ini \
   && echo "memory_limit=1G" >> /usr/local/etc/php/conf.d/memory-limit.ini \
-  && echo "date.timezone=Europe/Minsk" >> /usr/local/etc/php/conf.d/timezone.ini \
+  && echo "date.timezone=UTC" >> /usr/local/etc/php/conf.d/timezone.ini \
   && echo "openssl.cafile=/usr/local/uspec/cacert.pem" >> /usr/local/etc/php/conf.d/openssl.ini
 
 # install
