@@ -2,7 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Data\Provider;
 
-class Memory implements DocProviderInterface
+class Memory implements DocProviderInterface, PackageDataProviderInterface
 {
     /**
      * @var array
@@ -52,6 +52,18 @@ class Memory implements DocProviderInterface
     }
 
     /**
+     * Gets all required information to perform upgrade.
+     *
+     * @param $version
+     *
+     * @return mixed
+     */
+    public function getUpgraderInfo($version)
+    {
+        return $this->get($version . '_upgrader', '');
+    }
+
+    /**
      * Gets data from memory by key.
      *
      * @param $key
@@ -61,6 +73,8 @@ class Memory implements DocProviderInterface
      */
     private function get($key, $default = null)
     {
+        $key = mb_strtolower($key);
+
         return isset($this->data[$key]) ? $this->data[$key] : $default;
     }
 }

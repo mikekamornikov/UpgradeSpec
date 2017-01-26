@@ -91,7 +91,8 @@ final class Application extends BaseApplication
         );
         $formatter = new MarkdownFormatter();
         $templateRenderer = new TwigRenderer(
-            new Twig_Loader_Filesystem(__DIR__ . '/../' . getenv('TEMPLATE_PATH') . '/' . getenv('DEFAULT_FORMAT'))
+            new Twig_Loader_Filesystem(__DIR__ . '/../' . getenv('TEMPLATE_PATH') . '/' . getenv('DEFAULT_FORMAT')),
+            ['debug' => (bool) getenv('DEV_MODE')]
         );
 
         $specGenerator = new Generator(

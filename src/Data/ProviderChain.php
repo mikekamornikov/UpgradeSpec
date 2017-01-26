@@ -3,6 +3,7 @@
 namespace Sugarcrm\UpgradeSpec\Data;
 
 use Sugarcrm\UpgradeSpec\Data\Provider\Memory;
+use Sugarcrm\UpgradeSpec\Data\Provider\ProviderInterface;
 
 class ProviderChain
 {
@@ -20,6 +21,12 @@ class ProviderChain
     {
         if (!is_array($providers) && !$providers instanceof \Traversable) {
             throw new \InvalidArgumentException(sprintf('Argument is not traversable: %s', $providers));
+        }
+
+        foreach ($providers as $provider) {
+            if (!is_a($provider, ProviderInterface::class)) {
+                throw new \InvalidArgumentException('ProviderChain constructor expects ProviderInterface[]');
+            }
         }
 
         $this->providers = $providers ?: [new Memory()];
