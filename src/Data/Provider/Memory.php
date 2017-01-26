@@ -36,7 +36,9 @@ class Memory implements DocProviderInterface, PackageDataProviderInterface
      */
     public function getReleaseNotes($flav, array $versions)
     {
-        return $this->get($flav . '_release_notes', []);
+        return array_map(function ($version) use ($flav) {
+            return $this->get(sprintf('%s_%s_release_notes', $flav, $version), '');
+        }, $versions);
     }
 
     /**
