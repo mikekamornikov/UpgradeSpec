@@ -7,9 +7,11 @@ class File
     /**
      * @param $filename
      * @param $spec
+     *
+     * @return int
      */
     public function saveToFile($filename, $spec)
     {
-        file_put_contents($filename, $spec);
+        return file_put_contents($filename, $spec);
     }
 }
