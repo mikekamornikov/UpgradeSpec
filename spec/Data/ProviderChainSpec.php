@@ -2,10 +2,7 @@
 
 namespace spec\Sugarcrm\UpgradeSpec\Data;
 
-use Prophecy\Argument;
-use Sugarcrm\UpgradeSpec\Data\Provider\DocProviderInterface;
 use Sugarcrm\UpgradeSpec\Data\Provider\Memory;
-use Sugarcrm\UpgradeSpec\Data\Provider\PackageDataProviderInterface;
 use Sugarcrm\UpgradeSpec\Data\Provider\ProviderInterface;
 use Sugarcrm\UpgradeSpec\Data\ProviderChain;
 use PhpSpec\ObjectBehavior;
@@ -14,6 +11,7 @@ class ProviderChainSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
+        $this->beConstructedWith([new Memory([])]);
         $this->shouldHaveType(ProviderChain::class);
     }
 
@@ -25,10 +23,10 @@ class ProviderChainSpec extends ObjectBehavior
         $this->beConstructedWith(111);
         $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
 
-        $this->beConstructedWith([]);
+        $this->beConstructedWith([new Memory([])]);
         $this->shouldNotThrow(\InvalidArgumentException::class)->duringInstantiation();
 
-        $this->beConstructedWith(new \ArrayIterator([]));
+        $this->beConstructedWith(new \ArrayIterator([new Memory([])]));
         $this->shouldNotThrow(\InvalidArgumentException::class)->duringInstantiation();
     }
 
@@ -36,6 +34,9 @@ class ProviderChainSpec extends ObjectBehavior
     {
         $p1 = $p1->getWrappedObject();
         $p2 = $p2->getWrappedObject();
+
+        $this->beConstructedWith([]);
+        $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
 
         $this->beConstructedWith([new \stdClass()]);
         $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
