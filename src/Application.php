@@ -51,7 +51,22 @@ final class Application extends BaseApplication
      */
     public function getLongVersion()
     {
-        return parent::getLongVersion() . ' by <comment>Mike Kamornikov</comment> and <comment>Denis Stiblo</comment>';
+        $art = <<<EOL
+      ___            ___            ___          ___            ___     
+     /__/\          /  /\          /  /\        /  /\          /  /\    
+     \  \:\        /  /:/_        /  /::\      /  /:/_        /  /:/    
+      \  \:\      /  /:/ /\      /  /:/\:\    /  /:/ /\      /  /:/     
+  ___  \  \:\    /  /:/ /::\    /  /:/~/:/   /  /:/ /:/_    /  /:/  ___ 
+ /__/\  \__\:\  /__/:/ /:/\:\  /__/:/ /:/   /__/:/ /:/ /\  /__/:/  /  /\
+ \  \:\ /  /:/  \  \:\/:/~/:/  \  \:\/:/    \  \:\/:/ /:/  \  \:\ /  /:/
+  \  \:\  /:/    \  \::/ /:/    \  \::/      \  \::/ /:/    \  \:\  /:/ 
+   \  \:\/:/      \__\/ /:/      \  \:\       \  \:\/:/      \  \:\/:/  
+    \  \::/         /__/:/        \  \:\       \  \::/        \  \::/   
+     \__\/          \__\/          \__\/        \__\/          \__\/    
+EOL;
+
+
+        return sprintf('<info>%s</info>', $art) . PHP_EOL . PHP_EOL . parent::getLongVersion() . ' by <comment>Mike Kamornikov</comment> and <comment>Denis Stiblo</comment>';
     }
 
     /*
