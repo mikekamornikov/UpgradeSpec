@@ -14,12 +14,12 @@ class ManagerSpec extends ObjectBehavior
     /**
      * @var string
      */
-    private $flav;
+    private $flav = 'ult';
 
     /**
      * @var array
      */
-    private $data;
+    private $data = [];
 
     function let()
     {

@@ -53,9 +53,7 @@ class SupportSugarcrm implements DocProviderInterface
             return $this->cache->get('versions');
         }
 
-        $response = $this->httpClient->request('GET', '/Documentation/Sugar_Versions/index.html');
-
-        $crawler = new Crawler($response->getBody()->getContents());
+        $crawler = new Crawler($this->getContent('/Documentation/Sugar_Versions/index.html'));
         $majors = [];
         foreach ($crawler->filter('section.content-body > h1') as $node) {
             $major = $node->textContent;
@@ -66,10 +64,7 @@ class SupportSugarcrm implements DocProviderInterface
 
         $versions = [];
         foreach ($majors as $major) {
-            $url = $this->getVersionUri($flav, $major);
-            $response = $this->httpClient->request('GET', $url);
-
-            $crawler = new Crawler($response->getBody()->getContents());
+            $crawler = new Crawler($this->getContent($this->getVersionUri($flav, $major)));
             foreach ($crawler->filter('#Release_Notes')->first()->nextAll()->filter('a') as $node) {
                 if (preg_match_all('/\d+(\.\d+){1,3}/', $node->textContent, $match)) {
                     $versions[] = $match[0][0];
@@ -178,9 +173,8 @@ class SupportSugarcrm implements DocProviderInterface
             return $this->cache->get($cacheKey);
         }
 
-        $response = $this->httpClient->request('GET', $this->getHealthCheckInfoUri($version));
-        $html = $response->getBody()->getContents();
-        $crawler = new Crawler($this->purifyHtml($html, $this->getHealthCheckInfoUri($version)));
+        $url = $this->getHealthCheckInfoUri($version);
+        $crawler = new Crawler($this->purifyHtml($this->getContent($url), $url));
 
         $infoNode = $crawler->filter('#Performing_the_Health_Check_2')->nextAll()->first();
         $info = str_replace(['**<', '>**'], '**', $this->htmlConverter->convert($infoNode->html()));
@@ -206,11 +200,8 @@ class SupportSugarcrm implements DocProviderInterface
             return $this->cache->get($cacheKey);
         }
 
-        $response = $this->httpClient->request('GET', $this->getUpgraderInfoUri($version));
-        $crawler = new Crawler($this->purifyHtml(
-            $response->getBody()->getContents(),
-            $this->getUpgraderInfoUri($version))
-        );
+        $url = $this->getUpgraderInfoUri($version);
+        $crawler = new Crawler($this->purifyHtml($this->getContent($url), $url));
 
         $id = $version == '6.5' ? '#Upgrading_Via_Silent_Upgrader' : '#Performing_the_Upgrade_2';
         $nodes = $crawler->filter($id)->nextAll();
@@ -222,14 +213,23 @@ class SupportSugarcrm implements DocProviderInterface
             }
         }
 
-        $info = '';
-        if ($content) {
-            $info = str_replace(['**<', '>**'], '**', $this->htmlConverter->convert(implode('<br>', $content)));
-        }
+        $info = str_replace(['**<', '>**'], '**', $this->htmlConverter->convert(implode('<br>', $content)));
 
         $this->cache->set($cacheKey, $info);
 
         return $info;
+    }
+
+    /**
+     * Returns the result (response body) of GET request
+     * @param $url
+     * @return string
+     */
+    private function getContent($url)
+    {
+        $response = $this->httpClient->request('GET', $url);
+
+        return $response->getBody()->getContents();
     }
 
     /**
