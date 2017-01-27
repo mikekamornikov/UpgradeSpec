@@ -45,3 +45,4 @@ install:
 test_script:
   - cd c:\projects\uspec
   - vendor/bin/phpspec run --format=pretty
+  - vendor/bin/behat

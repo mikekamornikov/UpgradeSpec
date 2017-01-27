@@ -20,7 +20,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "spec\\Sugarcrm\\UpgradeSpec\\": "spec"
+            "spec\\Sugarcrm\\UpgradeSpec\\": "spec",
+            "features\\Sugarcrm\\UpgradeSpec\\": "features"
         }
     },
     "require": {
@@ -38,7 +39,9 @@
     },
     "require-dev": {
         "phpspec/phpspec": "^3.2",
-        "friendsofphp/php-cs-fixer": "^2.0"
+        "friendsofphp/php-cs-fixer": "^2.0",
+        "behat/behat": "^3.3",
+        "phpunit/phpunit": "^5.7"
     },
     "bin": [
         "bin/uspec",

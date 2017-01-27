@@ -65,7 +65,6 @@ final class Application extends BaseApplication
      \__\/          \__\/          \__\/        \__\/          \__\/    
 EOL;
 
-
         return sprintf('<info>%s</info>', $art) . PHP_EOL . PHP_EOL . parent::getLongVersion() . ' by <comment>Mike Kamornikov</comment> and <comment>Denis Stiblo</comment>';
     }
 

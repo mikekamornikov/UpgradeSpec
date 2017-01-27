@@ -221,8 +221,10 @@ class SupportSugarcrm implements DocProviderInterface
     }
 
     /**
-     * Returns the result (response body) of GET request
+     * Returns the result (response body) of GET request.
+     *
      * @param $url
+     *
      * @return string
      */
     private function getContent($url)

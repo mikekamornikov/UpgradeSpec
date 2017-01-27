@@ -26,6 +26,7 @@ install:
 
 script:
   - ./vendor/bin/phpspec run --format=pretty
+  - ./vendor/bin/behat
 
 before_deploy:
   - composer install --no-dev --no-interaction --no-progress --profile
