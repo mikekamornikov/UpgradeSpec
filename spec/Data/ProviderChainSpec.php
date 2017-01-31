@@ -23,6 +23,9 @@ class ProviderChainSpec extends ObjectBehavior
         $this->beConstructedWith(111);
         $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
 
+        $this->beConstructedWith([]);
+        $this->shouldNotThrow(\InvalidArgumentException::class)->duringInstantiation();
+
         $this->beConstructedWith([new Memory([])]);
         $this->shouldNotThrow(\InvalidArgumentException::class)->duringInstantiation();
 
@@ -34,9 +37,6 @@ class ProviderChainSpec extends ObjectBehavior
     {
         $p1 = $p1->getWrappedObject();
         $p2 = $p2->getWrappedObject();
-
-        $this->beConstructedWith([]);
-        $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
 
         $this->beConstructedWith([new \stdClass()]);
         $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();

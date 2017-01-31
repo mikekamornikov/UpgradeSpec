@@ -18,22 +18,29 @@ class ProviderChain
      */
     public function __construct($providers)
     {
+        $this->addProviders($providers);
+    }
+
+    /**
+     * Adds providers to the chain
+     *
+     * @param mixed $providers
+     */
+    public function addProviders($providers)
+    {
         if (!is_array($providers) && !$providers instanceof \Traversable) {
             throw new \InvalidArgumentException(sprintf('Argument is not traversable: %s', $providers));
         }
 
-        $this->providers = is_array($providers) ? $providers : iterator_to_array($providers);
+        $providers = is_array($providers) ? $providers : iterator_to_array($providers);
 
-        $argumentException = new \InvalidArgumentException('ProviderChain constructor expects ProviderInterface[]');
-        if (empty($this->providers)) {
-            throw $argumentException;
-        }
-
-        foreach ($this->providers as $provider) {
+        foreach ($providers as $provider) {
             if (!is_a($provider, ProviderInterface::class)) {
-                throw $argumentException;
+                throw new \InvalidArgumentException('ProviderChain expects ProviderInterface[]');
             }
         }
+
+        $this->providers = array_merge($this->providers, $providers);
     }
 
     /**

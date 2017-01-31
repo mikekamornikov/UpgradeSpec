@@ -12,5 +12,5 @@ interface ElementInterface
 
     public function getOrder();
 
-    public static function isRelevantTo(Context $context);
+    public function isRelevantTo(Context $context);
 }

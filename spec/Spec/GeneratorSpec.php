@@ -32,7 +32,7 @@ class GeneratorSpec extends ObjectBehavior
         $step2->getTitle()->willReturn('section2 title');
         $step2->getBody()->willReturn('section2 body');
 
-        $elementProvider->getElements($this->context)->willReturn([$step1, $step2]);
+        $elementProvider->getSuitableElements($this->context)->willReturn([$step1, $step2]);
 
         $specElementGenerator->generate($step1, $this->context)->willReturn('section1 full');
         $specElementGenerator->generate($step2, $this->context)->willReturn('section2 full');

@@ -34,7 +34,7 @@ class HealthCheck implements ElementInterface, RendererAwareInterface, DataAware
      *
      * @return bool
      */
-    public static function isRelevantTo(Context $context)
+    public function isRelevantTo(Context $context)
     {
         return version_compare($context->getUpgradeVersion(), '7.0', '>=');
     }

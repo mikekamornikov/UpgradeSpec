@@ -16,11 +16,11 @@ class TwigRenderer implements RendererInterface
      * TwigRenderer constructor.
      *
      * @param Twig_LoaderInterface $loader
-     * @param array                $options
+     * @param bool $debug
      */
-    public function __construct(Twig_LoaderInterface $loader, array $options = [])
+    public function __construct(Twig_LoaderInterface $loader, $debug = false)
     {
-        $this->engine = new Twig_Environment($loader, $options);
+        $this->engine = new Twig_Environment($loader, ['debug' => $debug]);
     }
 
     /**

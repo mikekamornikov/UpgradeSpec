@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SelfUpdateCommand extends Command
+class SelfUpdateCommand extends Command implements PharContext
 {
     /**
      * @var Updater

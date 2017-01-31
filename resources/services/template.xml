@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="twig.loader.filesystem" class="Twig_Loader_Filesystem">
+            <argument>%env(TEMPLATE_PATH)%</argument>
+        </service>
+
+        <service id="template.renderer.twig"
+                 class="Sugarcrm\UpgradeSpec\Template\TwigRenderer">
+            <argument type="service" id="twig.loader.filesystem" />
+            <argument>%env(DEV_MODE)%</argument>
+        </service>
+
+        <service id="template.renderer" alias="template.renderer.twig" />
+    </services>
+</container>

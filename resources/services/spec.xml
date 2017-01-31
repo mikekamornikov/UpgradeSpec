@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="element.section.existing_core_changes"
+                 class="Sugarcrm\UpgradeSpec\Element\Section\ExistingCoreChanges"
+                 autowire="true">
+            <tag name="element.section" />
+        </service>
+
+        <service id="element.section.health_check"
+                 class="Sugarcrm\UpgradeSpec\Element\Section\HealthCheck"
+                 autowire="true">
+            <tag name="element.section" />
+        </service>
+
+        <service id="element.section.release_notes"
+                 class="Sugarcrm\UpgradeSpec\Element\Section\ReleaseNotes"
+                 autowire="true">
+            <tag name="element.section" />
+        </service>
+
+        <service id="element.section.upgrade_changes"
+                 class="Sugarcrm\UpgradeSpec\Element\Section\UpgradeChanges"
+                 autowire="true">
+            <tag name="element.section" />
+        </service>
+
+        <service id="element.section.upgrade_execution"
+                 class="Sugarcrm\UpgradeSpec\Element\Section\UpgradeExecution"
+                 autowire="true">
+            <tag name="element.section" />
+        </service>
+
+        <service id="element.provider" class="Sugarcrm\UpgradeSpec\Element\Provider" autowire="true" />
+        <service id="element.generator" class="Sugarcrm\UpgradeSpec\Element\Generator" autowire="true" />
+
+        <service id="spec.generator" class="Sugarcrm\UpgradeSpec\Spec\Generator" autowire="true" />
+    </services>
+</container>

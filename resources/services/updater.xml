@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="updater.manager.adapter.humbug.github" class="Humbug\SelfUpdate\Strategy\GithubStrategy">
+            <call method="setPackageName">
+                <argument>%env(PACKAGE_NAME)%</argument>
+            </call>
+            <call method="setPharName">
+                <argument>%env(PHAR_NAME)%</argument>
+            </call>
+            <call method="setCurrentLocalVersion">
+                <argument>%env(APPLICATION_VERSION)%</argument>
+            </call>
+        </service>
+
+        <service id="updater.humbug" class="Humbug\SelfUpdate\Updater">
+            <call method="setStrategyObject">
+                <argument type="service" id="updater.manager.adapter.humbug.github" />
+            </call>
+            <call method="setBackupPath">
+                <argument>%env(BACKUP_PATH)%</argument>
+            </call>
+            <call method="setRestorePath">
+                <argument>%env(BACKUP_PATH)%</argument>
+            </call>
+        </service>
+
+        <service id="updater.manager.adapter.humbug"
+                 class="Sugarcrm\UpgradeSpec\Updater\Adapter\HumbugAdapter"
+                 autowire="true" />
+
+        <service id="updater.manager" class="Sugarcrm\UpgradeSpec\Updater\Updater" autowire="true" />
+    </services>
+</container>

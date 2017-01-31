@@ -34,7 +34,7 @@ class UpgradeExecution implements ElementInterface, RendererAwareInterface, Data
      *
      * @return bool
      */
-    public static function isRelevantTo(Context $context)
+    public function isRelevantTo(Context $context)
     {
         return true;
     }

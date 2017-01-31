@@ -34,7 +34,7 @@ class ReleaseNotes implements ElementInterface, RendererAwareInterface, DataAwar
      *
      * @return bool
      */
-    public static function isRelevantTo(Context $context)
+    public function isRelevantTo(Context $context)
     {
         return true;
     }

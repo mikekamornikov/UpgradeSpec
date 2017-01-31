@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="application.command.cache_clear" class="Sugarcrm\UpgradeSpec\Command\CacheClearCommand" autowire="true">
+            <argument>null</argument>
+            <tag name="console.command" />
+        </service>
+
+        <service id="application.command.generate_spec" class="Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand" autowire="true">
+            <argument>null</argument>
+            <tag name="console.command" />
+        </service>
+
+        <service id="application.command.self_update" class="Sugarcrm\UpgradeSpec\Command\SelfUpdateCommand" autowire="true">
+            <argument>null</argument>
+            <tag name="console.command" />
+        </service>
+
+        <service id="application.command.self_rollback" class="Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand" autowire="true">
+            <argument>null</argument>
+            <tag name="console.command" />
+        </service>
+
+        <service id="application" class="Sugarcrm\UpgradeSpec\Application">
+            <argument>SugarCRM upgrade spec generator</argument>
+            <argument>%env(APPLICATION_VERSION)%</argument>
+        </service>
+    </services>
+</container>

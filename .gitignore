@@ -8,3 +8,5 @@
 /.cacert.pem
 /.php_cs.cache
 /.php_cs
+/src/ApplicationContainer.php.meta
+/src/ApplicationContainer.php

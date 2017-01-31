@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="data.provider.support_sugarcrm"
+                 class="Sugarcrm\UpgradeSpec\Data\Provider\SupportSugarcrm"
+                 autowire="true">
+            <tag name="data.provider" />
+        </service>
+
+        <service id="data.provider.local_upgrade_package"
+                 class="Sugarcrm\UpgradeSpec\Data\Provider\LocalUpgradePackage"
+                 autowire="true">
+            <tag name="data.provider" />
+        </service>
+
+        <service id="data.provider_chain" class="Sugarcrm\UpgradeSpec\Data\ProviderChain">
+            <argument type="collection"></argument>
+        </service>
+
+        <service id="data.manager" class="Sugarcrm\UpgradeSpec\Data\Manager" autowire="true" />
+    </services>
+</container>

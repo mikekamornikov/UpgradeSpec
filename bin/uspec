@@ -23,6 +23,6 @@ set_error_handler(function ($severity, $message, $file, $line) {
     }
 });
 
-require __DIR__ . '/../src/autoload.php';
+require __DIR__ . '/../src/bootstrap.php';
 
-(new Sugarcrm\UpgradeSpec\Application('SugarCRM upgrade spec generator', '@package_version@'))->run();
+(new Sugarcrm\UpgradeSpec\ApplicationContainer())->get('application')->run();

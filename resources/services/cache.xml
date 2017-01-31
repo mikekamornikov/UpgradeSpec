@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="cache.adapter.file" class="Sugarcrm\UpgradeSpec\Cache\Adapter\File">
+            <argument>%env(CACHE_PATH)%</argument>
+            <argument>%env(CACHE_TTL)%</argument>
+        </service>
+
+        <service id="cache.manager" class="Sugarcrm\UpgradeSpec\Cache\Cache" autowire="true" />
+    </services>
+</container>

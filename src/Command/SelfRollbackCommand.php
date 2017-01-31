@@ -6,7 +6,7 @@ use Sugarcrm\UpgradeSpec\Updater\Updater;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SelfRollbackCommand extends Command
+class SelfRollbackCommand extends Command implements PharContext
 {
     /**
      * @var Updater

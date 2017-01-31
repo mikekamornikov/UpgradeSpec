@@ -51,7 +51,7 @@ class Generator
     {
         try {
             $delimiter = $this->formatter->getDelimiter();
-            $elements = $this->elementProvider->getElements($context);
+            $elements = $this->elementProvider->getSuitableElements($context);
 
             $title = $this->formatter->asTitle(sprintf('SugarCRM upgrade: %s', $context)) . $delimiter;
 

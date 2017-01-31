@@ -34,7 +34,7 @@ class UpgradeChanges implements ElementInterface, RendererAwareInterface, DataAw
      *
      * @return bool
      */
-    public static function isRelevantTo(Context $context)
+    public function isRelevantTo(Context $context)
     {
         return true;
     }

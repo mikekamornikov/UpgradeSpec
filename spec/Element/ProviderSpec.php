@@ -3,7 +3,9 @@
 namespace spec\Sugarcrm\UpgradeSpec\Element;
 
 use PhpSpec\Exception\Example\FailureException;
+use Prophecy\Argument;
 use Sugarcrm\UpgradeSpec\Data\Manager;
+use Sugarcrm\UpgradeSpec\Element\ElementInterface;
 use Sugarcrm\UpgradeSpec\Element\Provider;
 use PhpSpec\ObjectBehavior;
 use Sugarcrm\UpgradeSpec\Element\Section\ExistingCoreChanges;
@@ -16,9 +18,22 @@ use Sugarcrm\UpgradeSpec\Template\RendererInterface;
 
 class ProviderSpec extends ObjectBehavior
 {
-    function let(RendererInterface $templateRenderer, Manager $dataManager)
+    /**
+     * @var Context
+     */
+    private $context;
+
+    function let(ElementInterface $element1, ElementInterface $element2)
     {
-        $this->beConstructedWith($templateRenderer, $dataManager);
+        $this->context = new Context('7.6.1', '7.8.0.0', 'ULT');
+
+        $element1->getOrder()->willReturn(2);
+        $element2->getOrder()->willReturn(1);
+
+        $element1->isRelevantTo($this->context)->willReturn(true);
+        $element2->isRelevantTo($this->context)->willReturn(true);
+
+        $this->beConstructedWith([$element1, $element2]);
     }
 
     function it_is_initializable()
@@ -26,41 +41,19 @@ class ProviderSpec extends ObjectBehavior
         $this->shouldHaveType(Provider::class);
     }
 
-    function it_gets_suitable_elements_in_correct_order()
+    function it_gets_elements_in_correct_order(ElementInterface $element1, ElementInterface $element2)
     {
-        $this->getElements(new Context('7.6.1', '7.8.0.0', 'ULT'))->shouldReturnTypes([
-            ReleaseNotes::class,
-            ExistingCoreChanges::class,
-            UpgradeChanges::class,
-            HealthCheck::class,
-            UpgradeExecution::class
-        ]);
-
-        $this->getElements(new Context('6.5', '6.7', 'ULT'))->shouldReturnTypes([
-            ReleaseNotes::class,
-            ExistingCoreChanges::class,
-            UpgradeChanges::class,
-            UpgradeExecution::class
-        ]);
+        $this->getSuitableElements($this->context)->shouldReturn([$element2, $element1]);
     }
 
-    public function getMatchers()
+    function it_gets_suitable_elements(ElementInterface $element1, ElementInterface $element2, ElementInterface $element3)
     {
-        return [
-            'returnTypes' => function ($subject, $types) {
-                $subjectTypes = array_map(function ($object) {
-                    return get_class($object);
-                }, $subject);
+        $element1->isRelevantTo($this->context)->willReturn(false);
 
-                if (array_diff($subjectTypes, $types)) {
-                    throw new FailureException(sprintf(
-                        "Expected types are: %s\ngot: %s",
-                        var_export($types, true), var_export($subjectTypes, true)
-                    ));
-                }
+        $element3->getOrder()->willReturn(3);
+        $element3->isRelevantTo($this->context)->willReturn(true);
 
-                return true;
-            },
-        ];
+        $this->addElements([$element3]);
+        $this->getSuitableElements($this->context)->shouldReturn([$element2, $element3,]);
     }
 }

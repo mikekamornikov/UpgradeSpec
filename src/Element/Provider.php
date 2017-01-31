@@ -2,35 +2,45 @@
 
 namespace Sugarcrm\UpgradeSpec\Element;
 
-use Sugarcrm\UpgradeSpec\Data\DataAwareInterface;
-use Sugarcrm\UpgradeSpec\Data\Manager;
 use Sugarcrm\UpgradeSpec\Spec\Context;
-use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
-use Sugarcrm\UpgradeSpec\Template\RendererInterface;
-use Symfony\Component\Finder\Finder;
 
 class Provider
 {
     /**
-     * @var RendererInterface
+     * @var array
      */
-    private $templateRenderer;
+    private $specElements = [];
 
     /**
-     * @var Manager
-     */
-    private $dataManager;
-
-    /**
-     * Configurator constructor.
+     * Provider constructor.
      *
-     * @param RendererInterface $templateRenderer
-     * @param Manager           $dataManager
+     * @param array $specElements
      */
-    public function __construct(RendererInterface $templateRenderer, Manager $dataManager)
+    public function __construct($specElements = [])
     {
-        $this->templateRenderer = $templateRenderer;
-        $this->dataManager = $dataManager;
+        $this->addElements($specElements);
+    }
+
+    /**
+     * Adds elements to provider
+     *
+     * @param mixed $elements
+     */
+    public function addElements($elements)
+    {
+        if (!is_array($elements) && !$elements instanceof \Traversable) {
+            throw new \InvalidArgumentException(sprintf('Argument is not traversable: %s', $elements));
+        }
+
+        $elements = is_array($elements) ? $elements : iterator_to_array($elements);
+
+        foreach ($elements as $element) {
+            if (!is_a($element, ElementInterface::class)) {
+                throw new \InvalidArgumentException('Provider expects ElementInterface[]');
+            }
+        }
+
+        $this->specElements = array_merge($this->specElements, $elements);
     }
 
     /**
@@ -38,9 +48,11 @@ class Provider
      *
      * @return array
      */
-    public function getElements(Context $context)
+    public function getSuitableElements(Context $context)
     {
-        $elements = $this->getSuitableElements($context);
+        $elements = array_filter($this->specElements, function (ElementInterface $element) use ($context) {
+            return $element->isRelevantTo($context);
+        });
 
         if (!$elements) {
             throw new \DomainException(sprintf('No special steps required to upgrade from "%s" to "%s" (%s))',
@@ -49,44 +61,6 @@ class Provider
                 $context->getFlav()
             ));
         }
-
-        return $elements;
-    }
-
-    /**
-     * @param Context $context
-     *
-     * @return array
-     */
-    private function getSuitableElements(Context $context)
-    {
-        // list of potential elements (FQCNs)
-        $classNames = [];
-        foreach (Finder::create()->files()->in(__DIR__ . '/Section')->name('*.php') as $file) {
-            list($className) = explode('.', $file->getBasename());
-            $classNames[] = '\\Sugarcrm\\UpgradeSpec\\Element\\Section\\' . $className;
-        }
-
-        // list of relevant elements (FQCNs)
-        $classNames = array_filter($classNames, function ($className) use ($context) {
-            return (new \ReflectionClass($className))->implementsInterface(ElementInterface::class)
-                && $className::isRelevantTo($context);
-        });
-
-        // element factory
-        $elements = array_map(function ($className) {
-            $element = new $className();
-
-            $reflectionClass = new \ReflectionClass($className);
-            if ($reflectionClass->implementsInterface(RendererAwareInterface::class)) {
-                $element->setRenderer($this->templateRenderer);
-            }
-            if ($reflectionClass->implementsInterface(DataAwareInterface::class)) {
-                $element->setDataManager($this->dataManager);
-            }
-
-            return $element;
-        }, $classNames);
 
         // sort elements (ASC)
         usort($elements, function (ElementInterface $a, ElementInterface $b) {
