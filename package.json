@@ -1,12 +1,16 @@
 {
   "devDependencies": {
     "gulp": "^3.9.1",
+    "gulp-behat": "^0.6.5",
     "gulp-notify": "^2.2.0",
     "gulp-phpspec": "^0.5.4",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "path": "^0.12.7"
   },
   "scripts": {
     "default": "gulp",
+    "phpspec": "gulp phpspec",
+    "behat": "gulp behat",
     "watch": "gulp watch",
     "test": "gulp test"
   }
