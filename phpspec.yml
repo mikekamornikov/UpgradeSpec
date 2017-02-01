@@ -1,3 +1,5 @@
+bootstrap: src/bootstrap.php
+
 suites:
   upgrade_spec_suite:
     namespace: Sugarcrm\UpgradeSpec
