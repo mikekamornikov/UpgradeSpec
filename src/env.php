@@ -45,5 +45,5 @@ if (!getenv('TEMPLATE_PATH')) {
     setenv('TEMPLATE_PATH', __DIR__ . '/../resources/templates');
 }
 
-// use "default format" until architecture is clean enough for "format" parameter
-setenv('TEMPLATE_PATH', getenv('TEMPLATE_PATH') . '/' . getenv('DEFAULT_FORMAT'));
+// using "markdown" as default format
+setenv('TEMPLATE_PATH', getenv('TEMPLATE_PATH') . '/markdown');
