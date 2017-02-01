@@ -130,7 +130,13 @@ class GenerateSpecCommand extends Command
     private function validateVersion($buildVersion, $upgradeTo)
     {
         $buildVersionParts = explode('.', $buildVersion);
-        $fullVersion = implode('.', array_merge($buildVersionParts, array_fill(0, 4 - count($buildVersionParts), '0')));
+
+        $fullVersion = $buildVersion;
+
+        // v1.v2 -> v1.v2.0.0, v1.v2.v3 -> v1.v2.v3.0
+        if (($versionLength = count($buildVersionParts)) < 4) {
+            $fullVersion = implode('.', array_merge($buildVersionParts, array_fill(0, 4 - $versionLength, '0')));
+        }
 
         if (!preg_match('/\d+(\.\d+){1,3}/', $upgradeTo)) {
             throw new \InvalidArgumentException('Invalid version format');
