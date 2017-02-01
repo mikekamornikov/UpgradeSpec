@@ -19,11 +19,6 @@
             <tag name="console.command" />
         </service>
 
-        <service id="application.command.self_rollback" class="Sugarcrm\UpgradeSpec\Command\SelfRollbackCommand" autowire="true">
-            <argument>null</argument>
-            <tag name="console.command" />
-        </service>
-
         <service id="application" class="Sugarcrm\UpgradeSpec\Application">
             <argument>SugarCRM upgrade spec generator</argument>
             <argument>%env(APPLICATION_VERSION)%</argument>

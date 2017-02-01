@@ -44,6 +44,5 @@ Alternatively env variable can be set globally:
 ```text
 $ export DEV_MODE=1 && bin/uspec list self --raw                                                                                                 1 ↵
 
-self:rollback   Rollback uspec update
 self:update     Update uspec to the latest version
 ```

@@ -38,7 +38,8 @@ class SelfUpdateCommand extends Command implements PharContext
                 InputOption::VALUE_OPTIONAL,
                 'Release stability (stable, unstable, any)',
                 Updater::STABILITY_ANY
-            );
+            )
+            ->addOption('rollback', 'r', InputOption::VALUE_NONE, 'Rollback uspec update');
     }
 
     /**
@@ -51,20 +52,11 @@ class SelfUpdateCommand extends Command implements PharContext
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->updater->hasUpdate()) {
-            $output->writeln('<info>No update needed!</info>');
-
-            return 0;
+        if ($input->hasParameterOption('--rollback') || $input->hasParameterOption('-r')) {
+            return $this->rollback($input, $output);
         }
 
-        $this->updater->update($input->getOption('stability'));
-
-        $output->writeln(sprintf('<info>Successfully updated from "%s" to "%s"</info>',
-            $this->updater->getOldVersion(),
-            $this->updater->getNewVersion()
-        ));
-
-        return 0;
+        return $this->update($input, $output);
     }
 
     /**
@@ -89,5 +81,46 @@ class SelfUpdateCommand extends Command implements PharContext
         ])) {
             throw new \InvalidArgumentException('Invalid "stability" option value');
         }
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
+    private function update(InputInterface $input, OutputInterface $output)
+    {
+        if (!$this->updater->hasUpdate()) {
+            $output->writeln('<info>No update needed!</info>');
+
+            return 0;
+        }
+
+        $this->updater->update($input->getOption('stability'));
+
+        $output->writeln(sprintf('<info>Successfully updated from "%s" to "%s"</info>',
+            $this->updater->getOldVersion(),
+            $this->updater->getNewVersion()
+        ));
+
+        return 0;
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
+    private function rollback(InputInterface $input, OutputInterface $output)
+    {
+        if (!$this->updater->rollback()) {
+            $output->writeln('<error>Before rollback you need to perform at least one update.</error>');
+
+            return 1;
+        }
+
+        $output->writeln('<info>Success!</info>');
+
+        return 0;
     }
 }

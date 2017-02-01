@@ -19,6 +19,9 @@ class SelfUpdateCommandSpec extends ObjectBehavior
         $input->validate()->willReturn();
         $input->getOption('stability')->willReturn(Updater::STABILITY_ANY);
 
+        $input->hasParameterOption('--rollback')->willReturn(false);
+        $input->hasParameterOption('-r')->willReturn(false);
+
         $updater->update(Argument::any())->willReturn(true);
 
         $this->beConstructedWith(null, $updater);
@@ -58,6 +61,26 @@ class SelfUpdateCommandSpec extends ObjectBehavior
         $updater->getNewVersion()->willReturn('1.2.4');
         $input->getOption('stability')->willReturn(Updater::STABILITY_ANY);
         $output->writeln('<info>Successfully updated from "1.2.3" to "1.2.4"</info>')->shouldBeCalled();
+
+        $this->run($input, $output);
+    }
+
+    function it_can_rollback_after_update(Updater $updater, InputInterface $input, OutputInterface $output)
+    {
+        $input->hasParameterOption('--rollback')->willReturn(true);
+
+        $updater->rollback()->willReturn(false);
+        $output->writeln('<error>Before rollback you need to perform at least one update.</error>')->shouldBeCalled();
+
+        $this->run($input, $output);
+    }
+
+    function it_updates_application_to_previous_version(Updater $updater, InputInterface $input, OutputInterface $output)
+    {
+        $input->hasParameterOption('--rollback')->willReturn(true);
+
+        $updater->rollback()->willReturn(true);
+        $output->writeln('<info>Success!</info>')->shouldBeCalled();
 
         $this->run($input, $output);
     }

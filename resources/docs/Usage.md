@@ -16,17 +16,13 @@ Options:
   -D, --dump            Save generated spec to file
 ```
 
-### Update to the latest version
+### Self update / rollback
 ```text
 $ uspec.phar self:update [options]
 
 Options:
   -s, --stability[=STABILITY]  Release stability (stable, unstable, any) [default: "any"]
-```
-
-### Rollback to previously used version
-```text
-$ uspec.phar self:rollback
+  -r, --rollback               Rollback uspec update
 ```
 
 ### As a docker container
