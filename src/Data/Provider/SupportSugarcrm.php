@@ -315,7 +315,7 @@ class SupportSugarcrm implements DocProviderInterface
      *
      * @param $keyParts
      *
-     * @return mixed
+     * @return string
      */
     private function getCacheKey(array $keyParts)
     {
@@ -333,7 +333,7 @@ class SupportSugarcrm implements DocProviderInterface
      * @param string $url
      * @param array  $options
      *
-     * @return mixed
+     * @return string
      */
     private function purifyHtml($html, $url = '', $options = [])
     {

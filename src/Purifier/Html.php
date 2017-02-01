@@ -36,25 +36,25 @@ class Html implements PurifierInterface
     /**
      * Purifies html.
      *
-     * @param $data
+     * @param $html
      *
-     * @return mixed
+     * @return string
      */
-    public function purify($data)
+    public function purify($html)
     {
         if ($this->options['absolute_urls']) {
-            $data = $this->convertLinks($data);
+            $html = $this->convertLinks($html);
         }
 
         if ($this->options['no_tag_duplicates']) {
-            $data = $this->removeTagDuplicates($data);
+            $html = $this->removeTagDuplicates($html);
         }
 
         if ($this->options['pre_to_code']) {
-            $data = $this->convertCode($data);
+            $html = $this->convertCode($html);
         }
 
-        return $data;
+        return $html;
     }
 
     /**

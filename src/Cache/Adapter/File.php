@@ -91,7 +91,7 @@ class File implements CacheInterface
 
         $expire = $this->getExpire($ttl);
 
-        $tempPath = $this->cachePath . DIRECTORY_SEPARATOR . uniqid('', true);
+        $tempPath = $this->cachePath . DS . uniqid('', true);
         if (false === @file_put_contents($tempPath, serialize($value))) {
             return false;
         }
@@ -171,23 +171,23 @@ class File implements CacheInterface
     /**
      * Creates writable directory in given path.
      *
-     * @param $path
+     * @param $directoryPath
      *
      * @throws InvalidArgumentException
      */
-    private function createDirectory($path)
+    private function createDirectory($directoryPath)
     {
-        if (!file_exists($path)) {
-            @mkdir($path, 0777, true);
+        if (!file_exists($directoryPath)) {
+            @mkdir($directoryPath, 0777, true);
         }
 
-        $path = realpath($path);
-        if ($path === false) {
-            throw new InvalidArgumentException(sprintf('Cache path does not exist: %s', $path));
+        $directoryPath = realpath($directoryPath);
+        if ($directoryPath === false) {
+            throw new InvalidArgumentException(sprintf('Cache path does not exist: %s', $directoryPath));
         }
 
-        if (!is_writable($path . DIRECTORY_SEPARATOR)) {
-            throw new InvalidArgumentException(sprintf('Cache path is not writable: %s', $path));
+        if (!is_writable($directoryPath . DS)) {
+            throw new InvalidArgumentException(sprintf('Cache path is not writable: %s', $directoryPath));
         }
     }
 
@@ -202,13 +202,7 @@ class File implements CacheInterface
     {
         $hash = hash('sha256', $key);
 
-        return $this->cachePath
-            . DIRECTORY_SEPARATOR
-            . mb_strtoupper($hash[0])
-            . DIRECTORY_SEPARATOR
-            . mb_strtoupper($hash[1])
-            . DIRECTORY_SEPARATOR
-            . mb_substr($hash, 2);
+        return implode(DS, [$this->cachePath, mb_strtoupper($hash[0]), mb_strtoupper($hash[1]), mb_substr($hash, 2)]);
     }
 
     /**
