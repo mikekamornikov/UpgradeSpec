@@ -22,7 +22,24 @@ class ProviderChain
     }
 
     /**
-     * Adds providers to the chain
+     * @param $name
+     * @param $arguments
+     *
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        foreach ($this->providers as $provider) {
+            if (method_exists($provider, $name)) {
+                return call_user_func_array([$provider, $name], $arguments);
+            }
+        }
+
+        throw new \RuntimeException(sprintf('There is no provider with method: %s', $name));
+    }
+
+    /**
+     * Adds providers to the chain.
      *
      * @param mixed $providers
      */
@@ -41,22 +58,5 @@ class ProviderChain
         }
 
         $this->providers = array_merge($this->providers, $providers);
-    }
-
-    /**
-     * @param $name
-     * @param $arguments
-     *
-     * @return mixed
-     */
-    public function __call($name, $arguments)
-    {
-        foreach ($this->providers as $provider) {
-            if (method_exists($provider, $name)) {
-                return call_user_func_array([$provider, $name], $arguments);
-            }
-        }
-
-        throw new \RuntimeException(sprintf('There is no provider with method: %s', $name));
     }
 }

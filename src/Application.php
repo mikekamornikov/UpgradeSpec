@@ -2,23 +2,9 @@
 
 namespace Sugarcrm\UpgradeSpec;
 
-use League\HTMLToMarkdown\HtmlConverter;
-use Sugarcrm\UpgradeSpec\Command\GenerateSpecCommand;
 use Sugarcrm\UpgradeSpec\Command\PharContext;
-use Sugarcrm\UpgradeSpec\Data\Manager;
-use Sugarcrm\UpgradeSpec\Data\Provider\LocalUpgradePackage;
-use Sugarcrm\UpgradeSpec\Data\Provider\SupportSugarcrm;
-use Sugarcrm\UpgradeSpec\Data\ProviderChain;
-use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
-use Sugarcrm\UpgradeSpec\Element\Provider;
-use Sugarcrm\UpgradeSpec\Formatter\MarkdownFormatter;
-use Sugarcrm\UpgradeSpec\Helper\File;
-use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
-use Sugarcrm\UpgradeSpec\Spec\Generator;
-use Sugarcrm\UpgradeSpec\Template\TwigRenderer;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
-use Twig_Loader_Filesystem;
 
 final class Application extends BaseApplication
 {

@@ -16,7 +16,7 @@ class TwigRenderer implements RendererInterface
      * TwigRenderer constructor.
      *
      * @param Twig_LoaderInterface $loader
-     * @param bool $debug
+     * @param bool                 $debug
      */
     public function __construct(Twig_LoaderInterface $loader, $debug = false)
     {

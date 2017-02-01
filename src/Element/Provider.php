@@ -22,7 +22,7 @@ class Provider
     }
 
     /**
-     * Adds elements to provider
+     * Adds elements to provider.
      *
      * @param mixed $elements
      */

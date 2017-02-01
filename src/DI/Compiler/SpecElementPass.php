@@ -4,8 +4,8 @@ namespace Sugarcrm\UpgradeSpec\DI\Compiler;
 
 use Sugarcrm\UpgradeSpec\Data\DataAwareInterface;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 class SpecElementPass implements CompilerPassInterface

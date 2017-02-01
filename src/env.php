@@ -6,7 +6,7 @@ const APPLICATION_ROOT = __DIR__ . '/../';
 const DS = DIRECTORY_SEPARATOR;
 
 /**
- * Sets env variable
+ * Sets env variable.
  *
  * @param $name
  * @param $value
