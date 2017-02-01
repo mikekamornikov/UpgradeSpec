@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateSpecCommand extends Command
 {
     /**
-     * @var SpecGenerator
+     * @var Generator
      */
     private $generator;
 

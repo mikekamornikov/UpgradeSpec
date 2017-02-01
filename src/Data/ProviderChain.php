@@ -4,6 +4,12 @@ namespace Sugarcrm\UpgradeSpec\Data;
 
 use Sugarcrm\UpgradeSpec\Data\Provider\ProviderInterface;
 
+/**
+ * @method mixed getVersions($flav)
+ * @method mixed getReleaseNotes($flav, array $versions)
+ * @method mixed getHealthCheckInfo($version)
+ * @method mixed getUpgraderInfo($version)
+ */
 class ProviderChain
 {
     /**

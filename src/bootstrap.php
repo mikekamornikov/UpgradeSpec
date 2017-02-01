@@ -12,10 +12,9 @@ require __DIR__ . '/autoload.php';
 require __DIR__ . '/env.php';
 
 $isDebug = getenv('DEV_MODE') && !\Phar::running();
-
 $file = __DIR__ . '/ApplicationContainer.php';
-$containerCache = new ConfigCache($file, $isDebug);
 
+$containerCache = new ConfigCache($file, $isDebug);
 if (!$containerCache->isFresh()) {
     $extension = new ApplicationExtension();
 

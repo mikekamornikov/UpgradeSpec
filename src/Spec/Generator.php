@@ -10,7 +10,7 @@ use Sugarcrm\UpgradeSpec\Spec\Exception\GeneratorException;
 class Generator
 {
     /**
-     * @var ElementProvider
+     * @var Provider
      */
     private $elementProvider;
 

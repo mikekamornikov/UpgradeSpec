@@ -75,7 +75,7 @@ class Manager
             return implode('.', array_slice(explode('.', $minor), 0, count(explode('.', $baseVersion)))) === $baseVersion;
         });
 
-        if (!$minors) {
+        if (empty($minors)) {
             throw new \InvalidArgumentException(sprintf('No minor versions available for version: %s', $baseVersion));
         }
 

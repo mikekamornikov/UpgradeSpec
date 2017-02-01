@@ -34,7 +34,6 @@ checks:
         avoid_unnecessary_concatenation: true
         avoid_perl_style_comments: true
         avoid_fixme_comments: true
-        align_assignments: true
     javascript: true
 
 coding_style:

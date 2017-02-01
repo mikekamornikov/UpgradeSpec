@@ -9,7 +9,7 @@ use Sugarcrm\UpgradeSpec\Updater\Updater;
 class HumbugAdapter implements AdapterInterface
 {
     /**
-     * @var Updater
+     * @var HumbugUpdater
      */
     private $updater;
 

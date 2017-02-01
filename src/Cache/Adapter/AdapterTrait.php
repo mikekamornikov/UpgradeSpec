@@ -19,7 +19,7 @@ trait AdapterTrait
      * @param iterable $keys    a list of keys that can obtained in a single operation
      * @param mixed    $default default value to return for keys that do not exist
      *
-     * @return iterable A list of key => value pairs. Cache keys that do not exist or are stale will have $default as value.
+     * @return \Generator A list of key => value pairs. Cache keys that do not exist or are stale will have $default as value.
      */
     public function getMultiple($keys, $default = null)
     {
@@ -88,7 +88,7 @@ trait AdapterTrait
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
      * @throws InvalidArgumentException
      */

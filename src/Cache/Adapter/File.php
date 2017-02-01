@@ -212,7 +212,7 @@ class File implements CacheInterface
     }
 
     /**
-     * @return Generator
+     * @return \RecursiveIteratorIterator
      */
     private function getCacheFolderIterator()
     {

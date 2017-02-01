@@ -5,7 +5,7 @@ namespace Sugarcrm\UpgradeSpec\Template;
 trait RendererAwareTrait
 {
     /**
-     * @var Manager
+     * @var RendererInterface
      */
     private $renderer;
 
