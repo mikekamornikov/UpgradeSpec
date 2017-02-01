@@ -24,11 +24,13 @@ class FeatureContext implements Context
      */
     public function __construct()
     {
+        require __DIR__ . '/../../src/bootstrap.php';
+
         if (false === @copy(realpath(__DIR__ . '/../../bin/uspec.pubkey'), BEHAT_BIN_PATH . '.pubkey')) {
             throw new \RuntimeException('Application public key is not available');
         }
 
-        $this->application = new Application('SugarCRM upgrade spec generator', '@test');
+        $this->application = (new \Sugarcrm\UpgradeSpec\ApplicationContainer())->get('application');
     }
 
     /**
