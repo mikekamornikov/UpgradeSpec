@@ -1,1 +1,10 @@
-customizations
+{% if packages %}
+### Apply upgrade packages in the following order
+
+{% for package in packages %}
+{{ loop.index }}. {{ package }}
+{% endfor %}
+
+{% else %}
+You can't upgrade to version **{{ upgrade_to }}** with existing set of packages from `{{ packages_path }}`!
+{% endif %}

@@ -20,17 +20,24 @@ final class Context
     private $flav;
 
     /**
+     * @var string
+     */
+    private $packagesPath;
+
+    /**
      * Context constructor.
      *
      * @param $buildVersion
      * @param $upgradeVersion
      * @param $flav
+     * @param string $packagesPath
      */
-    public function __construct($buildVersion, $upgradeVersion, $flav)
+    public function __construct($buildVersion, $upgradeVersion, $flav, $packagesPath = '')
     {
         $this->buildVersion = $buildVersion;
         $this->upgradeVersion = $upgradeVersion;
         $this->flav = $flav;
+        $this->packagesPath = $packagesPath;
     }
 
     /**
@@ -65,6 +72,14 @@ final class Context
     public function getFlav()
     {
         return $this->flav;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPackagesPath()
+    {
+        return $this->packagesPath;
     }
 
     /**

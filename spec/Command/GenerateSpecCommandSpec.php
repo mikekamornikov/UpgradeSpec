@@ -26,6 +26,9 @@ class GenerateSpecCommandSpec extends ObjectBehavior
         $input->hasParameterOption('--dump')->willReturn(false);
         $input->hasParameterOption('-D')->willReturn(false);
 
+        $input->hasParameterOption('--packagesPath')->willReturn(false);
+        $input->hasParameterOption('-P')->willReturn(false);
+
         $generator->generate(Argument::cetera())->willReturn('generated_spec');
 
         $dataManager->getLatestVersion(Argument::cetera())->willReturn('7.8.0.0');

@@ -121,20 +121,6 @@ class Manager
     }
 
     /**
-     * Get list of available customizations.(modified files, deleted files, sql changes).
-     *
-     * @param Context $context
-     *
-     * @return array
-     */
-    public function getListOfCustomizations(Context $context)
-    {
-        $customizations = [];
-
-        return $customizations;
-    }
-
-    /**
      * Gets all available versions from given range ($from < version <= $to).
      *
      * @param Context $context
