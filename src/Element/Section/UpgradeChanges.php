@@ -102,6 +102,8 @@ class UpgradeChanges implements ElementInterface, RendererAwareInterface, DataAw
             return $this->getCheckSum($buildFile) != $this->getCheckSum($packageFile);
         }, ARRAY_FILTER_USE_BOTH));
 
+        $deletedFiles = array_values(array_filter($deletedFiles));
+
         foreach ($packageZips as $zip) {
             $zip->close();
         }
