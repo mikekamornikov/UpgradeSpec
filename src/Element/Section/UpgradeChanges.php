@@ -53,6 +53,8 @@ class UpgradeChanges implements ElementInterface, RendererAwareInterface, DataAw
         $modified = $deleted = [];
         if ($packages) {
             list($modified, $deleted) = $this->getChangedFiles('/Users/m.kamornikov/Dev/sugarcrm/build/rome/builds/ult/sugarcrm', $packages);
+            natsort($modified);
+            natsort($deleted);
         }
 
         return $this->renderer->render('upgrade_changes', [
