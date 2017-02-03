@@ -8,3 +8,19 @@
 {% else %}
 You can't upgrade to version **{{ upgrade_to }}** with existing set of packages from `{{ packages_path }}`!
 {% endif %}
+
+{% if modified_files %}
+### You have direct customizations of the following modified core files
+
+{% for file in modified_files %}
+- {{ file }}
+{% endfor %}
+{% endif %}
+
+{% if deleted_files %}
+### You have direct customizations of the following deleted core files
+
+{% for file in deleted_files %}
+- {{ file }}
+{% endfor %}
+{% endif %}

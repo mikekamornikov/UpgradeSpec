@@ -48,11 +48,93 @@ class UpgradeChanges implements ElementInterface, RendererAwareInterface, DataAw
      */
     public function getBody(Context $context)
     {
+        $packages = $this->getSuitablePackages($context);
+
+        $modified = $deleted = [];
+        if ($packages) {
+            list($modified, $deleted) = $this->getChangedFiles('/Users/m.kamornikov/Dev/sugarcrm/build/rome/builds/ult/sugarcrm', $packages);
+        }
+
         return $this->renderer->render('upgrade_changes', [
-            'packages' => $this->getSuitablePackages($context),
+            'packages' => $packages,
             'upgrade_to' => $context->getUpgradeVersion(),
             'packages_path' => $context->getPackagesPath(),
+            'modified_files' => $modified,
+            'deleted_files' => $deleted,
         ]);
+    }
+
+    private function getChangedFiles($buildPath, $packages)
+    {
+        $changedFiles = $deletedFiles = $packageZips = [];
+
+        foreach ($packages as $package) {
+            $zip = new \ZipArchive();
+            if (!$zip->open($package)) {
+                throw new \RuntimeException(sprintf('Can\'t open zip archive: %s', $package));
+            }
+
+            $packageZips[$package] = $zip;
+
+            eval(str_replace(['<?php', '<?', '?>'], '', $zip->getFromName(basename($package, '.zip') . DS . 'files.md5')));
+            $packageChangedFiles = array_keys($md5_string);
+
+            if ($filesToRemove = $zip->getFromName('filesToRemove.txt')) {
+                $packageDeletedFiles = explode(PHP_EOL, str_replace(["\r\n", "\r", "\n"], PHP_EOL, $filesToRemove));
+            } else if ($filesToRemove = $zip->getFromName('filesToRemove.json')) {
+                $packageDeletedFiles = json_decode($filesToRemove);
+            } else {
+                throw new \RuntimeException('Can\'t open filesToRemove');
+            }
+
+            $changedFiles = array_merge($changedFiles, array_combine($packageChangedFiles, array_fill(0, count($packageChangedFiles), $package)));
+            $deletedFiles = array_diff(array_merge($deletedFiles, $packageDeletedFiles), $packageChangedFiles);
+        }
+
+        $changedFiles = array_keys(array_filter($changedFiles, function ($package, $changedFile) use ($buildPath, $packageZips) {
+            if (($buildFile = @file_get_contents($buildPath . DS . $changedFile)) === false) {
+                return false;
+            }
+            $packageFile = $packageZips[$package]->getFromName(basename($package, '.zip') . DS . $changedFile);
+
+            return $this->getCheckSum($buildFile) != $this->getCheckSum($packageFile);
+        }, ARRAY_FILTER_USE_BOTH));
+
+        foreach ($packageZips as $zip) {
+            $zip->close();
+        }
+
+        $changedFiles = array_values(array_filter($changedFiles, function ($file) use ($buildPath) {
+            return file_exists($buildPath . '/custom/' . $file);
+        }));
+
+        $deletedFiles = array_values(array_filter($deletedFiles, function ($file) use ($buildPath) {
+            return file_exists($buildPath . '/custom/' . $file);
+        }));
+
+        return [$changedFiles, $deletedFiles];
+    }
+
+    /**
+     * @param $content
+     *
+     * @return string
+     */
+    private function getCheckSum($content)
+    {
+        // remove license comments
+        $content = preg_replace('/\/\*.*?Copyright \(C\) SugarCRM.*?\*\//is', '', $content);
+
+        // remove blank lines
+        $content = preg_replace('/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/', "\n", $content);
+
+        // change all line breaks to system line break
+        $content = str_replace(["\r\n", "\r", "\n"], PHP_EOL, $content);
+
+        // remove trailing whitespaces
+        $content = preg_replace('/^\s+|\s+$/m', '', $content);
+
+        return md5($content);
     }
 
     /**
