@@ -5,13 +5,19 @@
 
     <services>
         <service id="data.provider.support_sugarcrm"
-                 class="Sugarcrm\UpgradeSpec\Data\Provider\SupportSugarcrm"
+                 class="Sugarcrm\UpgradeSpec\Data\Provider\Doc\SupportSugarcrm"
                  autowire="true">
             <tag name="data.provider" />
         </service>
 
-        <service id="data.provider.local_upgrade_package"
-                 class="Sugarcrm\UpgradeSpec\Data\Provider\LocalUpgradePackage"
+        <service id="data.provider.local_upgrade_packages"
+                 class="Sugarcrm\UpgradeSpec\Data\Provider\SourceCode\LocalUpgradePackages"
+                 autowire="true">
+            <tag name="data.provider" />
+        </service>
+
+        <service id="data.provider.local_git_repository"
+                 class="Sugarcrm\UpgradeSpec\Data\Provider\SourceCode\LocalGitRepository"
                  autowire="true">
             <tag name="data.provider" />
         </service>

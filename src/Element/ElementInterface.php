@@ -2,7 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Element;
 
-use Sugarcrm\UpgradeSpec\Spec\Context;
+use Sugarcrm\UpgradeSpec\Context\Upgrade;
 
 interface ElementInterface
 {
@@ -12,11 +12,11 @@ interface ElementInterface
     public function getTitle();
 
     /**
-     * @param Context $context
+     * @param Upgrade $context
      *
      * @return mixed
      */
-    public function getBody(Context $context);
+    public function getBody(Upgrade $context);
 
     /**
      * @return mixed
@@ -24,9 +24,9 @@ interface ElementInterface
     public function getOrder();
 
     /**
-     * @param Context $context
+     * @param Upgrade $context
      *
      * @return bool
      */
-    public function isRelevantTo(Context $context);
+    public function isRelevantTo(Upgrade $context);
 }

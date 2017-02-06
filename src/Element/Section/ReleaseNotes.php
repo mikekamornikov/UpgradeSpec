@@ -5,7 +5,7 @@ namespace Sugarcrm\UpgradeSpec\Element\Section;
 use Sugarcrm\UpgradeSpec\Data\DataAwareInterface;
 use Sugarcrm\UpgradeSpec\Data\DataAwareTrait;
 use Sugarcrm\UpgradeSpec\Element\ElementInterface;
-use Sugarcrm\UpgradeSpec\Spec\Context;
+use Sugarcrm\UpgradeSpec\Context\Upgrade;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareTrait;
 
@@ -30,21 +30,21 @@ class ReleaseNotes implements ElementInterface, RendererAwareInterface, DataAwar
     }
 
     /**
-     * @param Context $context
+     * @param Upgrade $context
      *
      * @return bool
      */
-    public function isRelevantTo(Context $context)
+    public function isRelevantTo(Upgrade $context)
     {
         return true;
     }
 
     /**
-     * @param Context $context
+     * @param Upgrade $context
      *
      * @return string
      */
-    public function getBody(Context $context)
+    public function getBody(Upgrade $context)
     {
         return $this->renderer->render('release_notes', [
             'release_notes' => $this->dataManager->getReleaseNotes($context),

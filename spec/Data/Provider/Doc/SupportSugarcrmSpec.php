@@ -1,13 +1,13 @@
 <?php
 
-namespace spec\Sugarcrm\UpgradeSpec\Data\Provider;
+namespace spec\Sugarcrm\UpgradeSpec\Data\Provider\Doc;
 
 use League\HTMLToMarkdown\HtmlConverter;
 use Sugarcrm\UpgradeSpec\Cache\Adapter\Memory;
 use Sugarcrm\UpgradeSpec\Cache\Cache;
-use Sugarcrm\UpgradeSpec\Data\Provider\DocProviderInterface;
+use Sugarcrm\UpgradeSpec\Data\Provider\Doc\DocProviderInterface;
+use Sugarcrm\UpgradeSpec\Data\Provider\Doc\SupportSugarcrm;
 use Sugarcrm\UpgradeSpec\Data\Provider\ProviderInterface;
-use Sugarcrm\UpgradeSpec\Data\Provider\SupportSugarcrm;
 use PhpSpec\ObjectBehavior;
 
 class SupportSugarcrmSpec extends ObjectBehavior

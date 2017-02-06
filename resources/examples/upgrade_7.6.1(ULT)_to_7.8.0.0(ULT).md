@@ -1,4 +1,4 @@
-# SugarCRM upgrade: 7.6.1 -> 7.8.0.0 (ULT)
+# SugarCRM upgrade: 7.6.1(ULT) -> 7.8.0.0(ULT)
 
 ## Review release notes
 

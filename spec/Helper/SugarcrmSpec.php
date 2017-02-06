@@ -23,7 +23,7 @@ if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 $sugar_version      = '7.6.1';
 $sugar_db_version   = '7.6.1';
 $sugar_flavor       = 'ULT';
-$sugar_build		= '999';
+$sugar_build        = '999';
 $sugar_timestamp    = '2008-08-01 12:00am';
 EOL;
 

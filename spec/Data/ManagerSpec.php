@@ -2,12 +2,15 @@
 
 namespace spec\Sugarcrm\UpgradeSpec\Data;
 
+use Sugarcrm\UpgradeSpec\Context\Target;
+use Sugarcrm\UpgradeSpec\Context\TestBuild;
 use Sugarcrm\UpgradeSpec\Data\Manager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Sugarcrm\UpgradeSpec\Data\Provider\Memory;
 use Sugarcrm\UpgradeSpec\Data\ProviderChain;
-use Sugarcrm\UpgradeSpec\Spec\Context;
+use Sugarcrm\UpgradeSpec\Context\Upgrade;
+use Sugarcrm\UpgradeSpec\Version\Version;
 
 class ManagerSpec extends ObjectBehavior
 {
@@ -77,11 +80,19 @@ class ManagerSpec extends ObjectBehavior
 
     function it_gets_release_notes_for_given_upgrade_context()
     {
-        $this->getReleaseNotes(new Context('7.6.1', '7.7.3', $this->flav))->shouldReturn([
+        $context = new Upgrade(
+            new TestBuild(new Version('7.6.1'), $this->flav, '/path/to/build'),
+            new Target(new Version('7.7.3'), $this->flav, '/path/to/upgrade/packages')
+        );
+        $this->getReleaseNotes($context)->shouldReturn([
             'rn7620', '', 'rn771', 'rn772', 'rn773'
         ]);
 
-        $this->getReleaseNotes(new Context('7.7.1', '7.7.3', $this->flav))->shouldReturn([
+        $context = new Upgrade(
+            new TestBuild(new Version('7.7.1'), $this->flav, '/path/to/build'),
+            new Target(new Version('7.7.3'), $this->flav, '/path/to/upgrade/packages')
+        );
+        $this->getReleaseNotes($context)->shouldReturn([
             'rn772', 'rn773'
         ]);
     }

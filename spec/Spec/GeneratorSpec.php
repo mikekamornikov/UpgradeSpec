@@ -3,18 +3,21 @@
 namespace spec\Sugarcrm\UpgradeSpec\Spec;
 
 use Prophecy\Argument;
+use Sugarcrm\UpgradeSpec\Context\Target;
+use Sugarcrm\UpgradeSpec\Context\TestBuild;
 use Sugarcrm\UpgradeSpec\Element\ElementInterface;
 use Sugarcrm\UpgradeSpec\Element\Provider;
 use Sugarcrm\UpgradeSpec\Element\Generator as ElementGenerator;
 use Sugarcrm\UpgradeSpec\Formatter\FormatterInterface;
 use PhpSpec\ObjectBehavior;
-use Sugarcrm\UpgradeSpec\Spec\Context;
+use Sugarcrm\UpgradeSpec\Context\Upgrade;
 use Sugarcrm\UpgradeSpec\Spec\Generator;
+use Sugarcrm\UpgradeSpec\Version\Version;
 
 class GeneratorSpec extends ObjectBehavior
 {
     /**
-     * @var Context
+     * @var Upgrade
      */
     private $context;
 
@@ -24,7 +27,10 @@ class GeneratorSpec extends ObjectBehavior
         ElementInterface $step2,
         FormatterInterface $formatter
     ) {
-        $this->context = new Context('7.6.1', '7.8.0.0', 'ULT');
+        $this->context = new Upgrade(
+            new TestBuild(new Version('7.6.1'), 'ULT', '/path/to/build'),
+            new Target(new Version('7.8.0.0'), 'ULT', '/path/to/upgrade/packages')
+        );
 
         $step1->getTitle()->willReturn('section1 title');
         $step1->getBody()->willReturn('section1 body');

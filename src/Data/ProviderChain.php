@@ -2,6 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Data;
 
+use Sugarcrm\UpgradeSpec\Data\Exception\WrongProviderException;
 use Sugarcrm\UpgradeSpec\Data\Provider\ProviderInterface;
 
 /**
@@ -36,8 +37,12 @@ class ProviderChain
     public function __call($name, $arguments)
     {
         foreach ($this->providers as $provider) {
-            if (method_exists($provider, $name)) {
-                return call_user_func_array([$provider, $name], $arguments);
+            try {
+                if (method_exists($provider, $name)) {
+                    return call_user_func_array([$provider, $name], $arguments);
+                }
+            } catch (WrongProviderException $e) {
+                continue;
             }
         }
 

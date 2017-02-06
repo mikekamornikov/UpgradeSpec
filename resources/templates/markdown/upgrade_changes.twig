@@ -1,12 +1,12 @@
-{% if packages %}
+{% if upgrade_steps %}
 ### Apply upgrade packages in the following order:
 
-{% for package in packages %}
-{{ loop.index }}. {{ package }}
+{% for step in upgrade_steps %}
+{{ loop.index }}. {{ step }}
 {% endfor %}
 
 {% else %}
-You can't upgrade to version **{{ upgrade_to }}** with existing set of packages from `{{ packages_path }}`!
+You can't upgrade to version **{{ upgrade_to }}** using the following upgrade source: `{{ upgrade_source }}`!
 {% endif %}
 
 {% if modified_files %}

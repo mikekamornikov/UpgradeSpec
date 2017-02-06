@@ -2,7 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Element;
 
-use Sugarcrm\UpgradeSpec\Spec\Context;
+use Sugarcrm\UpgradeSpec\Context\Upgrade;
 
 class Provider
 {
@@ -44,11 +44,11 @@ class Provider
     }
 
     /**
-     * @param Context $context
+     * @param Upgrade $context
      *
      * @return array
      */
-    public function getSuitableElements(Context $context)
+    public function getSuitableElements(Upgrade $context)
     {
         $elements = array_filter($this->specElements, function (ElementInterface $element) use ($context) {
             return $element->isRelevantTo($context);
@@ -57,8 +57,8 @@ class Provider
         if (!$elements) {
             throw new \DomainException(sprintf('No special steps required to upgrade from "%s" to "%s" (%s))',
                 $context->getBuildVersion(),
-                $context->getUpgradeVersion(),
-                $context->getFlav()
+                $context->getTargetVersion(),
+                $context->getBuildFlav()
             ));
         }
 

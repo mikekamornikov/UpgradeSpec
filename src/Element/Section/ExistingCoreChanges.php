@@ -3,7 +3,7 @@
 namespace Sugarcrm\UpgradeSpec\Element\Section;
 
 use Sugarcrm\UpgradeSpec\Element\ElementInterface;
-use Sugarcrm\UpgradeSpec\Spec\Context;
+use Sugarcrm\UpgradeSpec\Context\Upgrade;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareInterface;
 use Sugarcrm\UpgradeSpec\Template\RendererAwareTrait;
 
@@ -28,25 +28,27 @@ class ExistingCoreChanges implements ElementInterface, RendererAwareInterface
     }
 
     /**
-     * @param Context $context
+     * @param Upgrade $context
      *
      * @return bool
      */
-    public function isRelevantTo(Context $context)
+    public function isRelevantTo(Upgrade $context)
     {
         return true;
     }
 
     /**
-     * @param Context $context
+     * @param Upgrade $context
      *
      * @return string
      */
-    public function getBody(Context $context)
+    public function getBody(Upgrade $context)
     {
-        $guideUrl = $this->getExtensionsGuideUrl($context->getUpgradeVersion());
+        $guideUrl = $this->getExtensionsGuideUrl($context->getTargetVersion());
 
-        return $this->renderer->render('existing_core_changes', ['dev_guide_url' => $guideUrl]);
+        return $this->renderer->render('existing_core_changes', [
+            'dev_guide_url' => $guideUrl
+        ]);
     }
 
     /**

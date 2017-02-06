@@ -2,11 +2,14 @@
 
 namespace Sugarcrm\UpgradeSpec\Command;
 
+use Sugarcrm\UpgradeSpec\Context\Build;
+use Sugarcrm\UpgradeSpec\Context\Target;
 use Sugarcrm\UpgradeSpec\Data\Manager;
 use Sugarcrm\UpgradeSpec\Helper\File;
 use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
-use Sugarcrm\UpgradeSpec\Spec\Context;
+use Sugarcrm\UpgradeSpec\Context\Upgrade;
 use Sugarcrm\UpgradeSpec\Spec\Generator;
+use Sugarcrm\UpgradeSpec\Version\Version;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,17 +43,15 @@ class GenerateSpecCommand extends Command
      * @param null      $name
      * @param Generator $generator
      * @param Manager   $dataManager
-     * @param Sugarcrm  $sugarcrmHelper
-     * @param File      $fileHelper
      */
-    public function __construct($name, Generator $generator, Manager $dataManager, Sugarcrm $sugarcrmHelper, File $fileHelper)
+    public function __construct($name, Generator $generator, Manager $dataManager)
     {
         parent::__construct($name);
 
         $this->generator = $generator;
         $this->dataManager = $dataManager;
-        $this->sugarcrm = $sugarcrmHelper;
-        $this->file = $fileHelper;
+        $this->sugarcrm = new Sugarcrm();
+        $this->file = new File();
     }
 
     /**
@@ -63,7 +64,7 @@ class GenerateSpecCommand extends Command
             ->addArgument('path', InputArgument::REQUIRED, 'Path to SugarCRM build we are going to upgrade')
             ->addArgument('version', InputArgument::OPTIONAL, 'Version to upgrade to')
             ->addOption('dump', 'D', InputOption::VALUE_NONE, 'Save generated spec to file')
-            ->addOption('packagesPath', 'P', InputOption::VALUE_OPTIONAL, 'Path to a folder with SugarCRM upgrade packages');
+            ->addOption('upgradeSource', 'U', InputOption::VALUE_OPTIONAL, 'Path to a folder with SugarCRM upgrade packages');
     }
 
     /**
@@ -83,14 +84,17 @@ class GenerateSpecCommand extends Command
         $upgradeTo = $this->dataManager->getLatestVersion($flav, $input->getArgument('version'));
 
         $packagesPath = null;
-        if ($input->hasParameterOption('--packagesPath') || $input->hasParameterOption('-P')) {
-            $packagesPath = $input->getOption('packagesPath');
+        if ($input->hasParameterOption('--upgradeSource') || $input->hasParameterOption('-U')) {
+            $packagesPath = $input->getOption('upgradeSource');
             if (!file_exists($packagesPath) || !is_readable($packagesPath)) {
                 throw new \InvalidArgumentException('Invalid "upgradePackages" argument value');
             }
         }
 
-        $upgradeContext = new Context($version, $upgradeTo, $flav, $packagesPath);
+        $upgradeContext = new Upgrade(
+            new Build(new Version($version), $flav, $path),
+            new Target(new Version($upgradeTo), $flav, $packagesPath)
+        );
 
         $output->writeln(sprintf('<comment>Generating upgrade spec: %s ...</comment>', $upgradeContext));
 

@@ -2,7 +2,11 @@
 
 namespace Sugarcrm\UpgradeSpec\Data\Provider;
 
-class Memory implements DocProviderInterface, PackageDataProviderInterface
+use Sugarcrm\UpgradeSpec\Data\Provider\Doc\DocProviderInterface;
+use Sugarcrm\UpgradeSpec\Data\Provider\SourceCode\SourceCodeProviderInterface;
+use Sugarcrm\UpgradeSpec\Context\Upgrade;
+
+class Memory implements DocProviderInterface, SourceCodeProviderInterface
 {
     /**
      * @var array
@@ -63,6 +67,30 @@ class Memory implements DocProviderInterface, PackageDataProviderInterface
     public function getUpgraderInfo($version)
     {
         return $this->get($version . '_upgrader', '');
+    }
+
+    /**
+     * Gets the list of potentially broken customizations (changed and deleted files)
+     *
+     * @param Upgrade $context
+     *
+     * @return mixed
+     */
+    public function getPotentiallyBrokenCustomizations(Upgrade $context)
+    {
+        return $this->get($context . '_customizations', [[], []]);
+    }
+
+    /**
+     * Gets the lists of upgrade steps for the given source
+     *
+     * @param Upgrade $context
+     *
+     * @return mixed
+     */
+    public function getUpgradeSteps(Upgrade $context)
+    {
+        return $this->get($context . '_upgrade_steps', []);
     }
 
     /**

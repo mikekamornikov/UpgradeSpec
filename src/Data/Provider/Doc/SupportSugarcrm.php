@@ -1,6 +1,6 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Data\Provider;
+namespace Sugarcrm\UpgradeSpec\Data\Provider\Doc;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Pool;

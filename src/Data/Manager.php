@@ -2,7 +2,7 @@
 
 namespace Sugarcrm\UpgradeSpec\Data;
 
-use Sugarcrm\UpgradeSpec\Spec\Context;
+use Sugarcrm\UpgradeSpec\Context\Upgrade;
 
 class Manager
 {
@@ -32,7 +32,7 @@ class Manager
     {
         $versions = $this->provider->getVersions($flav);
         if (!$versions) {
-            throw new \RuntimeException(sprintf('No %s versions available', $flav));
+            throw new \RuntimeException(sprintf('No "%s" versions available', $flav));
         }
 
         return $versions;
@@ -85,15 +85,15 @@ class Manager
     /**
      * Gets release notes for all versions from given range.
      *
-     * @param Context $context
+     * @param Upgrade $context
      *
      * @return mixed
      */
-    public function getReleaseNotes(Context $context)
+    public function getReleaseNotes(Upgrade $context)
     {
         $versions = $this->getVersionRange($context);
 
-        return $this->provider->getReleaseNotes($context->getFlav(), $versions);
+        return $this->provider->getReleaseNotes($context->getBuildFlav(), $versions);
     }
 
     /**
@@ -121,20 +121,44 @@ class Manager
     }
 
     /**
+     * Gets the list of potentially broken customizations (changed and deleted files)
+     *
+     * @param Upgrade $context
+     *
+     * @return mixed
+     */
+    public function getPotentiallyBrokenCustomizations(Upgrade $context)
+    {
+        return $this->provider->getPotentiallyBrokenCustomizations($context);
+    }
+
+    /**
+     * Gets the lists of upgrade steps for the given source
+     *
+     * @param Upgrade $context
+     *
+     * @return mixed
+     */
+    public function getUpgradeSteps(Upgrade $context)
+    {
+        return $this->provider->getUpgradeSteps($context);
+    }
+
+    /**
      * Gets all available versions from given range ($from < version <= $to).
      *
-     * @param Context $context
+     * @param Upgrade $context
      *
      * @return array
      */
-    private function getVersionRange(Context $context)
+    private function getVersionRange(Upgrade $context)
     {
         $versionParts = explode('.', $context->getBuildVersion());
         $oldVersion = implode('.', array_merge($versionParts, array_fill(0, 4 - count($versionParts), '0')));
-        $newVersion = $context->getUpgradeVersion();
+        $newVersion = $context->getTargetVersion();
 
         $versions = [];
-        foreach ($this->getVersions($context->getFlav()) as $version) {
+        foreach ($this->getVersions($context->getBuildFlav()) as $version) {
             if (version_compare($version, $oldVersion, '>') && version_compare($version, $newVersion, '<=')) {
                 $versions[] = $version;
             }

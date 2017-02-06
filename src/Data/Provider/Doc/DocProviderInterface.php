@@ -1,6 +1,8 @@
 <?php
 
-namespace Sugarcrm\UpgradeSpec\Data\Provider;
+namespace Sugarcrm\UpgradeSpec\Data\Provider\Doc;
+
+use Sugarcrm\UpgradeSpec\Data\Provider\ProviderInterface;
 
 interface DocProviderInterface extends ProviderInterface
 {

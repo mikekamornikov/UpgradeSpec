@@ -1,0 +1,919 @@
+# SugarCRM upgrade: 7.6.1(ULT) -> 7.6.2.2(ULT)
+
+## Review release notes
+
+### Version 7.6.2.1
+
+#### Development Changes
+
+Developer-level feature enhancements in release 7.6.2.1 include the following:
+
+  
+- **Language file hierarchy** : The order that language strings are loaded from the file system has changed. See the [Sugar Developer Guide](http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_7.6/Language_Framework/Application_Labels_and_Lists) for more details on the updates language file hierarchy.
+
+
+
+## Review / rewrite existing core changes
+
+If your build sources are GIT driven ("sugarcrm/Mango" fork) find all your core changes and (if possible) rewrite them in upgrade safe way. This way you'll avoid merge conflicts during the upgrade.
+If it's not possible be sure to track and backup such changes. There is a big chance some of them:
+- are implemented by core dev team in the version you plan to upgrade to
+- make no sense anymore
+- cause additional issues on its own (for example require missing file)
+
+Please review [developer guide](http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_7.6/Extension_Framework/index.html).
+
+
+## Review upgrade changes and fix possible customization conflicts
+
+### Apply upgrade packages in the following order:
+
+1. /Users/m.kamornikov/Downloads/upgrade_packages/SugarUlt-Upgrade-7.6.x-to-7.6.2.2.zip
+
+
+### You have direct customizations of the following modified core files:
+
+- ./ModuleInstall/ModuleInstaller.php
+- ./clients/base/api/BulkApi.php
+- ./clients/base/api/CurrentUserApi.php
+- ./clients/base/api/DuplicateCheckApi.php
+- ./clients/base/api/ExportApi.php
+- ./clients/base/api/FileApi.php
+- ./clients/base/api/FilterApi.php
+- ./clients/base/api/MassUpdateApi.php
+- ./clients/base/api/MetadataApi.php
+- ./clients/base/api/ModuleApi.php
+- ./clients/base/api/OAuth2Api.php
+- ./clients/base/api/PipelineChartApi.php
+- ./clients/base/api/RecentApi.php
+- ./clients/base/api/RelateRecordApi.php
+- ./clients/base/api/UnifiedSearchApi.php
+- ./clients/base/fields/actiondropdown/actiondropdown.js
+- ./clients/base/fields/actionmenu/actionmenu.js
+- ./clients/base/fields/avatar/avatar.js
+- ./clients/base/fields/avatar/module-icon.hbs
+- ./clients/base/fields/base/base.js
+- ./clients/base/fields/bool/bool.js
+- ./clients/base/fields/currency/currency.js
+- ./clients/base/fields/date/date.js
+- ./clients/base/fields/datetimecombo/datetimecombo.js
+- ./clients/base/fields/editablelistbutton/editablelistbutton.js
+- ./clients/base/fields/email/email.js
+- ./clients/base/fields/email/list.hbs
+- ./clients/base/fields/enum/detail.hbs
+- ./clients/base/fields/enum/enum.js
+- ./clients/base/fields/enum/list.hbs
+- ./clients/base/fields/enum/massupdate.hbs
+- ./clients/base/fields/file/file.js
+- ./clients/base/fields/fullname/detail.hbs
+- ./clients/base/fields/fullname/fullname.js
+- ./clients/base/fields/fullname/list.hbs
+- ./clients/base/fields/mass-email-button/list-header.hbs
+- ./clients/base/fields/mass-email-button/mass-email-button.js
+- ./clients/base/fields/phone/detail.hbs
+- ./clients/base/fields/phone/edit.hbs
+- ./clients/base/fields/phone/list.hbs
+- ./clients/base/fields/phone/phone.js
+- ./clients/base/fields/quickcreate/quickcreate.js
+- ./clients/base/fields/radioenum/edit.hbs
+- ./clients/base/fields/relate/detail.hbs
+- ./clients/base/fields/relate/list.hbs
+- ./clients/base/fields/relate/relate.js
+- ./clients/base/filters/operators/operators.php
+- ./clients/base/layouts/dupecheck-filter/dupecheck-filter.js
+- ./clients/base/layouts/filter/filter.js
+- ./clients/base/layouts/first-login-wizard/first-login-wizard.php
+- ./clients/base/layouts/footer/footer.hbs
+- ./clients/base/layouts/footer/footer.js
+- ./clients/base/layouts/footer/footer.php
+- ./clients/base/layouts/header/header.js
+- ./clients/base/layouts/header/header.php
+- ./clients/base/layouts/login/login.php
+- ./clients/base/layouts/preview/preview.php
+- ./clients/base/layouts/record/record.php
+- ./clients/base/layouts/records/records.php
+- ./clients/base/views/audit-footer/audit-footer.hbs
+- ./clients/base/views/audit-footer/audit-footer.js
+- ./clients/base/views/audit/audit.hbs
+- ./clients/base/views/audit/audit.js
+- ./clients/base/views/audit/audit.php
+- ./clients/base/views/bwc/bwc.js
+- ./clients/base/views/create/create.js
+- ./clients/base/views/dashablelist/dashablelist.js
+- ./clients/base/views/dupecheck-list-multiselect/dupecheck-list-multiselect.js
+- ./clients/base/views/dupecheck-list/dupecheck-list.js
+- ./clients/base/views/filter-filter-dropdown/filter-filter-dropdown.js
+- ./clients/base/views/filter-quicksearch/filter-quicksearch.js
+- ./clients/base/views/filter-rows/filter-rows.js
+- ./clients/base/views/filtered-list/filtered-list.js
+- ./clients/base/views/filtered-search/filtered-search.js
+- ./clients/base/views/flex-list/flex-list.hbs
+- ./clients/base/views/footer-actions/footer-actions.hbs
+- ./clients/base/views/footer-actions/footer-actions.js
+- ./clients/base/views/help-dashlet/help-dashlet.hbs
+- ./clients/base/views/help-dashlet/help-dashlet.js
+- ./clients/base/views/learning-resources/learning-resources.php
+- ./clients/base/views/list/list.js
+- ./clients/base/views/logout/logout.hbs
+- ./clients/base/views/massupdate/massupdate.js
+- ./clients/base/views/module-menu/module-menu.js
+- ./clients/base/views/notifications/notifications-alert.hbs
+- ./clients/base/views/notifications/notifications.hbs
+- ./clients/base/views/notifications/notifications.js
+- ./clients/base/views/notifications/notifications.php
+- ./clients/base/views/panel-top/panel-top.js
+- ./clients/base/views/panel-top/panel-top.php
+- ./clients/base/views/preview/preview.hbs
+- ./clients/base/views/preview/preview.js
+- ./clients/base/views/quickcreate/quickcreate.js
+- ./clients/base/views/setup-complete-wizard-page/setup-complete-wizard-page.hbs
+- ./clients/base/views/setup-complete-wizard-page/setup-complete-wizard-page.js
+- ./clients/base/views/subpanel-list/subpanel-list.js
+- ./clients/base/views/user-locale-wizard-page/user-locale-wizard-page.js
+- ./clients/mobile/api/CurrentUserMobileApi.php
+- ./clients/platforms.php
+- ./data/SugarBeanApiHelper.php
+- ./data/acl/SugarACLAdministration.php
+- ./data/acl/SugarACLOAuthKeys.php
+- ./include/CalendarEvents/CalendarEvents.php
+- ./include/DashletContainer/Containers/DCActions.php
+- ./include/Dashlets/DashletGenericConfigure.tpl
+- ./include/Dashlets/DashletGenericDisplay.tpl
+- ./include/DetailView/DetailView.tpl
+- ./include/DetailView/header.tpl
+- ./include/EditView/SugarVCR.tpl
+- ./include/EditView/header.tpl
+- ./include/Expressions/javascript/dependency.js
+- ./include/ListView/ListView.php
+- ./include/ListView/ListViewGeneric.tpl
+- ./include/Localization/Localization.php
+- ./include/MVC/Controller/action_file_map.php
+- ./include/MVC/Controller/action_view_map.php
+- ./include/MVC/Controller/entry_point_registry.php
+- ./include/MVC/Controller/wireless_module_registry.php
+- ./include/MVC/SugarApplication.php
+- ./include/MVC/View/tpls/Importvcard.tpl
+- ./include/MVC/View/tpls/fts_full.tpl
+- ./include/MVC/View/tpls/sidecar.tpl
+- ./include/MVC/View/views/view.edit.php
+- ./include/MVC/View/views/view.fts.php
+- ./include/MVC/View/views/view.modulelistmenu.php
+- ./include/MVC/View/views/view.plugins.php
+- ./include/MVC/View/views/view.popup.php
+- ./include/MVC/View/views/view.sidecar.php
+- ./include/MetaDataManager/MetaDataHacks.php
+- ./include/MetaDataManager/MetaDataManagerMobile.php
+- ./include/MySugar/javascript/MySugar.js
+- ./include/MySugar/tpls/MySugar.tpl
+- ./include/Popups/tpls/header.tpl
+- ./include/QuickSearchDefaults.php
+- ./include/SearchForm/SearchForm2.php
+- ./include/SearchForm/tpls/SearchFormGeneric.tpl
+- ./include/SearchForm/tpls/SearchFormGenericAdvanced.tpl
+- ./include/SearchForm/tpls/header.tpl
+- ./include/SubPanel/SubPanelViewer.php
+- ./include/SugarEmailAddress/SugarEmailAddress.js
+- ./include/SugarEmailAddress/templates/forEditView.tpl
+- ./include/SugarFields/Fields/Address/DetailView.tpl
+- ./include/SugarFields/Fields/Address/EditView.tpl
+- ./include/SugarFields/Fields/Address/SugarFieldAddress.php
+- ./include/SugarFields/Fields/Address/en_us.DetailView.tpl
+- ./include/SugarFields/Fields/Address/en_us.EditView.tpl
+- ./include/SugarFields/Fields/Base/EditView.tpl
+- ./include/SugarFields/Fields/Base/ListView.tpl
+- ./include/SugarFields/Fields/Bool/DetailView.tpl
+- ./include/SugarFields/Fields/Bool/EditView.tpl
+- ./include/SugarFields/Fields/Currency_id/SugarFieldCurrency_id.php
+- ./include/SugarFields/Fields/Date/SugarFieldDate.php
+- ./include/SugarFields/Fields/Datetime/EditView.tpl
+- ./include/SugarFields/Fields/Datetime/SugarFieldDatetime.php
+- ./include/SugarFields/Fields/Email/SugarFieldEmail.php
+- ./include/SugarFields/Fields/Enum/EditView.tpl
+- ./include/SugarFields/Fields/Enum/SearchView.tpl
+- ./include/SugarFields/Fields/Enum/SugarFieldEnum.php
+- ./include/SugarFields/Fields/Fullname/SugarFieldFullname.php
+- ./include/SugarFields/Fields/Id/SugarFieldId.php
+- ./include/SugarFields/Fields/Multienum/ListView.tpl
+- ./include/SugarFields/Fields/Multienum/SugarFieldMultienum.php
+- ./include/SugarFields/Fields/Parent/EditView.tpl
+- ./include/SugarFields/Fields/Parent/SearchView.tpl
+- ./include/SugarFields/Fields/Phone/DetailView.tpl
+- ./include/SugarFields/Fields/Phone/ListView.tpl
+- ./include/SugarFields/Fields/Radioenum/EditView.tpl
+- ./include/SugarFields/Fields/Relate/DetailView.tpl
+- ./include/SugarFields/Fields/Relate/EditView.tpl
+- ./include/SugarFields/Fields/Relate/SearchView.tpl
+- ./include/SugarFields/Fields/Relate/SugarFieldRelate.php
+- ./include/SugarFields/Fields/Teamset/TeamsetCollectionEditView.tpl
+- ./include/SugarFields/Fields/Text/EditView.tpl
+- ./include/SugarOAuth2/SugarOAuth2Server.php
+- ./include/SugarOAuth2/SugarOAuth2Storage.php
+- ./include/SugarOAuth2/SugarOAuth2StorageMobile.php
+- ./include/SugarObjects/templates/basic/vardefs.php
+- ./include/SugarSearchEngine/Elastic/SugarSearchEngineElastic.php
+- ./include/SugarSearchEngine/Elastic/SugarSearchEngineElasticIndexStrategyMulti.php
+- ./include/SugarSearchEngine/Elastic/SugarSearchEngineElasticMapping.php
+- ./include/SugarSearchEngine/Elastic/SugarSearchEngineElasticResultSet.php
+- ./include/SugarSearchEngine/SugarSearchEngineFullIndexer.php
+- ./include/SugarSearchEngine/SugarSearchEngineQueueManager.php
+- ./include/SugarSmarty/Sugar_Smarty.php
+- ./include/SugarSmarty/plugins/function.sugar_button.php
+- ./include/SugarSmarty/plugins/function.sugar_currency_format.php
+- ./include/SugarSmarty/plugins/function.sugar_getjspath.php
+- ./include/api/RestRequest.php
+- ./include/api/RestResponse.php
+- ./include/connectors/utils/ConnectorHtmlHelper.php
+- ./include/generic/LayoutManager.php
+- ./include/generic/SugarWidgets/SugarWidgetFieldbool.php
+- ./include/generic/SugarWidgets/SugarWidgetFielddatetime.php
+- ./include/generic/SugarWidgets/SugarWidgetFielddatetimecombo.php
+- ./include/generic/SugarWidgets/SugarWidgetFieldenum.php
+- ./include/generic/SugarWidgets/SugarWidgetFieldid.php
+- ./include/generic/SugarWidgets/SugarWidgetFieldimage.php
+- ./include/generic/SugarWidgets/SugarWidgetFieldmultienum.php
+- ./include/generic/SugarWidgets/SugarWidgetFieldname.php
+- ./include/generic/SugarWidgets/SugarWidgetFieldtag.php
+- ./include/generic/SugarWidgets/SugarWidgetFieldteam_name.php
+- ./include/generic/SugarWidgets/SugarWidgetFieldtext.php
+- ./include/generic/SugarWidgets/SugarWidgetFieldvarchar.php
+- ./include/generic/SugarWidgets/SugarWidgetSubPanelCloseButton.php
+- ./include/generic/SugarWidgets/SugarWidgetSubPanelDetailViewLink.php
+- ./include/generic/SugarWidgets/SugarWidgetSubPanelIcon.php
+- ./include/generic/SugarWidgets/SugarWidgetSubPanelRemoveButton.php
+- ./include/generic/SugarWidgets/SugarWidgetSubPanelTopButtonQuickCreate.php
+- ./include/generic/SugarWidgets/SugarWidgetSubPanelTopCreateAccountNameButton.php
+- ./include/generic/SugarWidgets/SugarWidgetSubPanelTopCreateLeadNameButton.php
+- ./include/generic/SugarWidgets/SugarWidgetSubPanelTopCreateNoteButton.php
+- ./include/generic/SugarWidgets/SugarWidgetSubPanelTopCreateTaskButton.php
+- ./include/globalControlLinks.php
+- ./include/javascript/calendar.js
+- ./include/javascript/jsAlerts.php
+- ./include/javascript/popup_helper.js
+- ./include/javascript/quicksearch.js
+- ./include/javascript/reportCriteria.js
+- ./include/javascript/reports.js
+- ./include/javascript/select2/select2.js
+- ./include/javascript/sugar7.js
+- ./include/javascript/sugar7/bwc.js
+- ./include/javascript/sugar7/hbs-helpers.js
+- ./include/language/en_us.lang.php
+- ./include/tabConfig.php
+- ./include/utils/class_map.php
+- ./include/vCard.php
+- ./install/install_utils.php
+- ./jssource/JSGroupings.php
+- ./metadata/accounts_contactsMetaData.php
+- ./metadata/accounts_opportunitiesMetaData.php
+- ./metadata/calls_usersMetaData.php
+- ./metadata/email_addressesMetaData.php
+- ./metadata/meetings_usersMetaData.php
+- ./metadata/opportunities_contactsMetaData.php
+- ./modules/ACLFields/ACLField.php
+- ./modules/ACLRoles/ACLRoleSet.php
+- ./modules/Accounts/Account.js
+- ./modules/Accounts/Dashlets/MyAccountsDashlet/MyAccountsDashlet.data.php
+- ./modules/Accounts/Dashlets/MyAccountsDashlet/MyAccountsDashlet.meta.php
+- ./modules/Accounts/Dashlets/MyAccountsDashlet/MyAccountsDashlet.php
+- ./modules/Accounts/ShowDuplicates.php
+- ./modules/Accounts/clients/base/filters/default/default.php
+- ./modules/Accounts/clients/base/menus/header/header.php
+- ./modules/Accounts/clients/base/menus/quickcreate/quickcreate.php
+- ./modules/Accounts/clients/base/views/dupecheck-list/dupecheck-list.php
+- ./modules/Accounts/clients/base/views/list/list.php
+- ./modules/Accounts/clients/base/views/record/record.php
+- ./modules/Accounts/clients/base/views/selection-list/selection-list.php
+- ./modules/Accounts/clients/mobile/layouts/subpanels/subpanels.php
+- ./modules/Accounts/clients/mobile/views/detail/detail.php
+- ./modules/Accounts/clients/mobile/views/edit/edit.php
+- ./modules/Accounts/clients/mobile/views/list/list.php
+- ./modules/Accounts/language/en_us.lang.php
+- ./modules/Accounts/metadata/SearchFields.php
+- ./modules/Accounts/metadata/acldefs.php
+- ./modules/Accounts/metadata/additionalDetails.php
+- ./modules/Accounts/metadata/detailviewdefs.php
+- ./modules/Accounts/metadata/editviewdefs.php
+- ./modules/Accounts/metadata/listviewdefs.php
+- ./modules/Accounts/metadata/metafiles.php
+- ./modules/Accounts/metadata/popupdefs.php
+- ./modules/Accounts/metadata/quickcreatedefs.php
+- ./modules/Accounts/metadata/searchdefs.php
+- ./modules/Accounts/views/view.detail.php
+- ./modules/Accounts/views/view.edit.php
+- ./modules/Accounts/views/view.list.php
+- ./modules/Activities/language/en_us.lang.php
+- ./modules/Administration/PasswordManager.php
+- ./modules/Administration/PasswordManager.tpl
+- ./modules/Administration/QuickRepairAndRebuild.php
+- ./modules/Administration/RebuildJSLang.php
+- ./modules/Administration/SupportPortal.php
+- ./modules/Administration/UpgradeWizard_commit.php
+- ./modules/Administration/action_view_map.php
+- ./modules/Administration/controller.php
+- ./modules/Administration/language/en_us.lang.php
+- ./modules/Administration/repairDatabase.php
+- ./modules/Administration/views/view.configureshortcutbar.php
+- ./modules/Administration/views/view.configuretabs.php
+- ./modules/Administration/views/view.repair.php
+- ./modules/Audit/Audit.php
+- ./modules/Audit/clients/base/fields/fieldtype/fieldtype.js
+- ./modules/Audit/field_assoc.php
+- ./modules/Audit/language/en_us.lang.php
+- ./modules/Bugs/Dashlets/MyBugsDashlet/MyBugsDashlet.meta.php
+- ./modules/Bugs/Dashlets/MyBugsDashlet/MyBugsDashlet.php
+- ./modules/Bugs/language/en_us.lang.php
+- ./modules/Calendar/CalendarDisplay.php
+- ./modules/Calendar/Dashlets/CalendarDashlet/CalendarDashlet.en_us.lang.php
+- ./modules/Calendar/Dashlets/CalendarDashlet/CalendarDashlet.meta.php
+- ./modules/Calendar/Dashlets/CalendarDashlet/CalendarDashlet.php
+- ./modules/Calendar/Dashlets/CalendarDashlet/CalendarDashletOptions.tpl
+- ./modules/Calendar/controller.php
+- ./modules/Calendar/index.php
+- ./modules/Calendar/language/en_us.lang.php
+- ./modules/Calendar/tpls/main.tpl
+- ./modules/Calls/CallHelper.php
+- ./modules/Calls/CallsApiHelper.php
+- ./modules/Calls/Dashlets/MyCallsDashlet/MyCallsDashlet.data.php
+- ./modules/Calls/Dashlets/MyCallsDashlet/MyCallsDashlet.meta.php
+- ./modules/Calls/Dashlets/MyCallsDashlet/MyCallsDashlet.php
+- ./modules/Calls/Save.php
+- ./modules/Calls/clients/base/filters/default/default.php
+- ./modules/Calls/clients/base/layouts/list-dashboard/list-dashboard.php
+- ./modules/Calls/clients/base/layouts/subpanels/subpanels.php
+- ./modules/Calls/clients/base/menus/header/header.php
+- ./modules/Calls/clients/base/menus/quickcreate/quickcreate.php
+- ./modules/Calls/clients/base/views/create-actions/create-actions.js
+- ./modules/Calls/clients/base/views/create-actions/create-actions.php
+- ./modules/Calls/clients/base/views/create/create.js
+- ./modules/Calls/clients/base/views/list/list.php
+- ./modules/Calls/clients/base/views/preview/preview.php
+- ./modules/Calls/clients/base/views/record/record.js
+- ./modules/Calls/clients/base/views/record/record.php
+- ./modules/Calls/clients/base/views/recordlist/recordlist.php
+- ./modules/Calls/clients/base/views/subpanel-list/subpanel-list.php
+- ./modules/Calls/clients/mobile/layouts/subpanels/subpanels.php
+- ./modules/Calls/clients/mobile/views/detail/detail.php
+- ./modules/Calls/clients/mobile/views/edit/edit.php
+- ./modules/Calls/clients/mobile/views/list/list.php
+- ./modules/Calls/controller.php
+- ./modules/Calls/language/en_us.lang.php
+- ./modules/Calls/metadata/SearchFields.php
+- ./modules/Calls/metadata/additionalDetails.php
+- ./modules/Calls/metadata/detailviewdefs.php
+- ./modules/Calls/metadata/editviewdefs.php
+- ./modules/Calls/metadata/listviewdefs.php
+- ./modules/Calls/metadata/quickcreatedefs.php
+- ./modules/Calls/metadata/searchdefs.php
+- ./modules/Calls/metadata/subpanels/ForActivities.php
+- ./modules/Calls/metadata/subpanels/ForHistory.php
+- ./modules/Calls/tpls/footer.tpl
+- ./modules/Calls/views/view.edit.php
+- ./modules/Calls/views/view.list.php
+- ./modules/Campaigns/Dashlets/TopCampaignsDashlet/TopCampaignsDashlet.meta.php
+- ./modules/Campaigns/Dashlets/TopCampaignsDashlet/TopCampaignsDashlet.php
+- ./modules/Cases/Dashlets/MyCasesDashlet/MyCasesDashlet.meta.php
+- ./modules/Cases/Dashlets/MyCasesDashlet/MyCasesDashlet.php
+- ./modules/Cases/language/en_us.lang.php
+- ./modules/Charts/Dashlets/CampaignROIChartDashlet/CampaignROIChartDashlet.php
+- ./modules/Charts/Dashlets/OpportunitiesByLeadSourceByOutcomeDashlet/OpportunitiesByLeadSourceByOutcomeDashlet.php
+- ./modules/Charts/Dashlets/OpportunitiesByLeadSourceDashlet/OpportunitiesByLeadSourceDashlet.php
+- ./modules/Charts/Dashlets/OutcomeByMonthDashlet/OutcomeByMonthDashlet.php
+- ./modules/Charts/Dashlets/PipelineBySalesStageDashlet/PipelineBySalesStageDashlet.php
+- ./modules/Charts/language/en_us.lang.php
+- ./modules/Configurator/controller.php
+- ./modules/Connectors/connectors/formatters/ext/rest/twitter/tpls/default.tpl
+- ./modules/Connectors/connectors/formatters/ext/rest/twitter/tpls/twitter.gif
+- ./modules/Connectors/connectors/formatters/ext/rest/twitter/twitter.php
+- ./modules/Connectors/connectors/sources/ext/rest/twitter/config.php
+- ./modules/Connectors/connectors/sources/ext/rest/twitter/language/en_us.lang.php
+- ./modules/Connectors/controller.php
+- ./modules/Connectors/metadata/searchdefs.php
+- ./modules/Connectors/tpls/modify_properties.tpl
+- ./modules/Connectors/tpls/source_properties.tpl
+- ./modules/Contacts/ContactFormBase.php
+- ./modules/Contacts/ContactsApiHelper.php
+- ./modules/Contacts/ShowDuplicates.php
+- ./modules/Contacts/clients/base/filters/default/default.php
+- ./modules/Contacts/clients/base/menus/header/header.php
+- ./modules/Contacts/clients/base/views/dupecheck-list/dupecheck-list.php
+- ./modules/Contacts/clients/base/views/record/record.php
+- ./modules/Contacts/clients/base/views/selection-list/selection-list.php
+- ./modules/Contacts/clients/base/views/subpanel-for-opportunities/subpanel-for-opportunities.php
+- ./modules/Contacts/clients/base/views/subpanel-list/subpanel-list.php
+- ./modules/Contacts/clients/mobile/layouts/subpanels/subpanels.php
+- ./modules/Contacts/clients/mobile/views/detail/detail.php
+- ./modules/Contacts/clients/mobile/views/edit/edit.php
+- ./modules/Contacts/clients/mobile/views/list/list.php
+- ./modules/Contacts/controller.php
+- ./modules/Contacts/language/en_us.lang.php
+- ./modules/Contacts/metadata/SearchFields.php
+- ./modules/Contacts/metadata/additionalDetails.php
+- ./modules/Contacts/metadata/detailviewdefs.php
+- ./modules/Contacts/metadata/editviewdefs.php
+- ./modules/Contacts/metadata/listviewdefs.php
+- ./modules/Contacts/metadata/metafiles.php
+- ./modules/Contacts/metadata/popupdefs.php
+- ./modules/Contacts/metadata/quickcreatedefs.php
+- ./modules/Contacts/metadata/searchdefs.php
+- ./modules/Contacts/metadata/subpanels/ForAccounts.php
+- ./modules/Contacts/metadata/subpanels/ForCalls.php
+- ./modules/Contacts/metadata/subpanels/ForCases.php
+- ./modules/Contacts/metadata/subpanels/ForContacts.php
+- ./modules/Contacts/metadata/subpanels/ForEmails.php
+- ./modules/Contacts/metadata/subpanels/ForEmailsByAddr.php
+- ./modules/Contacts/metadata/subpanels/ForMeetings.php
+- ./modules/Contacts/metadata/subpanels/ForOpportunities.php
+- ./modules/Contacts/metadata/subpanels/ForProject.php
+- ./modules/Contacts/metadata/subpanels/default.php
+- ./modules/Contacts/views/view.contactaddresspopup.php
+- ./modules/Contacts/views/view.detail.php
+- ./modules/Contacts/views/view.edit.php
+- ./modules/Contacts/views/view.list.php
+- ./modules/Contacts/views/view.quickcreate.php
+- ./modules/Contracts/language/en_us.lang.php
+- ./modules/Currencies/EditView.js
+- ./modules/Currencies/EditView.tpl
+- ./modules/Currencies/ListCurrency.php
+- ./modules/Currencies/index.php
+- ./modules/Currencies/language/en_us.lang.php
+- ./modules/CustomQueries/BindMapView.php
+- ./modules/CustomQueries/CustomQuery.php
+- ./modules/CustomQueries/DetailView.php
+- ./modules/CustomQueries/EditView.html
+- ./modules/CustomQueries/EditView.php
+- ./modules/CustomQueries/RepairQuery.php
+- ./modules/CustomQueries/index.php
+- ./modules/Dashboards/clients/base/api/DashboardApi.php
+- ./modules/DocumentRevisions/language/en_us.lang.php
+- ./modules/DocumentRevisions/metadata/editviewdefs.php
+- ./modules/Documents/DocumentExternalApiDropDown.php
+- ./modules/Documents/language/en_us.lang.php
+- ./modules/Documents/metadata/detailviewdefs.php
+- ./modules/Documents/metadata/editviewdefs.php
+- ./modules/Documents/metadata/quickcreatedefs.php
+- ./modules/Documents/metadata/searchdefs.php
+- ./modules/Documents/views/view.detail.php
+- ./modules/Documents/views/view.edit.php
+- ./modules/DynamicFields/language/en_us.lang.php
+- ./modules/EAPM/language/en_us.lang.php
+- ./modules/EAPM/metadata/editviewdefs.php
+- ./modules/EmailAddresses/language/en_us.lang.php
+- ./modules/Emails/Dashlets/MyEmailsDashlet/MyEmailsDashlet.data.php
+- ./modules/Emails/Dashlets/MyEmailsDashlet/MyEmailsDashlet.meta.php
+- ./modules/Emails/Dashlets/MyEmailsDashlet/MyEmailsDashlet.php
+- ./modules/Emails/DetailView.html
+- ./modules/Emails/DetailView.php
+- ./modules/Emails/DetailViewSent.html
+- ./modules/Emails/clients/base/fields/quickcreate/quickcreate.hbs
+- ./modules/Emails/clients/base/fields/quickcreate/quickcreate.js
+- ./modules/Emails/clients/base/layouts/records/records.php
+- ./modules/Emails/clients/base/menus/header/header.php
+- ./modules/Emails/clients/base/menus/quickcreate/quickcreate.php
+- ./modules/Emails/clients/base/views/panel-top/panel-top.php
+- ./modules/Emails/clients/base/views/subpanel-list/subpanel-list.php
+- ./modules/Emails/language/en_us.lang.php
+- ./modules/Emails/metadata/subpanels/ForHistory.php
+- ./modules/Emails/metadata/subpanels/ForUnlinkedEmailHistory.php
+- ./modules/Employees/EmployeesSearchForm.php
+- ./modules/Employees/Save.php
+- ./modules/Employees/clients/base/views/selection-list/selection-list.php
+- ./modules/Employees/controller.php
+- ./modules/Employees/language/en_us.lang.php
+- ./modules/Employees/metadata/SearchFields.php
+- ./modules/Employees/metadata/detailviewdefs.php
+- ./modules/Employees/metadata/editviewdefs.php
+- ./modules/Employees/metadata/listviewdefs.php
+- ./modules/Employees/metadata/searchdefs.php
+- ./modules/Employees/views/view.detail.php
+- ./modules/Employees/views/view.edit.php
+- ./modules/Employees/views/view.list.php
+- ./modules/ExpressionEngine/controller.php
+- ./modules/ExpressionEngine/language/en_us.lang.php
+- ./modules/Forecasts/controller.php
+- ./modules/Forecasts/language/en_us.lang.php
+- ./modules/Home/Dashlets/InvadersDashlet/InvadersDashlet.meta.php
+- ./modules/Home/Dashlets/InvadersDashlet/InvadersDashlet.php
+- ./modules/Home/Dashlets/SugarNewsDashlet/SugarNewsDashlet.meta.php
+- ./modules/Home/Dashlets/SugarNewsDashlet/SugarNewsDashlet.php
+- ./modules/Home/QuickSearch.php
+- ./modules/Home/UnifiedSearch.php
+- ./modules/Home/UnifiedSearchAdvanced.php
+- ./modules/Home/clients/base/layouts/record-dashboard/record-dashboard.php
+- ./modules/Home/clients/base/menus/header/header.php
+- ./modules/Home/clients/base/views/module-menu/module-menu.hbs
+- ./modules/Home/language/en_us.lang.php
+- ./modules/Home/views/view.additionaldetailsretrieve.php
+- ./modules/Home/views/view.list.php
+- ./modules/Import/controller.php
+- ./modules/Import/language/en_us.lang.php
+- ./modules/Import/tpls/confirm.tpl
+- ./modules/Import/tpls/step3.tpl
+- ./modules/Import/tpls/wizardWrapper.tpl
+- ./modules/Import/views/view.confirm.php
+- ./modules/Import/views/view.last.php
+- ./modules/Import/views/view.step2.php
+- ./modules/Import/views/view.step3.php
+- ./modules/Import/views/view.step4.php
+- ./modules/Import/views/view.undo.php
+- ./modules/Leads/Dashlets/MyLeadsDashlet/MyLeadsDashlet.data.php
+- ./modules/Leads/Dashlets/MyLeadsDashlet/MyLeadsDashlet.meta.php
+- ./modules/Leads/Dashlets/MyLeadsDashlet/MyLeadsDashlet.php
+- ./modules/Leads/LeadConvert.php
+- ./modules/Leads/LeadsApiHelper.php
+- ./modules/Leads/clients/base/api/LeadsApi.php
+- ./modules/Leads/clients/base/filters/default/default.php
+- ./modules/Leads/clients/base/layouts/convert-main/convert-main.js
+- ./modules/Leads/clients/base/layouts/convert-main/convert-main.php
+- ./modules/Leads/clients/base/layouts/convert-panel/convert-panel.hbs
+- ./modules/Leads/clients/base/layouts/convert-panel/convert-panel.js
+- ./modules/Leads/clients/base/layouts/record-dashboard/record-dashboard.php
+- ./modules/Leads/clients/base/layouts/subpanels/subpanels.php
+- ./modules/Leads/clients/base/menus/header/header.php
+- ./modules/Leads/clients/base/views/convert-panel-header/convert-panel-header.hbs
+- ./modules/Leads/clients/base/views/convert-panel-header/convert-panel-header.js
+- ./modules/Leads/clients/base/views/convert-panel-header/dupecheck-pending.hbs
+- ./modules/Leads/clients/base/views/convert-panel-header/dupecheck-results.hbs
+- ./modules/Leads/clients/base/views/convert-panel-header/title.hbs
+- ./modules/Leads/clients/base/views/create-actions/create-actions.js
+- ./modules/Leads/clients/base/views/list/list.php
+- ./modules/Leads/clients/base/views/record/record.js
+- ./modules/Leads/clients/base/views/record/record.php
+- ./modules/Leads/clients/base/views/recordlist/recordlist.php
+- ./modules/Leads/clients/base/views/selection-list/selection-list.php
+- ./modules/Leads/clients/base/views/subpanel-list/subpanel-list.php
+- ./modules/Leads/controller.php
+- ./modules/Leads/language/en_us.lang.php
+- ./modules/Leads/metadata/editviewdefs.php
+- ./modules/Leads/metadata/popupdefs.php
+- ./modules/Leads/metadata/subpanels/default.php
+- ./modules/Meetings/Dashlets/MyMeetingsDashlet/MyMeetingsDashlet.data.php
+- ./modules/Meetings/Dashlets/MyMeetingsDashlet/MyMeetingsDashlet.meta.php
+- ./modules/Meetings/Dashlets/MyMeetingsDashlet/MyMeetingsDashlet.php
+- ./modules/Meetings/action_view_map.php
+- ./modules/Meetings/clients/base/menus/header/header.php
+- ./modules/Meetings/clients/base/menus/quickcreate/quickcreate.php
+- ./modules/Meetings/clients/base/views/record/record.php
+- ./modules/Meetings/clients/base/views/subpanel-list/subpanel-list.php
+- ./modules/Meetings/clients/mobile/layouts/subpanels/subpanels.php
+- ./modules/Meetings/clients/mobile/views/detail/detail.php
+- ./modules/Meetings/clients/mobile/views/edit/edit.php
+- ./modules/Meetings/clients/mobile/views/list/list.php
+- ./modules/Meetings/controller.php
+- ./modules/Meetings/language/en_us.lang.php
+- ./modules/Meetings/metadata/SearchFields.php
+- ./modules/Meetings/metadata/detailviewdefs.php
+- ./modules/Meetings/metadata/editviewdefs.php
+- ./modules/Meetings/metadata/listviewdefs.php
+- ./modules/Meetings/metadata/quickcreatedefs.php
+- ./modules/Meetings/metadata/searchdefs.php
+- ./modules/Meetings/metadata/subpanels/ForActivities.php
+- ./modules/Meetings/metadata/subpanels/ForHistory.php
+- ./modules/Meetings/tpls/header.tpl
+- ./modules/Meetings/tpls/reminders.tpl
+- ./modules/Meetings/views/view.list.php
+- ./modules/MergeRecords/Merge.js
+- ./modules/MergeRecords/Step1.html
+- ./modules/MergeRecords/Step1.php
+- ./modules/MergeRecords/Step2.php
+- ./modules/MergeRecords/language/en_us.lang.php
+- ./modules/ModuleBuilder/controller.php
+- ./modules/ModuleBuilder/javascript/studio2.js
+- ./modules/ModuleBuilder/javascript/studio2PanelDD.js
+- ./modules/ModuleBuilder/language/en_us.lang.php
+- ./modules/ModuleBuilder/parsers/MetaDataFile.php
+- ./modules/ModuleBuilder/parsers/MetaDataFiles.php
+- ./modules/ModuleBuilder/parsers/parser.label.php
+- ./modules/ModuleBuilder/tpls/includes.tpl
+- ./modules/ModuleBuilder/tpls/layoutView.tpl
+- ./modules/ModuleBuilder/views/view.layoutview.php
+- ./modules/ModuleBuilder/views/view.main.php
+- ./modules/ModuleBuilder/views/view.modulefield.php
+- ./modules/ModuleBuilder/views/view.relationship.php
+- ./modules/Notes/Dashlets/MyNotesDashlet/MyNotesDashlet.data.php
+- ./modules/Notes/Dashlets/MyNotesDashlet/MyNotesDashlet.meta.php
+- ./modules/Notes/Dashlets/MyNotesDashlet/MyNotesDashlet.php
+- ./modules/Notes/NotesApiHelper.php
+- ./modules/Notes/clients/base/filters/default/default.php
+- ./modules/Notes/clients/base/layouts/list-dashboard/list-dashboard.php
+- ./modules/Notes/clients/base/menus/header/header.php
+- ./modules/Notes/clients/base/menus/quickcreate/quickcreate.php
+- ./modules/Notes/clients/base/views/list/list.php
+- ./modules/Notes/clients/base/views/record/record.php
+- ./modules/Notes/clients/mobile/views/detail/detail.php
+- ./modules/Notes/clients/mobile/views/edit/edit.php
+- ./modules/Notes/clients/mobile/views/list/list.php
+- ./modules/Notes/controller.php
+- ./modules/Notes/language/en_us.lang.php
+- ./modules/Notes/metadata/SearchFields.php
+- ./modules/Notes/metadata/additionalDetails.php
+- ./modules/Notes/metadata/detailviewdefs.php
+- ./modules/Notes/metadata/editviewdefs.php
+- ./modules/Notes/metadata/listviewdefs.php
+- ./modules/Notes/metadata/quickcreatedefs.php
+- ./modules/Notes/metadata/searchdefs.php
+- ./modules/Notes/metadata/subpanels/ForCalls.php
+- ./modules/Notes/metadata/subpanels/ForHistory.php
+- ./modules/Notes/metadata/subpanels/ForMeetings.php
+- ./modules/Notes/metadata/subpanels/ForTasks.php
+- ./modules/Notifications/language/en_us.lang.php
+- ./modules/Notifications/views/view.systemquicklist.php
+- ./modules/OAuthKeys/controller.php
+- ./modules/Opportunities/Dashlets/MyClosedOpportunitiesDashlet/MyClosedOpportunitiesDashlet.meta.php
+- ./modules/Opportunities/Dashlets/MyClosedOpportunitiesDashlet/MyClosedOpportunitiesDashlet.php
+- ./modules/Opportunities/Dashlets/MyClosedOpportunitiesDashlet/MyClosedOpportunitiesDashlet.tpl
+- ./modules/Opportunities/Dashlets/MyClosedOpportunitiesDashlet/MyClosedOpportunitiesDashletConfigure.tpl
+- ./modules/Opportunities/Dashlets/MyClosedOpportunitiesDashlet/MyClosedOpportunitiesDashletOptions.tpl
+- ./modules/Opportunities/Dashlets/MyOpportunitiesDashlet/MyOpportunitiesDashlet.data.php
+- ./modules/Opportunities/Dashlets/MyOpportunitiesDashlet/MyOpportunitiesDashlet.meta.php
+- ./modules/Opportunities/Dashlets/MyOpportunitiesDashlet/MyOpportunitiesDashlet.php
+- ./modules/Opportunities/Save.php
+- ./modules/Opportunities/clients/base/fields/rowaction/rowaction.js
+- ./modules/Opportunities/clients/base/filters/default/default.php
+- ./modules/Opportunities/clients/base/layouts/create-actions/create-actions.php
+- ./modules/Opportunities/clients/base/layouts/record-dashboard/record-dashboard.php
+- ./modules/Opportunities/clients/base/layouts/subpanels/subpanels.php
+- ./modules/Opportunities/clients/base/menus/header/header.php
+- ./modules/Opportunities/clients/base/views/create-actions/create-actions.js
+- ./modules/Opportunities/clients/base/views/dupecheck-list/dupecheck-list.php
+- ./modules/Opportunities/clients/base/views/list/list.php
+- ./modules/Opportunities/clients/base/views/massupdate/massupdate.js
+- ./modules/Opportunities/clients/base/views/record/record.js
+- ./modules/Opportunities/clients/base/views/record/record.php
+- ./modules/Opportunities/clients/base/views/selection-list/selection-list.php
+- ./modules/Opportunities/clients/mobile/layouts/subpanels/subpanels.php
+- ./modules/Opportunities/clients/mobile/views/detail/detail.php
+- ./modules/Opportunities/clients/mobile/views/edit/edit.php
+- ./modules/Opportunities/clients/mobile/views/list/list.php
+- ./modules/Opportunities/language/en_us.lang.php
+- ./modules/Opportunities/metadata/SearchFields.php
+- ./modules/Opportunities/metadata/acldefs.php
+- ./modules/Opportunities/metadata/additionalDetails.php
+- ./modules/Opportunities/metadata/detailviewdefs.php
+- ./modules/Opportunities/metadata/editviewdefs.php
+- ./modules/Opportunities/metadata/listviewdefs.php
+- ./modules/Opportunities/metadata/metafiles.php
+- ./modules/Opportunities/metadata/popupdefs.php
+- ./modules/Opportunities/metadata/quickcreatedefs.php
+- ./modules/Opportunities/metadata/searchdefs.php
+- ./modules/Opportunities/tpls/QuickCreate.tpl
+- ./modules/Opportunities/views/view.detail.php
+- ./modules/Opportunities/views/view.edit.php
+- ./modules/ProductTemplates/language/en_us.lang.php
+- ./modules/Products/language/en_us.lang.php
+- ./modules/Project/language/en_us.lang.php
+- ./modules/ProjectTask/Dashlets/MyProjectTaskDashlet/MyProjectTaskDashlet.meta.php
+- ./modules/ProjectTask/Dashlets/MyProjectTaskDashlet/MyProjectTaskDashlet.php
+- ./modules/ProjectTask/language/en_us.lang.php
+- ./modules/Prospects/language/en_us.lang.php
+- ./modules/Quotes/Dashlets/MyQuotesDashlet/MyQuotesDashlet.meta.php
+- ./modules/Quotes/Dashlets/MyQuotesDashlet/MyQuotesDashlet.php
+- ./modules/Quotes/language/en_us.lang.php
+- ./modules/Quotes/metadata/editviewdefs.php
+- ./modules/ReportMaker/views/view.list.php
+- ./modules/Reports/ListView.php
+- ./modules/Reports/ReportCriteriaResults.php
+- ./modules/Reports/ReportsWizard.php
+- ./modules/Reports/ReportsWizard.tpl
+- ./modules/Reports/SearchForm.html
+- ./modules/Reports/SeedReports.php
+- ./modules/Reports/clients/base/api/ReportsDashletsApi.php
+- ./modules/Reports/clients/base/api/ReportsSearchApi.php
+- ./modules/Reports/clients/base/menus/header/header.php
+- ./modules/Reports/index.php
+- ./modules/Reports/language/en_us.lang.php
+- ./modules/Reports/metadata/reportmodulesdefs.php
+- ./modules/Reports/metadata/searchdefs.php
+- ./modules/Reports/sugarpdf/sugarpdf.listview.php
+- ./modules/Reports/templates/_reportCriteriaWithResult.tpl
+- ./modules/Reports/templates/_template_detail_and_total_list_view.tpl
+- ./modules/Reports/templates/_template_list_view.tpl
+- ./modules/Reports/templates/_template_summary_combo_view.tpl
+- ./modules/Reports/templates/_template_summary_list_view.tpl
+- ./modules/Reports/templates/_template_summary_list_view_2gpby.tpl
+- ./modules/Reports/templates/_template_summary_list_view_3gpbyL1.tpl
+- ./modules/Reports/templates/_template_summary_list_view_3gpbyL2.tpl
+- ./modules/Reports/templates/_template_total_view.tpl
+- ./modules/Reports/templates/templates_export.php
+- ./modules/Reports/templates/templates_list_view.php
+- ./modules/Reports/templates/templates_modules_def_js.php
+- ./modules/Reports/templates/templates_reports.php
+- ./modules/Reports/templates/templates_reports_index.php
+- ./modules/Reports/templates/templates_reports_request_js.php
+- ./modules/Reports/tpls/AddSchedule.tpl
+- ./modules/Reports/tpls/reports.css
+- ./modules/Reports/views/view.buildreportmoduletree.php
+- ./modules/Reports/views/view.classic.php
+- ./modules/Reports/views/view.schedule.php
+- ./modules/RevenueLineItems/clients/base/menus/quickcreate/quickcreate.php
+- ./modules/SavedSearch/SavedSearchForm.tpl
+- ./modules/SavedSearch/SavedSearchSelects.tpl
+- ./modules/SavedSearch/index.php
+- ./modules/SavedSearch/language/en_us.lang.php
+- ./modules/Schedulers/_AddJobsHere.php
+- ./modules/Schedulers/language/en_us.lang.php
+- ./modules/SugarFavorites/Dashlets/SugarFavoritesDashlet/SugarFavoritesDashlet.en_us.lang.php
+- ./modules/SugarFavorites/Dashlets/SugarFavoritesDashlet/SugarFavoritesDashlet.meta.php
+- ./modules/SugarFavorites/Dashlets/SugarFavoritesDashlet/SugarFavoritesDashlet.php
+- ./modules/SugarFavorites/Dashlets/SugarFavoritesDashlet/SugarFavoritesDashletOptions.tpl
+- ./modules/SugarFavorites/language/en_us.lang.php
+- ./modules/Tasks/Dashlets/MyTasksDashlet/MyTasksDashlet.data.php
+- ./modules/Tasks/Dashlets/MyTasksDashlet/MyTasksDashlet.meta.php
+- ./modules/Tasks/Dashlets/MyTasksDashlet/MyTasksDashlet.php
+- ./modules/Tasks/Save.php
+- ./modules/Tasks/TasksApiHelper.php
+- ./modules/Tasks/clients/base/filters/default/default.php
+- ./modules/Tasks/clients/base/layouts/subpanels/subpanels.php
+- ./modules/Tasks/clients/base/menus/header/header.php
+- ./modules/Tasks/clients/base/menus/quickcreate/quickcreate.php
+- ./modules/Tasks/clients/base/views/create-actions/create-actions.php
+- ./modules/Tasks/clients/base/views/list/list.php
+- ./modules/Tasks/clients/base/views/record/record.php
+- ./modules/Tasks/clients/base/views/recordlist/recordlist.php
+- ./modules/Tasks/clients/base/views/subpanel-list/subpanel-list.php
+- ./modules/Tasks/clients/mobile/layouts/subpanels/subpanels.php
+- ./modules/Tasks/clients/mobile/views/detail/detail.php
+- ./modules/Tasks/clients/mobile/views/edit/edit.php
+- ./modules/Tasks/clients/mobile/views/list/list.php
+- ./modules/Tasks/language/en_us.lang.php
+- ./modules/Tasks/metadata/SearchFields.php
+- ./modules/Tasks/metadata/additionalDetails.php
+- ./modules/Tasks/metadata/detailviewdefs.php
+- ./modules/Tasks/metadata/editviewdefs.php
+- ./modules/Tasks/metadata/listviewdefs.php
+- ./modules/Tasks/metadata/quickcreatedefs.php
+- ./modules/Tasks/metadata/searchdefs.php
+- ./modules/Tasks/metadata/subpanels/ForActivities.php
+- ./modules/Tasks/metadata/subpanels/ForHistory.php
+- ./modules/Tasks/views/view.edit.php
+- ./modules/TeamNotices/Dashlets/TeamNoticesDashlet/TeamNoticesDashlet.meta.php
+- ./modules/TeamNotices/Dashlets/TeamNoticesDashlet/TeamNoticesDashlet.php
+- ./modules/Teams/views/view.list.php
+- ./modules/Teams/views/view.popup.php
+- ./modules/Trackers/Dashlets/TrackerDashlet/TrackerDashlet.meta.php
+- ./modules/Trackers/Dashlets/TrackerDashlet/TrackerDashlet.php
+- ./modules/Trackers/store/TrackerQueriesDatabaseStore.php
+- ./modules/Trackers/store/TrackerSessionsDatabaseStore.php
+- ./modules/Users/Logout.php
+- ./modules/Users/Save.php
+- ./modules/Users/UserEditView.js
+- ./modules/Users/authentication/AuthenticationController.php
+- ./modules/Users/authentication/SAMLAuthenticate/settings.php
+- ./modules/Users/authentication/SugarAuthenticate/SugarAuthenticate.php
+- ./modules/Users/authentication/SugarAuthenticate/SugarAuthenticateUser.php
+- ./modules/Users/clients/base/filters/default/default.php
+- ./modules/Users/clients/base/views/selection-list/selection-list.php
+- ./modules/Users/clients/mobile/views/edit/edit.php
+- ./modules/Users/clients/mobile/views/list/list.php
+- ./modules/Users/controller.php
+- ./modules/Users/language/en_us.lang.php
+- ./modules/Users/metadata/SearchFields.php
+- ./modules/Users/metadata/detailviewdefs.php
+- ./modules/Users/metadata/editviewdefs.php
+- ./modules/Users/metadata/listviewdefs.php
+- ./modules/Users/metadata/popupdefs.php
+- ./modules/Users/metadata/quickcreatedefs.php
+- ./modules/Users/metadata/searchdefs.php
+- ./modules/Users/metadata/subpanels/ForCalls.php
+- ./modules/Users/reassignUserRecords.php
+- ./modules/Users/tpls/AuthenticateParent.tpl
+- ./modules/Users/tpls/DetailViewFooter.tpl
+- ./modules/Users/tpls/DetailViewHeader.tpl
+- ./modules/Users/tpls/EditViewFooter.tpl
+- ./modules/Users/tpls/EditViewHeader.tpl
+- ./modules/Users/tpls/wizard.tpl
+- ./modules/Users/views/view.authenticate.php
+- ./modules/Users/views/view.detail.php
+- ./modules/Users/views/view.edit.php
+- ./modules/Users/views/view.list.php
+- ./modules/Users/views/view.wizard.php
+- ./modules/pmse_Business_Rules/clients/base/menus/header/header.php
+- ./modules/pmse_Business_Rules/clients/base/views/businessrules-import/businessrules-import.hbs
+- ./modules/pmse_Business_Rules/clients/base/views/businessrules-import/businessrules-import.js
+- ./modules/pmse_Business_Rules/clients/base/views/businessrules-import/businessrules-import.php
+- ./modules/pmse_Business_Rules/clients/base/views/record/record.js
+- ./modules/pmse_Business_Rules/clients/base/views/record/record.php
+- ./modules/pmse_Business_Rules/clients/base/views/recordlist/recordlist.js
+- ./modules/pmse_Business_Rules/clients/base/views/recordlist/recordlist.php
+- ./modules/pmse_Emails_Templates/clients/base/fields/subject/edit.hbs
+- ./modules/pmse_Emails_Templates/clients/base/menus/header/header.php
+- ./modules/pmse_Emails_Templates/clients/base/views/record/record.js
+- ./modules/pmse_Emails_Templates/clients/base/views/record/record.php
+- ./modules/pmse_Emails_Templates/clients/base/views/recordlist/recordlist.js
+- ./modules/pmse_Emails_Templates/clients/base/views/recordlist/recordlist.php
+- ./modules/pmse_Inbox/Dashlets/pmse_InboxDashlet/pmse_InboxDashlet.meta.php
+- ./modules/pmse_Inbox/Dashlets/pmse_InboxDashlet/pmse_InboxDashlet.php
+- ./modules/pmse_Inbox/clients/base/views/record/record.php
+- ./modules/pmse_Inbox/engine/PMSEBusinessRuleExporter.php
+- ./modules/pmse_Inbox/engine/PMSEBusinessRuleImporter.php
+- ./modules/pmse_Inbox/engine/PMSEEmailTemplateImporter.php
+- ./modules/pmse_Inbox/engine/PMSELogicHook.php
+- ./modules/pmse_Inbox/engine/PMSEProjectExporter.php
+- ./modules/pmse_Inbox/engine/PMSEProjectImporter.php
+- ./modules/pmse_Inbox/metadata/dashletviewdefs.php
+- ./modules/pmse_Project/clients/base/api/PMSEProjectImportExportApi.php
+- ./modules/pmse_Project/clients/base/api/wrappers/PMSECrmDataWrapper.php
+- ./modules/pmse_Project/clients/base/api/wrappers/PMSEProjectWrapper.php
+- ./modules/pmse_Project/clients/base/views/project-import/project-import.hbs
+- ./modules/pmse_Project/clients/base/views/project-import/project-import.js
+- ./modules/pmse_Project/clients/base/views/project-import/project-import.php
+- ./modules/pmse_Project/clients/base/views/record/record.js
+- ./modules/pmse_Project/clients/base/views/record/record.php
+- ./modules/pmse_Project/clients/base/views/recordlist/recordlist.js
+- ./modules/pmse_Project/clients/base/views/recordlist/recordlist.php
+- ./styleguide/assets/img/logo.svg
+- ./themes/508/images/themePreview.png
+- ./themes/Amore/images/themePreview.png
+- ./themes/Green/images/themePreview.png
+- ./themes/RTL/images/themePreview.png
+- ./themes/RacerX/css/style.css
+- ./themes/RacerX/css/wizard.css
+- ./themes/RacerX/images/advanced_search.gif
+- ./themes/RacerX/js/style.js
+- ./themes/Sugar/css/style.css
+- ./themes/Sugar/images/themePreview.png
+- ./themes/default/images/advanced_search.gif
+- ./themes/default/images/basic_search.gif
+- ./themes/default/images/helpInline.gif
+- ./themes/default/images/id-ff-clear.png
+- ./themes/default/images/id-ff-select.png
+- ./themes/default/images/id-ff-vcard.png
+
+
+
+
+## Run Health Check and fix all errors
+
+Prior to attempting to upgrade to any 7.x release, Sugar recommends using the Health Check tool. The health check will notify you of any issues within your instance which will affect your ability to upgrade to your target version.
+
+### Performing the Health Check
+
+1. From the command line of the web server, navigate to the directory containing the above files downloaded and extracted in the [Downloading the Necessary Files](http://support.sugarcrm.com/Documentation/Sugar_Versions/7.6/Ult/Installation_and_Upgrade_Guide/#Downloading_the_Necessary_Files) section above:  
+    
+  `php CliUpgrader.php -z <upgradePackage> -l <logFile> -s <pathToSugar> -u <adminUser> -m <mask> -b <backup> -S <stage> -A <autoConfirm> -H <sendLog>`  
+  **Note** : To invoke only the health check stage of the silent upgrade process, populate the parameters above with specific values in your situation: 
+  - **upgradePackage** : The full file path to the upgrade package.
+  - **logFile** : The path to the log file to store the results of the silent upgrade. A relative path to the Sugar instance may be used.
+  - **pathToSugar** : The full file path to the instance being upgraded.
+  - **adminUser** : A valid administrative user name.
+  - **mask** : Script mask specifying which types of scripts to run. Supported types include core, db, custom, all, and none. The default value is 'all'.
+  - **backup** : Determines whether a backup of deleted files will be made with a default of "1" (true). Changing the option to "0" will not create a backup while.
+  - **stage** : Instructs the upgrader to begin at a specific stage; "healthcheck" will cause only the health check portion to run while "continue" will cause it to start where it stopped on the previous run.
+  - **autoConfirm** : Determines whether the confirmation prompt to continue with the upgrade is bypassed and allows the upgrade to automatically proceed when health check passes with a green or yellow flag. The option defaults to "0" (false). Change the option to "1" to enable the auto-confirm and proceed directly to upgrading after the health check. Do not alter this option when attempting to only run the health check without also completing an upgrade.
+  - **sendLog** : Determines whether a log file is sent to SugarCRM with a default of "0" (false). Changing the setting to "1" (true), you are agreeing to send the health check logs to SugarCRM.
+  
+  For example, when running Sugar on a Linux-based server where your web root directory is located at `/var/www/html/sugarcrm` and the upgrade zip file and extracted files are all located at `/home/users/<yourUserName>/sugarupgrade`, use the following commands to perform a silent upgrade with the user "admin" and a log file of "silentUpgrade\_7600.log":   
+    
+  ```
+  cd /home/users/<yourUserName>/sugarupgrade/ 
+  
+  php CliUpgrader.php -z /home/users/<yourUserName>/sugarupgrade/SugarPro-Upgrade-7.5.x-to-7.6.0.0.zip -l ./silentUpgrade_7600.log -s /var/www/html/sugarcrm/ -u admin -S healthcheck
+  ```
+2. The health check results will display whether the health check passed or failed for your instance. 
+  - **Green Flag** : Health check passed successfully. Please refer to the log file if you wish to view details of the health check.
+  - **Yellow Flag** : Health check passed. Please refer to the log file if you wish to view any errors or details of the health check. Should you choose to proceed with the upgrade, please keep in mind that customizations were found in your instance that may:  
+      
+      - Prevent certain modules from getting upgraded to Sugar 7's Sidecar user interface and will be available with the Legacy user interface.
+      - Be modified or disabled to facilitate the upgrade of certain modules to Sugar 7's Sidecar user interface.
+  - **Red Flag** : Health check failed. Issues deemed incompatible for upgrade must be resolved before proceeding with the upgrade. Please refer to the log file in order to view the errors and details of the health check.
+
+
+## Upgrade your instance
+
+To get the most out of Sugar we recommend being on the latest version. Newer versions of Sugar come with increased performance, bug fixes, and new features in general. Before upgrading Sugar it is highly recommended that the upgrade be run on a test or backup copy of your production system first. This will not only allow you to be familiar with the process, but can point out any potential issue(s) you may encounter when upgrading your production instance
+
+### Performing the Upgrade
+
+1. From the command line of the web server, navigate to the directory containing the above files downloaded and extracted in the [Downloading the Necessary Files](http://support.sugarcrm.com/Documentation/Sugar_Versions/7.6/Ult/Installation_and_Upgrade_Guide/#Downloading_the_Necessary_Files) section above:  
+    
+  `php CliUpgrader.php -z <upgradePackage> -l <logFile> -s <pathToSugar> -u <adminUser> -m <mask> -b <backup> -S <stage> -A <autoConfirm> -H <sendLog>`  
+  **Note** : To invoke the silent upgrade process with all the necessary stages (including health check), populate the parameters above with specific values in your situation and exclude the "-S" parameter: 
+  - **upgradePackage** : The full file path to the upgrade package.
+  - **logFile** : The path to the log file to store the results of the silent upgrade. A relative path to the Sugar instance may be used.
+  - **pathToSugar** : The full file path to the instance being upgraded.
+  - **adminUser** : A valid administrative user name.
+  - **mask** : Script mask specifying which types of scripts to run. Supported types include core, db, custom, all, and none. The default value is 'all'.
+  - **backup** : Determines whether a backup of deleted files will be made with a default of "1" (true). Changing the option to "0" will not create a backup while.
+  - **stage** : Instructs the upgrader to begin at a specific stage; "healthcheck" will cause only the health check portion to run while "continue" will cause it to start where it stopped on the previous run.
+  - **autoConfirm** : Determines whether the confirmation prompt to continue with the upgrade is bypassed and allows the upgrade to automatically proceed when health check passes with a green or yellow flag. The option defaults to "0" (false). Change the option to "1" to enable the auto-confirm and proceed directly to upgrading after the health check. Do not alter this option when attempting to only run the health check without also completing an upgrade.
+  - **sendLog** : Determines whether a log file is sent to SugarCRM with a default of "0" (false). Changing the setting to "1" (true), you are agreeing to send the health check logs to SugarCRM.
+  
+  For example, when running Sugar on a Linux-based server where your web root directory is located at `/var/www/html/sugarcrm` and the upgrade zip file and extracted files are all located at `/home/users/<yourUserName>/sugarupgrade`, use the following commands to perform a silent upgrade with the user "admin" and a log file of "silentUpgrade\_7600.log":   
+    
+  `php CliUpgrader.php -z /home/users/<yourUserName>/sugarupgrade/SugarPro-Upgrade-7.5.x-to-7.6.0.0.zip -l ./silentUpgrade_7600.log -s /var/www/html/sugarcrm/ -u admin`
+2. The Health Check scanner will automatically run to evaluate whether your instance is ready for the upgrade.  
+  The results will display whether the health check passed or failed for your instance:  
+  
+  - **Green Flag** : Health check passed successfully and you can proceed with the upgrade. A message will display asking for confirmation (Yes or No) to proceed with the upgrade. Please refer to the log file if you wish to view details of the health check.
+  - **Yellow Flag** : Health check passed and you can proceed with the upgrade. A message will display asking for confirmation (Yes or No) to proceed with the upgrade. Please refer to the log file if you wish to view any errors or details of the health check. Should you choose to proceed with the upgrade, please keep in mind that customizations were found in your instance that may:  
+      
+      - Prevent certain modules from getting upgraded to Sugar 7's Sidecar user interface and will be available with the Legacy user interface.
+      - Be modified or disabled to facilitate the upgrade of certain modules to Sugar 7's Sidecar user interface.
+  - **Red Flag** : Health check failed and you cannot proceed with the upgrade. Issues deemed incompatible for upgrade must be resolved prior to upgrading. Please refer to the log file in order to view the errors and details of the health check.
+3. After the upgrade is completed successfully, fix ownership and permissions of Sugar's root directory:   
+  ```
+  chown apache:apache -R <Sugar root directory>
+  chmod 755 -R <Sugar root directory>
+  ```
+4. Log into Sugar and as a final cleanup, navigate to Admin > Repair and perform "Quick Repair and Rebuild" and "Rebuild Relationships". For more information on the functions performed by the repair, please refer to the [Repair](http://support.sugarcrm.com/Documentation/Sugar_Versions/7.6/Ult/Administration_Guide/System/Repair) documentation in the Administration guide.
+
+  
+Now that your instance has successfully been upgraded to 7.6, please upgrade your stack components to be in compliance with the [7.6.x Supported Platforms](http://support.sugarcrm.com/Resources/Supported_Platforms/Sugar_7.6.x_Supported_Platforms "Supported Platforms") including updating ElasticSearch to version 1.3.1 or 1.4.4.
