@@ -8,6 +8,8 @@ use League\HTMLToMarkdown\HtmlConverter;
 use Psr\Http\Message\ResponseInterface;
 use Sugarcrm\UpgradeSpec\Cache\Cache;
 use Sugarcrm\UpgradeSpec\Purifier\Html;
+use Sugarcrm\UpgradeSpec\Version\OrderedList;
+use Sugarcrm\UpgradeSpec\Version\Version;
 use Symfony\Component\DomCrawler\Crawler;
 
 class SupportSugarcrm implements DocProviderInterface
@@ -43,28 +45,28 @@ class SupportSugarcrm implements DocProviderInterface
     /**
      * Get all available SugarCRM versions (sorted ASC).
      *
-     * @param $flav
+     * @param string $flav
      *
-     * @return mixed
+     * @return OrderedList
      */
     public function getVersions($flav)
     {
-        if ($this->cache->has('versions')) {
-            return $this->cache->get('versions');
+        if ($this->cache->has($this->getCacheKey([$flav, 'versions']))) {
+            return $this->cache->get($this->getCacheKey([$flav, 'versions']));
         }
 
         $crawler = new Crawler($this->getContent('/Documentation/Sugar_Versions/index.html'));
-        $majors = [];
+        $majorReleases = [];
         foreach ($crawler->filter('section.content-body > h1') as $node) {
-            $major = $node->textContent;
-            if (preg_match('/^\d+\.\d+$/', $major)) {
-                $majors[] = $major;
+            $majorRelease = $node->textContent;
+            if (preg_match('/^\d+\.\d+$/', $majorRelease)) {
+                $majorReleases[] = $majorRelease;
             }
         }
 
         $versions = [];
-        foreach ($majors as $major) {
-            $crawler = new Crawler($this->getContent($this->getVersionUri($flav, $major)));
+        foreach (new OrderedList($majorReleases) as $version) {
+            $crawler = new Crawler($this->getContent($this->getVersionUri($flav, $version)));
             foreach ($crawler->filter('#Release_Notes')->first()->nextAll()->filter('a') as $node) {
                 if (preg_match_all('/\d+(\.\d+){1,3}/', $node->textContent, $match)) {
                     $versions[] = $match[0][0];
@@ -72,41 +74,37 @@ class SupportSugarcrm implements DocProviderInterface
             }
         }
 
-        // sort versions (ASC)
-        usort($versions, function ($v1, $v2) {
-            return version_compare($v1, $v2, '<') ? -1 : (version_compare($v1, $v2, '>') ? 1 : 0);
-        });
-
-        $this->cache->set('versions', $versions);
+        $versions = new OrderedList($versions);
+        $this->cache->set($this->getCacheKey([$flav, 'versions']), $versions);
 
         return $versions;
     }
 
     /**
-     * @param $flav
-     * @param array $versions
+     * @param string $flav
+     * @param OrderedList $versions
      *
      * @return array
      */
-    public function getReleaseNotes($flav, array $versions)
+    public function getReleaseNotes($flav, OrderedList $versions)
     {
-        $newVersions = array_filter($versions, function ($version) use ($flav) {
-            return !$this->cache->has($this->getCacheKey([$flav, 'release_notes', $version]));
+        $newVersions = $versions->filter(function (Version $version) use ($flav) {
+            return !$this->cache->has($this->getCacheKey([$flav, 'release_notes', (string) $version]));
         });
 
         $requests = function () use ($flav, $newVersions) {
             foreach ($newVersions as $version) {
-                yield $version => function () use ($flav, $version) {
+                yield (string) $version => function () use ($flav, $version) {
                     return $this->httpClient->getAsync($this->getReleaseNotesUri($flav, $version));
                 };
             }
         };
 
-        if ($newVersions) {
+        if (count($newVersions)) {
             $this->processRequestPool($requests, [
                 'fulfilled' => function (ResponseInterface $response, $version) use ($flav) {
                     $html = $response->getBody()->getContents();
-                    $crawler = new Crawler($this->purifyHtml($html, $this->getReleaseNotesUri($flav, $version)));
+                    $crawler = new Crawler($this->purifyHtml($html, $this->getReleaseNotesUri($flav, new Version($version))));
 
                     $identifiers = [
                         'feature_enhancements' => '#Feature_Enhancements',
@@ -144,15 +142,15 @@ class SupportSugarcrm implements DocProviderInterface
 
         $releaseNotes = [];
         foreach ($versions as $version) {
-            $releaseNote = $this->cache->get($this->getCacheKey([$flav, 'release_notes', $version]), null);
+            $releaseNote = $this->cache->get($this->getCacheKey([$flav, 'release_notes', (string) $version]), null);
             if ($releaseNote) {
-                $releaseNotes[$version] = $releaseNote;
+                $releaseNotes[(string) $version] = $releaseNote;
             }
         }
 
-        uksort($releaseNotes, function ($v1, $v2) {
-            return version_compare($v1, $v2, '<') ? -1 : (version_compare($v1, $v2, '>') ? 1 : 0);
-        });
+//        uksort($releaseNotes, function ($v1, $v2) {
+//            return version_compare($v1, $v2, '<') ? -1 : (version_compare($v1, $v2, '>') ? 1 : 0);
+//        });
 
         return $releaseNotes;
     }
@@ -160,14 +158,14 @@ class SupportSugarcrm implements DocProviderInterface
     /**
      * Gets all required information to perform health check.
      *
-     * @param $version
+     * @param Version $version
      *
      * @return mixed
      */
-    public function getHealthCheckInfo($version)
+    public function getHealthCheckInfo(Version $version)
     {
-        $version = $this->getMajorVersion($version);
-        $cacheKey = $this->getCacheKey(['health_check', $version]);
+        $version = $version->getMajor();
+        $cacheKey = $this->getCacheKey(['health_check', (string) $version]);
 
         if ($this->cache->has($cacheKey)) {
             return $this->cache->get($cacheKey);
@@ -187,14 +185,14 @@ class SupportSugarcrm implements DocProviderInterface
     /**
      * Gets all required information to perform upgrade.
      *
-     * @param $version
+     * @param Version $version
      *
      * @return mixed
      */
-    public function getUpgraderInfo($version)
+    public function getUpgraderInfo(Version $version)
     {
-        $version = $this->getMajorVersion($version);
-        $cacheKey = $this->getCacheKey(['upgrader', $version]);
+        $version = $version->getMajor();
+        $cacheKey = $this->getCacheKey(['upgrader', (string) $version]);
 
         if ($this->cache->has($cacheKey)) {
             return $this->cache->get($cacheKey);
@@ -203,7 +201,7 @@ class SupportSugarcrm implements DocProviderInterface
         $url = $this->getUpgraderInfoUri($version);
         $crawler = new Crawler($this->purifyHtml($this->getContent($url), $url));
 
-        $id = $version == '6.5' ? '#Upgrading_Via_Silent_Upgrader' : '#Performing_the_Upgrade_2';
+        $id = $version->isEqualTo(new Version('6.5')) ? '#Upgrading_Via_Silent_Upgrader' : '#Performing_the_Upgrade_2';
         $nodes = $crawler->filter($id)->nextAll();
 
         $content = [];
@@ -223,7 +221,7 @@ class SupportSugarcrm implements DocProviderInterface
     /**
      * Returns the result (response body) of GET request.
      *
-     * @param $url
+     * @param string $url
      *
      * @return string
      */
@@ -235,31 +233,31 @@ class SupportSugarcrm implements DocProviderInterface
     }
 
     /**
-     * @param $version
+     * @param Version $version
      *
      * @return string
      */
-    private function getHealthCheckInfoUri($version)
+    private function getHealthCheckInfoUri(Version $version)
     {
         return $this->getUpgradeGuideUri($version);
     }
 
     /**
-     * @param $version
+     * @param Version $version
      *
      * @return string
      */
-    private function getUpgraderInfoUri($version)
+    private function getUpgraderInfoUri(Version $version)
     {
         return $this->getUpgradeGuideUri($version);
     }
 
     /**
-     * @param $version
+     * @param Version $version
      *
      * @return string
      */
-    private function getUpgradeGuideUri($version)
+    private function getUpgradeGuideUri(Version $version)
     {
         return sprintf(
             'Documentation/Sugar_Versions/%s/Ult/Installation_and_Upgrade_Guide/index.html',
@@ -268,46 +266,34 @@ class SupportSugarcrm implements DocProviderInterface
     }
 
     /**
-     * @param $flav
-     * @param $major
+     * @param string $flav
+     * @param Version $version
      *
      * @return string
      */
-    private function getVersionUri($flav, $major)
+    private function getVersionUri($flav, Version $version)
     {
         $flav = ucfirst(mb_strtolower($flav));
 
-        return sprintf('/Documentation/Sugar_Versions/%s/%s/index.html', $major, $flav);
+        return sprintf('/Documentation/Sugar_Versions/%s/%s/index.html', $version, $flav);
     }
 
     /**
      * Returns version specific release note uri.
      *
-     * @param $flav
-     * @param $version
+     * @param string $flav
+     * @param Version $version
      *
      * @return string
      */
-    private function getReleaseNotesUri($flav, $version)
+    private function getReleaseNotesUri($flav, Version $version)
     {
         return sprintf(
             '/Documentation/Sugar_Versions/%s/%s/Sugar_%s_Release_Notes/index.html',
-            $this->getMajorVersion($version),
+            $version->getMajor(),
             ucfirst(mb_strtolower($flav)),
             $version
         );
-    }
-
-    /**
-     * @param $version
-     *
-     * @return string
-     */
-    private function getMajorVersion($version)
-    {
-        list($v1, $v2) = explode('.', $version);
-
-        return implode('.', [$v1, $v2]);
     }
 
     /**

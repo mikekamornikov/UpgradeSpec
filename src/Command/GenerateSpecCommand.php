@@ -81,19 +81,20 @@ class GenerateSpecCommand extends Command
 
         $version = $this->sugarcrm->getBuildVersion($path);
         $flav = $this->sugarcrm->getBuildFlav($path);
-        $upgradeTo = $this->dataManager->getLatestVersion($flav, $input->getArgument('version'));
+        $targetVersion = $input->getArgument('version') ? new Version($input->getArgument('version')) : null;
+        $upgradeTo = $this->dataManager->getLatestVersion($flav, $targetVersion);
 
-        $packagesPath = null;
+        $upgradeSource = null;
         if ($input->hasParameterOption('--upgradeSource') || $input->hasParameterOption('-U')) {
-            $packagesPath = $input->getOption('upgradeSource');
-            if (!file_exists($packagesPath) || !is_readable($packagesPath)) {
+            $upgradeSource = $input->getOption('upgradeSource');
+            if (!file_exists($upgradeSource) || !is_readable($upgradeSource)) {
                 throw new \InvalidArgumentException('Invalid "upgradePackages" argument value');
             }
         }
 
         $upgradeContext = new Upgrade(
-            new Build(new Version($version), $flav, $path),
-            new Target(new Version($upgradeTo), $flav, $packagesPath)
+            new Build($version, $flav, $path),
+            new Target($upgradeTo, $flav, $upgradeSource)
         );
 
         $output->writeln(sprintf('<comment>Generating upgrade spec: %s ...</comment>', $upgradeContext));
@@ -117,7 +118,7 @@ class GenerateSpecCommand extends Command
     protected function validateInput(InputInterface $input)
     {
         $path = $input->getArgument('path');
-        $version = $input->getArgument('version');
+        $version = $input->getArgument('version') ? new Version($input->getArgument('version')) : null;
 
         $this->validatePath($path);
         $this->validateVersion(
@@ -137,26 +138,13 @@ class GenerateSpecCommand extends Command
     }
 
     /**
-     * @param $buildVersion
-     * @param $upgradeTo
+     * @param Version $from
+     * @param Version $to
      */
-    private function validateVersion($buildVersion, $upgradeTo)
+    private function validateVersion(Version $from, Version $to)
     {
-        $buildVersionParts = explode('.', $buildVersion);
-
-        $fullVersion = $buildVersion;
-
-        // v1.v2 -> v1.v2.0.0, v1.v2.v3 -> v1.v2.v3.0
-        if (($versionLength = count($buildVersionParts)) < 4) {
-            $fullVersion = implode('.', array_merge($buildVersionParts, array_fill(0, 4 - $versionLength, '0')));
-        }
-
-        if (!preg_match('/\d+(\.\d+){1,3}/', $upgradeTo)) {
-            throw new \InvalidArgumentException('Invalid version format');
-        }
-
-        if (version_compare($fullVersion, $upgradeTo, '>=')) {
-            throw new \InvalidArgumentException(sprintf('Given version ("%s") is lower or equal to the build version ("%s")', $upgradeTo, $buildVersion));
+        if (version_compare((string) $to->getFull(), (string) $from->getFull(), '<=')) {
+            throw new \InvalidArgumentException(sprintf('Given version ("%s") is lower or equal to the build version ("%s")', $to, $from));
         }
     }
 }

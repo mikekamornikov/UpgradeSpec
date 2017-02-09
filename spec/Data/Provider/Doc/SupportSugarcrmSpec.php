@@ -9,6 +9,8 @@ use Sugarcrm\UpgradeSpec\Data\Provider\Doc\DocProviderInterface;
 use Sugarcrm\UpgradeSpec\Data\Provider\Doc\SupportSugarcrm;
 use Sugarcrm\UpgradeSpec\Data\Provider\ProviderInterface;
 use PhpSpec\ObjectBehavior;
+use Sugarcrm\UpgradeSpec\Version\OrderedList;
+use Sugarcrm\UpgradeSpec\Version\Version;
 
 class SupportSugarcrmSpec extends ObjectBehavior
 {
@@ -37,7 +39,7 @@ class SupportSugarcrmSpec extends ObjectBehavior
         $this->flav = 'ult';
 
         $this->data = [
-            'versions' => ['7.6.2.0', '7.6.2.2', '7.7.1', '7.7.2', '7.8.0.0'],
+            $this->flav . '___versions' => new OrderedList(['7.6.2.0', '7.6.2.2', '7.7.1', '7.7.2', '7.8.0.0']),
             $this->flav . '___release_notes___7.7.2' => 'rn772',
             $this->flav . '___release_notes___7.8.0.0' => 'rn7800',
             'health_check___7.7' => 'hc77',
@@ -67,14 +69,12 @@ class SupportSugarcrmSpec extends ObjectBehavior
 
     function it_uses_cache_if_possible()
     {
-        $this->getVersions($this->flav)->shouldReturn($this->cache->get('versions'));
-        $this->getReleaseNotes($this->flav, ['7.7.2', '7.8.0.0'])->shouldReturn([
+        $this->getVersions($this->flav)->shouldReturn($this->cache->get($this->flav . '___versions'));
+        $this->getReleaseNotes($this->flav, new OrderedList(['7.7.2', '7.8.0.0']))->shouldReturn([
             '7.7.2' => 'rn772',
             '7.8.0.0' => 'rn7800',
         ]);
-        $this->getHealthCheckInfo('7.7')->shouldReturn('hc77');
-        $this->getUpgraderInfo('7.7')->shouldReturn('u77');
-
-        // TODO: add clean cache case
+        $this->getHealthCheckInfo(new Version('7.7'))->shouldReturn('hc77');
+        $this->getUpgraderInfo(new Version('7.7'))->shouldReturn('u77');
     }
 }

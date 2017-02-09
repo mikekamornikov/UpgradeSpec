@@ -2,6 +2,8 @@
 
 namespace Sugarcrm\UpgradeSpec\Context;
 
+use Sugarcrm\UpgradeSpec\Version\Version;
+
 final class Upgrade
 {
     /**
@@ -27,7 +29,7 @@ final class Upgrade
     }
 
     /**
-     * @return string
+     * @return Version
      */
     public function getBuildVersion()
     {
@@ -37,6 +39,22 @@ final class Upgrade
     /**
      * @return string
      */
+    public function getBuildFlav()
+    {
+        return $this->build->getFlav();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBuildPath()
+    {
+        return $this->build->getSource();
+    }
+
+    /**
+     * @return Version
+     */
     public function getTargetVersion()
     {
         return $this->target->getVersion();
@@ -45,9 +63,9 @@ final class Upgrade
     /**
      * @return string
      */
-    public function getBuildFlav()
+    public function getTargetFlav()
     {
-        return $this->build->getFlav();
+        return $this->target->getFlav();
     }
 
     /**

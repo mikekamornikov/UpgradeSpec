@@ -5,6 +5,7 @@ namespace spec\Sugarcrm\UpgradeSpec\Helper;
 use Sugarcrm\UpgradeSpec\Helper\Sugarcrm;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Sugarcrm\UpgradeSpec\Version\Version;
 
 class SugarcrmSpec extends ObjectBehavior
 {
@@ -51,11 +52,20 @@ EOL;
 
     function it_gets_build_version()
     {
-        $this->getBuildVersion($this->path)->shouldReturn('7.6.1');
+        $this->getBuildVersion($this->path)->shouldReturnVersion(new Version('7.6.1'));
     }
 
     function it_gets_build_flav()
     {
         $this->getBuildFlav($this->path)->shouldReturn('ULT');
+    }
+
+    public function getMatchers()
+    {
+        return [
+            'returnVersion' => function(Version $subject, Version $key) {
+                return $subject->isEqualTo($key, true);
+            },
+        ];
     }
 }

@@ -54,7 +54,7 @@ class GenerateSpecCommandSpec extends ObjectBehavior
 
         $generator->generate(Argument::cetera())->willReturn('generated_spec');
 
-        $dataManager->getLatestVersion(Argument::cetera())->willReturn('7.8.0.0');
+        $dataManager->getLatestVersion(Argument::cetera())->willReturn(new Version('7.8.0.0'));
 
         $this->beConstructedWith(null, $generator, $dataManager);
     }
@@ -89,7 +89,7 @@ class GenerateSpecCommandSpec extends ObjectBehavior
         $this->run($input, $output);
 
         $generator->generate(Argument::that(function(Upgrade $context) {
-            return $context->getTargetVersion() == '7.8.0.0';
+            return (string) $context->getTargetVersion() == '7.8.0.0';
         }))->shouldBeCalled();
     }
 
@@ -103,7 +103,7 @@ class GenerateSpecCommandSpec extends ObjectBehavior
     function it_shows_error_for_upgrades_to_version_equal_to_given_instance_version(InputInterface $input, OutputInterface $output, Manager $dataManager)
     {
         $input->getArgument('version')->willReturn('7.7');
-        $dataManager->getLatestVersion(Argument::cetera())->willReturn('7.7.1');
+        $dataManager->getLatestVersion(Argument::cetera())->willReturn(new Version('7.7.1'));
         $this->createTestBuild('7.7.1', 'ULT');
 
         $output->writeln('<error>Given version ("7.7.1") is lower or equal to the build version ("7.7.1")</error>')->shouldBeCalled();
@@ -114,7 +114,7 @@ class GenerateSpecCommandSpec extends ObjectBehavior
     function it_shows_error_for_upgrades_to_version_lower_than_given_instance_version(InputInterface $input, OutputInterface $output, Manager $dataManager)
     {
         $input->getArgument('version')->willReturn('7.7');
-        $dataManager->getLatestVersion(Argument::cetera())->willReturn('7.7.1');
+        $dataManager->getLatestVersion(Argument::cetera())->willReturn(new Version('7.7.1'));
         $this->createTestBuild('7.8.0.0', 'ULT');
 
         $output->writeln('<error>Given version ("7.7.1") is lower or equal to the build version ("7.8.0.0")</error>')->shouldBeCalled();

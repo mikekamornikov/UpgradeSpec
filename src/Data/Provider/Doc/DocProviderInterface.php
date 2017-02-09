@@ -3,6 +3,8 @@
 namespace Sugarcrm\UpgradeSpec\Data\Provider\Doc;
 
 use Sugarcrm\UpgradeSpec\Data\Provider\ProviderInterface;
+use Sugarcrm\UpgradeSpec\Version\OrderedList;
+use Sugarcrm\UpgradeSpec\Version\Version;
 
 interface DocProviderInterface extends ProviderInterface
 {
@@ -11,7 +13,7 @@ interface DocProviderInterface extends ProviderInterface
      *
      * @param $flav
      *
-     * @return mixed
+     * @return OrderedList
      */
     public function getVersions($flav);
 
@@ -19,27 +21,27 @@ interface DocProviderInterface extends ProviderInterface
      * Get release notes for all available versions from given range.
      *
      * @param $flav
-     * @param array $versions
+     * @param OrderedList $versions
      *
-     * @return mixed
+     * @return array
      */
-    public function getReleaseNotes($flav, array $versions);
+    public function getReleaseNotes($flav, OrderedList $versions);
 
     /**
      * Gets all required information to perform health check.
      *
-     * @param $version
+     * @param Version $version
      *
      * @return mixed
      */
-    public function getHealthCheckInfo($version);
+    public function getHealthCheckInfo(Version $version);
 
     /**
      * Gets all required information to perform upgrade.
      *
-     * @param $version
+     * @param Version $version
      *
      * @return mixed
      */
-    public function getUpgraderInfo($version);
+    public function getUpgraderInfo(Version $version);
 }

@@ -6,6 +6,7 @@ use Sugarcrm\UpgradeSpec\Data\Provider\Memory;
 use Sugarcrm\UpgradeSpec\Data\Provider\ProviderInterface;
 use Sugarcrm\UpgradeSpec\Data\ProviderChain;
 use PhpSpec\ObjectBehavior;
+use Sugarcrm\UpgradeSpec\Version\OrderedList;
 
 class ProviderChainSpec extends ObjectBehavior
 {
@@ -59,12 +60,21 @@ class ProviderChainSpec extends ObjectBehavior
     {
         $versions = ['7.7.2', '7.8.0.0'];
         $this->beConstructedWith([new Memory(['ult_versions' => $versions])]);
-        $this->getVersions('ULT')->shouldReturn($versions);
+        $this->getVersions('ULT')->shouldReturnRange(new OrderedList($versions));
     }
 
     function it_throws_exception_on_invalid_call(ProviderInterface $p1)
     {
         $this->beConstructedWith([$p1->getWrappedObject()]);;
         $this->shouldThrow(\RuntimeException::class)->during('non_existent_method', []);
+    }
+
+    public function getMatchers()
+    {
+        return [
+            'returnRange' => function(OrderedList $subject, OrderedList $key) {
+                return (string) $subject == (string) $key;
+            }
+        ];
     }
 }

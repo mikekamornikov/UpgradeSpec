@@ -5,6 +5,8 @@ namespace Sugarcrm\UpgradeSpec\Data\Provider;
 use Sugarcrm\UpgradeSpec\Data\Provider\Doc\DocProviderInterface;
 use Sugarcrm\UpgradeSpec\Data\Provider\SourceCode\SourceCodeProviderInterface;
 use Sugarcrm\UpgradeSpec\Context\Upgrade;
+use Sugarcrm\UpgradeSpec\Version\OrderedList;
+use Sugarcrm\UpgradeSpec\Version\Version;
 
 class Memory implements DocProviderInterface, SourceCodeProviderInterface
 {
@@ -21,38 +23,41 @@ class Memory implements DocProviderInterface, SourceCodeProviderInterface
     /**
      * Get all available SugarCRM versions (sorted ASC).
      *
-     * @param $flav
+     * @param string $flav
      *
-     * @return mixed
+     * @return OrderedList
      */
     public function getVersions($flav)
     {
-        return $this->get($flav . '_versions', []);
+        return new OrderedList($this->get($flav . '_versions', []));
     }
 
     /**
      * Get release notes for all available versions from given range.
      *
      * @param $flav
-     * @param array $versions
+     * @param OrderedList $versions
      *
-     * @return mixed
+     * @return array
      */
-    public function getReleaseNotes($flav, array $versions)
+    public function getReleaseNotes($flav, OrderedList $versions)
     {
-        return array_map(function ($version) use ($flav) {
-            return $this->get(sprintf('%s_%s_release_notes', $flav, $version), '');
-        }, $versions);
+        $releaseNotes = [];
+        foreach ($versions as $version) {
+            $releaseNotes[(string) $version] = $this->get(sprintf('%s_%s_release_notes', $flav, $version), '');
+        }
+
+        return $releaseNotes;
     }
 
     /**
      * Gets all required information to perform health check.
      *
-     * @param $version
+     * @param Version $version
      *
      * @return mixed
      */
-    public function getHealthCheckInfo($version)
+    public function getHealthCheckInfo(Version $version)
     {
         return $this->get($version . '_health_check', '');
     }
@@ -60,11 +65,11 @@ class Memory implements DocProviderInterface, SourceCodeProviderInterface
     /**
      * Gets all required information to perform upgrade.
      *
-     * @param $version
+     * @param Version $version
      *
      * @return mixed
      */
-    public function getUpgraderInfo($version)
+    public function getUpgraderInfo(Version $version)
     {
         return $this->get($version . '_upgrader', '');
     }

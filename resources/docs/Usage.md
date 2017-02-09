@@ -9,11 +9,12 @@
 $ uspec.phar generate:spec [options] [--] <path> [<version>]
 
 Arguments:
-  path                  Path to SugarCRM build we are going to upgrade
-  version               Version to upgrade to
+  path                                 Path to SugarCRM build we are going to upgrade
+  version                              Version to upgrade to
 
 Options:
-  -D, --dump            Save generated spec to file
+  -D, --dump                           Save generated spec to file
+  -U, --upgradeSource[=UPGRADESOURCE]  Path to a folder with SugarCRM upgrade packages
 ```
 
 ### Self update / rollback
@@ -28,5 +29,8 @@ Options:
 ### As a docker container
 ```text
 docker build -t uspec-app .
-docker run --rm -ti -v /path/to/sugarcrm/build:/build uspec-app generate:spec /build 7.8
+docker run --rm -ti \
+    -v /path/to/sugarcrm/build:/build \
+    -v /path/to/upgrade/packages:/upgrade_packages \
+    uspec-app generate:spec /build 7.8 --upgradeSource=/upgrade_packages
 ```

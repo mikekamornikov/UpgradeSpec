@@ -3,6 +3,8 @@
 namespace Sugarcrm\UpgradeSpec\Data;
 
 use Sugarcrm\UpgradeSpec\Context\Upgrade;
+use Sugarcrm\UpgradeSpec\Version\OrderedList;
+use Sugarcrm\UpgradeSpec\Version\Version;
 
 class Manager
 {
@@ -24,14 +26,14 @@ class Manager
     /**
      * Gets all available SugarCRM versions (sorted ASC).
      *
-     * @param $flav
+     * @param string $flav
      *
-     * @return mixed
+     * @return OrderedList
      */
     public function getVersions($flav)
     {
         $versions = $this->provider->getVersions($flav);
-        if (!$versions) {
+        if (!count($versions)) {
             throw new \RuntimeException(sprintf('No "%s" versions available', $flav));
         }
 
@@ -43,24 +45,23 @@ class Manager
      *
      * Examples: 7.6.1 -> 7.6.1.0, 7.7 -> 7.7.1, 7.8 -> 7.8.0.0
      *
-     * @param $flav
-     * @param null $baseVersion
+     * @param string $flav
+     * @param Version|null $baseVersion
      *
-     * @return mixed
+     * @return Version
      */
-    public function getLatestVersion($flav, $baseVersion = null)
+    public function getLatestVersion($flav, Version $baseVersion = null)
     {
         $versions = $this->getVersions($flav);
 
         // the latest available
-        if (!$baseVersion) {
-            return end($versions);
+        if (is_null($baseVersion)) {
+            return $versions->last();
         }
 
         // is minor bugfix version
-        $versionParts = explode('.', $baseVersion);
-        if (isset($versionParts[3])) {
-            if (!in_array($baseVersion, $versions)) {
+        if ($baseVersion->isFull()) {
+            if (!$versions->contains($baseVersion)) {
                 throw new \InvalidArgumentException(sprintf('Unknown version: %s', $baseVersion));
             }
 
@@ -69,17 +70,17 @@ class Manager
 
         /**
          * all versions with $baseVersion base
-         * for example: 7.6.1 -> [7.6.1.0, 7.6.1.1], 7.6 -> [7.6.1.0, 7.6.1.1, 7.6.2].
+         * for example: 7.6.1 -> [7.6.1, 7.6.1.0, 7.6.1.1], 7.6 -> [7.6.1.0, 7.6.1.1, 7.6.2].
          */
-        $minors = array_filter($versions, function ($minor) use ($baseVersion) {
-            return implode('.', array_slice(explode('.', $minor), 0, count(explode('.', $baseVersion)))) === $baseVersion;
+        $minors = $versions->filter(function (Version $version) use ($baseVersion) {
+            return $version->isChildOf($baseVersion) || $version->isEqualTo($baseVersion);
         });
 
-        if (empty($minors)) {
+        if (!count($minors)) {
             throw new \InvalidArgumentException(sprintf('No minor versions available for version: %s', $baseVersion));
         }
 
-        return end($minors);
+        return $minors->last();
     }
 
     /**
@@ -87,7 +88,7 @@ class Manager
      *
      * @param Upgrade $context
      *
-     * @return mixed
+     * @return array
      */
     public function getReleaseNotes(Upgrade $context)
     {
@@ -99,11 +100,11 @@ class Manager
     /**
      * Gets all required information to perform health check.
      *
-     * @param $version
+     * @param Version $version
      *
      * @return mixed
      */
-    public function getHealthCheckInfo($version)
+    public function getHealthCheckInfo(Version $version)
     {
         return $this->provider->getHealthCheckInfo($version);
     }
@@ -111,11 +112,11 @@ class Manager
     /**
      * Gets all required information to perform upgrade.
      *
-     * @param $version
+     * @param Version $version
      *
      * @return mixed
      */
-    public function getUpgraderInfo($version)
+    public function getUpgraderInfo(Version $version)
     {
         return $this->provider->getUpgraderInfo($version);
     }
@@ -149,21 +150,16 @@ class Manager
      *
      * @param Upgrade $context
      *
-     * @return array
+     * @return OrderedList
      */
     private function getVersionRange(Upgrade $context)
     {
-        $versionParts = explode('.', $context->getBuildVersion());
-        $oldVersion = implode('.', array_merge($versionParts, array_fill(0, 4 - count($versionParts), '0')));
-        $newVersion = $context->getTargetVersion();
+        $from = (string) $context->getBuildVersion()->getFull();
+        $to = (string) $context->getTargetVersion()->getFull();
 
-        $versions = [];
-        foreach ($this->getVersions($context->getBuildFlav()) as $version) {
-            if (version_compare($version, $oldVersion, '>') && version_compare($version, $newVersion, '<=')) {
-                $versions[] = $version;
-            }
-        }
-
-        return $versions;
+        return $this->getVersions($context->getBuildFlav())->filter(function (Version $version) use ($from, $to) {
+            return version_compare((string) $version, $from, '>')
+                && version_compare((string) $version, $to, '<=');
+        });
     }
 }

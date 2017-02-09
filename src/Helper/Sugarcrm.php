@@ -2,6 +2,8 @@
 
 namespace Sugarcrm\UpgradeSpec\Helper;
 
+use Sugarcrm\UpgradeSpec\Version\Version;
+
 class Sugarcrm
 {
     /**
@@ -9,7 +11,7 @@ class Sugarcrm
      *
      * @param $path
      *
-     * @return string
+     * @return Version
      */
     public function getBuildVersion($path)
     {
@@ -19,7 +21,7 @@ class Sugarcrm
 
         require realpath($path) . '/sugar_version.php';
 
-        return $sugar_version;
+        return new Version($sugar_version);
     }
 
     /**

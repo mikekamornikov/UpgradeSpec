@@ -211,7 +211,7 @@ The following feature enhancements are included in the 7.8.0.0 release:
 - **[Invitee missing email address indicator](http://support.sugarcrm.com/Documentation/Sugar_Versions/7.8/Ult/Application_Guide/Calls/#Call_Invitees)**  : Users will now be alerted of call and meeting invitees who will not receive email invites due to empty or invalid email addresses in Sugar.
 - **Start Date color coding in Calls, Meetings, Tasks subpanels** : The start dates in the Calls, Meetings, and Tasks subpanels are now highlighted according to when their start date occurs.
 - **[Sugar Process Author renamed to Advanced Workflow](http://support.sugarcrm.com/Knowledge_Base/Installation_Upgrade/What_to_Expect_When_Upgrading_to_7.8/#Process_Author_is_Now_Advanced_Workflow)** : Sugar's business process management tool, Process Author, is now called "Advanced Workflow".
-- **Role access control for Processes module**  : Administrators now have the ability to disable the Processes module via Administration > Role Management.
+- **Role access control for Processes module**  : Administrators now have the ability to disable the Processes module via Admin > Role Management.
 - **[Improvements to locked fields in Advanced Workflow](http://support.sugarcrm.com/Documentation/Sugar_Versions/7.8/Ult/Administration_Guide/Advanced_Workflow/Process_Definitions/#Locked_Fields "Process Definitions")**  : For records involved in running processes, locked fields are now clearly marked with a lock icon in record view, and alerts have been added to enforce locked fields in list view and import.
 - **Simplified rule selection in the process definition designer** : The Settings pop-up for business rule action elements now uses a dropdown list with type-ahead functionality.
 - **Email address validation in Compose Email window** : Email addresses are now validated when composing emails from Sidecar modules (e.g. via Emails subpanel in Accounts module) in order to detect any invalid emails.
@@ -1369,7 +1369,7 @@ To get the most out of Sugar we recommend being on the latest version. Newer ver
   chown apache:apache -R <Sugar root directory>
   chmod 755 -R <Sugar root directory>
   ```
-4. Log into Sugar and as a final cleanup, navigate to Administration > Repair and perform "Quick Repair and Rebuild" and "Rebuild Relationships". For more information on the functions performed by the repair, please refer to the [Repair](http://support.sugarcrm.com/Documentation/Sugar_Versions/7.8/Ult/Administration_Guide/System/Repair/ "Repair") documentation.
+4. Log into Sugar and as a final cleanup, navigate to Admin > Repair and perform "Quick Repair and Rebuild" and "Rebuild Relationships". For more information on the functions performed by the repair, please refer to the [Repair](http://support.sugarcrm.com/Documentation/Sugar_Versions/7.8/Ult/Administration_Guide/System/Repair/ "Repair") documentation.
 
   
 Now that your instance has successfully been upgraded to 7.8, please upgrade your stack components to be in compliance with the [7.8.x Supported Platforms](http://support.sugarcrm.com/Resources/Supported_Platforms/Sugar_7.8.x_Supported_Platforms "7.8.x Supported Platforms") including updating ElasticSearch to version 1.4.4 or 1.7.5.
