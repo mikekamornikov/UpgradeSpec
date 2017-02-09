@@ -5,7 +5,7 @@ namespace Sugarcrm\UpgradeSpec\Data\Provider\SourceCode;
 use Sugarcrm\UpgradeSpec\Data\Exception\WrongProviderException;
 use Sugarcrm\UpgradeSpec\Context\Upgrade;
 use Sugarcrm\UpgradeSpec\Version\Graph\AdjacencyList;
-use Sugarcrm\UpgradeSpec\Version\Graph\Graph;
+use Sugarcrm\UpgradeSpec\Version\Graph\Dijkstra;
 use Sugarcrm\UpgradeSpec\Version\OrderedList;
 use Sugarcrm\UpgradeSpec\Version\Version;
 use Symfony\Component\Finder\Finder;
@@ -122,7 +122,7 @@ class LocalUpgradePackages implements SourceCodeProviderInterface
         }
 
         $packages = $this->getFlavPackages($context->getBuildFlav(), $context->getTargetPath());
-        $graph = new Graph(new AdjacencyList($packages));
+        $graph = new Dijkstra(new AdjacencyList($packages));
 
         $this->suitablePackages = array_map(function (array $hop) use ($packages) {
             foreach ($packages as $path => $pair) {
