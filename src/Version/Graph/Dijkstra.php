@@ -72,6 +72,14 @@ class Dijkstra
         return $pairs;
     }
 
+    /**
+     * Dijkstra "the shortest path" algorithm
+     *
+     * @param $source
+     * @param $target
+     *
+     * @return array
+     */
     private function getShortestPath($source, $target)
     {
         // array of the best estimates of shortest path to each vertex
@@ -117,18 +125,22 @@ class Dijkstra
         }
 
         // we can now find the shortest path using reverse iteration
-        $path = [];
+        $stack = new \SplStack();
         $u = $target;
         while (isset($predecessors[$u]) && $predecessors[$u]) {
-            $path[] = $u;
+            $stack->push($u);
             $u = $predecessors[$u];
         }
 
-        if (!$path) {
+        // there is no route back
+        if ($stack->isEmpty()) {
             return [];
         }
 
-        return array_reverse(array_merge($path, [$source]));
+        // add the source node
+        $stack->push($source);
+
+        return iterator_to_array($stack, false);
     }
 
     /**
