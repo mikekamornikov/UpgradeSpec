@@ -1,4 +1,5 @@
 # SugarCRM upgrade spec generator
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/61e4bf45f6ec4b29a34fa664f0d6090c)](https://www.codacy.com/app/mikekamornikov/UpgradeSpec?utm_source=github.com&utm_medium=referral&utm_content=mikekamornikov/UpgradeSpec&utm_campaign=badger)
 [![Latest Stable Version](https://poser.pugx.org/mikekamornikov/uspec/v/stable)](https://packagist.org/packages/mikekamornikov/uspec)
 [![Build Status](https://travis-ci.org/mikekamornikov/UpgradeSpec.svg?branch=master)](https://travis-ci.org/mikekamornikov/UpgradeSpec)
 [![Build status](https://ci.appveyor.com/api/projects/status/qga7k1u6p8i695ef?svg=true)](https://ci.appveyor.com/project/mikekamornikov/upgradespec)
